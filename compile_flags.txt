@@ -3,4 +3,5 @@ include
 
 ./eendgine/*
 ./glad/*
+./stb/*
 ./

@@ -1,6 +1,7 @@
 #include <eendgine/window.hpp>
 #include <eendgine/shader.hpp>
 #include <eendgine/sprite.hpp>
+#include <stb/stb_image.h>
 
 #include <iostream>
 
@@ -11,11 +12,8 @@ int main(){
     Eend::Window myWindow;
     myWindow.init(1000, 1000, "Quack");
     
-    Eend::ShaderProgram myShaderProgram;
-    myShaderProgram.init("shaders/shader.vert", "shaders/shader.frag");
-    myShaderProgram.use();
-    int vertexColorLocation = glGetUniformLocation(myShaderProgram.programId, "ourColor");
-    glUniform4f(vertexColorLocation, 1.0f, 1.0f, 1.0f, 1.0f);
+    Eend::Shader myShader;
+    myShader.init("shaders/shader.vert", "shaders/shader.frag");
     
     float verticies[] = {
         -0.5f, -0.5f, 0.0f,
@@ -65,9 +63,9 @@ int main(){
         glClearColor(0.1f, 0.2f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        mySprite.render(&myShaderProgram);
+        mySprite.render(&myShader);
 
-        //myShaderProgram.use();
+        //myShader.use();
         //glBindVertexArray(VAO);
         //glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
         //glBindVertexArray(0);

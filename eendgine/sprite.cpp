@@ -3,14 +3,15 @@
 namespace Eendgine {
 
     void Sprite::update() {
-        float verticies[12] = {
-            x - (w / 2.0f), y - (h / 2.0f), 0.0f,
-            x - (w / 2.0f), y + (h / 2.0f), 0.0f,
-            x + (w / 2.0f), y + (h / 2.0f), 0.0f,
-            x + (w / 2.0f), y - (h / 2.0f), 0.0f 
+        float verticies[32] = {
+            // positions                      // colors                 // texture chords
+            x - (w / 2.0f), y - (h / 2.0f),   0.0f, 0.0f, 0.0f, 1.0f,   0.0, 0.0, // bottom left
+            x - (w / 2.0f), y + (h / 2.0f),   0.0f, 0.0f, 1.0f, 0.0f,   0.0, 1.0, // top left 
+            x + (w / 2.0f), y + (h / 2.0f),   0.0f, 1.0f, 0.0f, 0.0f,   1.0, 1.0, // top right
+            x + (w / 2.0f), y - (h / 2.0f),   0.0f, 0.0f, 1.0f, 1.0f,   1.0, 0.0  // bottom right
         };
 
-        for (int i = 0; i < 12; i++) {
+        for (int i = 0; i < 24; i++) {
             _verticies[i] = verticies[i];
         }
 
@@ -38,15 +39,20 @@ namespace Eendgine {
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indicies), _indicies, GL_STATIC_DRAW);
         
-        glad_glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+        glad_glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
         glEnableVertexAttribArray(0);
+        glad_glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+        glEnableVertexAttribArray(1);
+        glad_glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+        glEnableVertexAttribArray(2);
     } 
 
-    void Sprite::render(Eendgine::ShaderProgram *shader) {
+    void Sprite::render(Eendgine::Shader *shader) {
         shader->use();
         glBindVertexArray(_VAO);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
         glBindVertexArray(0);
+        glBindVertexArray(1);
     }
 
 }

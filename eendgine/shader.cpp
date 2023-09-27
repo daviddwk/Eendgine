@@ -3,9 +3,9 @@
 
 namespace Eendgine {
 
-    ShaderProgram::ShaderProgram() {}
-    ShaderProgram::~ShaderProgram() {}
-    void ShaderProgram::init(std::string vertexShaderPath, std::string fragmentShaderPath) {
+    Shader::Shader() {}
+    Shader::~Shader() {}
+    void Shader::init(std::string vertexShaderPath, std::string fragmentShaderPath) {
         
         unsigned int vertexShaderId = glCreateShader(GL_VERTEX_SHADER);
         unsigned int fragmentShaderId = glCreateShader(GL_FRAGMENT_SHADER);
@@ -26,7 +26,7 @@ namespace Eendgine {
 
     }
 
-    void ShaderProgram::compileShader(unsigned int shaderId, std::string shaderPath) {
+    void Shader::compileShader(unsigned int shaderId, std::string shaderPath) {
 
 		std::ifstream shaderFile(shaderPath);
         if (shaderFile.fail()) {
@@ -38,7 +38,6 @@ namespace Eendgine {
         std::string line;
 
         while (std::getline(shaderFile, line)) {
-            std::cout << "line" << std::endl;
             fileContents += line + "\n";
         }
 
@@ -62,7 +61,7 @@ namespace Eendgine {
         }
     }
 
-    void ShaderProgram::use() {
+    void Shader::use() {
         glUseProgram(programId);
     }
 }

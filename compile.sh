@@ -1,3 +1,3 @@
 #!/bin/bash
 
-g++ -o game.out -lglfw -I include/ main.cpp ./glad/* ./eendgine/*
+g++ -o game.out -lglfw -I include/ main.cpp ./glad/* ./eendgine/* ./stb/*
