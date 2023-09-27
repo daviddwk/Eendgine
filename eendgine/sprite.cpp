@@ -1,17 +1,18 @@
 #include "eendgine/sprite.hpp"
+#include <eendgine/textureCache.hpp>
 
 namespace Eendgine {
 
-    void Sprite::update() {
+    void Sprite::update(Texture texture) {
         float verticies[32] = {
-            // positions                      // colors                 // texture chords
-            x - (w / 2.0f), y - (h / 2.0f),   0.0f, 0.0f, 0.0f, 1.0f,   0.0, 0.0, // bottom left
-            x - (w / 2.0f), y + (h / 2.0f),   0.0f, 0.0f, 1.0f, 0.0f,   0.0, 1.0, // top left 
-            x + (w / 2.0f), y + (h / 2.0f),   0.0f, 1.0f, 0.0f, 0.0f,   1.0, 1.0, // top right
-            x + (w / 2.0f), y - (h / 2.0f),   0.0f, 0.0f, 1.0f, 1.0f,   1.0, 0.0  // bottom right
+            // positions                            // colors           // texture coords
+            x - (w / 2.0f), y - (h / 2.0f), 0.0f,   0.0f, 0.0f, 1.0f,   0.0, 0.0, // bottom left
+            x - (w / 2.0f), y + (h / 2.0f), 0.0f,   0.0f, 1.0f, 0.0f,   0.0, 1.0, // top left 
+            x + (w / 2.0f), y + (h / 2.0f), 0.0f,   1.0f, 0.0f, 0.0f,   1.0, 1.0, // top right
+            x + (w / 2.0f), y - (h / 2.0f), 0.0f,   0.0f, 1.0f, 1.0f,   1.0, 0.0  // bottom right
         };
 
-        for (int i = 0; i < 24; i++) {
+        for (int i = 0; i < 32; i++) {
             _verticies[i] = verticies[i];
         }
 
@@ -43,16 +44,16 @@ namespace Eendgine {
         glEnableVertexAttribArray(0);
         glad_glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
         glEnableVertexAttribArray(1);
-        glad_glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+        glad_glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
         glEnableVertexAttribArray(2);
+        _texture = texture;
     } 
 
     void Sprite::render(Eendgine::Shader *shader) {
         shader->use();
+        glBindTexture(GL_TEXTURE_2D, _texture.id);
         glBindVertexArray(_VAO);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-        glBindVertexArray(0);
-        glBindVertexArray(1);
     }
 
 }

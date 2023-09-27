@@ -1,6 +1,7 @@
 #include <eendgine/window.hpp>
 #include <eendgine/shader.hpp>
 #include <eendgine/sprite.hpp>
+#include <eendgine/textureCache.hpp>
 #include <stb/stb_image.h>
 
 #include <iostream>
@@ -15,6 +16,8 @@ int main(){
     Eend::Shader myShader;
     myShader.init("shaders/shader.vert", "shaders/shader.frag");
     
+    Eend::TextureCache texCache;
+
     float verticies[] = {
         -0.5f, -0.5f, 0.0f,
         -0.5f,  0.5f, 0.0f,
@@ -33,7 +36,7 @@ int main(){
     mySprite.w = 1;
     mySprite.h = 1;
     
-    mySprite.update();
+    mySprite.update(texCache.getTexture("duck.png"));
     /*
     unsigned int VAO;
     glGenVertexArrays(1, &VAO);
