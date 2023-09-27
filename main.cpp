@@ -1,5 +1,6 @@
 #include <eendgine/window.hpp>
 #include <eendgine/shader.hpp>
+#include <eendgine/sprite.hpp>
 
 #include <iostream>
 
@@ -25,6 +26,14 @@ int main(){
         0, 2, 3
     };
 
+    Eend::Sprite mySprite;
+    mySprite.x = 0;
+    mySprite.y = 0;
+    mySprite.w = 1;
+    mySprite.h = 1;
+    
+    mySprite.update();
+    /*
     unsigned int VAO;
     glGenVertexArrays(1, &VAO);
     glBindVertexArray(VAO);
@@ -43,7 +52,7 @@ int main(){
     
     glad_glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
-    
+    */
     int i = 0;
     while(!myWindow.shouldClose()){
         //input
@@ -53,11 +62,12 @@ int main(){
         glClearColor(0.1f, 0.2f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        myShaderProgram.use();
-        glBindVertexArray(VAO);
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+        mySprite.render(&myShaderProgram);
 
-        glBindVertexArray(0);
+        //myShaderProgram.use();
+        //glBindVertexArray(VAO);
+        //glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+        //glBindVertexArray(0);
 
         //events and swap the buffers
         myWindow.pollEvents();

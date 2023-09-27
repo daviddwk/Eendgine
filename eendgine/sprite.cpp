@@ -3,16 +3,25 @@
 namespace Eendgine {
 
     void Sprite::update() {
-        float verticies[] = {
+        float verticies[12] = {
             x - (w / 2.0f), y - (h / 2.0f), 0.0f,
             x - (w / 2.0f), y + (h / 2.0f), 0.0f,
             x + (w / 2.0f), y + (h / 2.0f), 0.0f,
             x + (w / 2.0f), y - (h / 2.0f), 0.0f 
         };
-        float indicies[] = {
+
+        for (int i = 0; i < 12; i++) {
+            _verticies[i] = verticies[i];
+        }
+
+        int indicies[6] = {
             0, 1, 2,
             0, 2, 3
         };
+
+        for (int i = 0; i < 6; i++) {
+            _indicies[i] = indicies[i];
+        }
 
         glGenVertexArrays(1, &_VAO);
         glBindVertexArray(_VAO);
@@ -24,10 +33,10 @@ namespace Eendgine {
         glGenBuffers(1, &EBO);
 
         glBindBuffer(GL_ARRAY_BUFFER, VBO);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(verticies), verticies, GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(verticies), _verticies, GL_STATIC_DRAW);
         
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indicies), indicies, GL_STATIC_DRAW);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indicies), _indicies, GL_STATIC_DRAW);
         
         glad_glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
         glEnableVertexAttribArray(0);
