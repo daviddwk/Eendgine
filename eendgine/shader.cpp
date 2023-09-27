@@ -20,7 +20,6 @@ namespace Eendgine {
         
         glLinkProgram(programId);
         
-        glUseProgram(programId);
         
         glDeleteShader(vertexShaderId);
         glDeleteShader(fragmentShaderId);
@@ -61,5 +60,9 @@ namespace Eendgine {
 
             glDeleteShader(shaderId);
         }
+    }
+
+    void ShaderProgram::use() {
+        glUseProgram(programId);
     }
 }
