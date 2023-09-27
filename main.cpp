@@ -13,6 +13,9 @@ int main(){
     
     Eend::ShaderProgram myShaderProgram;
     myShaderProgram.init("shaders/shader.vert", "shaders/shader.frag");
+    myShaderProgram.use();
+    int vertexColorLocation = glGetUniformLocation(myShaderProgram.programId, "ourColor");
+    glUniform4f(vertexColorLocation, 1.0f, 1.0f, 1.0f, 1.0f);
     
     float verticies[] = {
         -0.5f, -0.5f, 0.0f,
