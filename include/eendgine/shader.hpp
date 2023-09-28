@@ -5,15 +5,16 @@
 
 namespace Eendgine {
     
-    class Shader {
+    class ShaderProgram {
         public:
-            Shader();
-            ~Shader();
+            ShaderProgram();
+            ~ShaderProgram();
             void init(std::string vertexShaderPath, std::string fragmentShaderPath); 
             void use();
-            unsigned int programId;
-            unsigned int vertexShaderId;
-            unsigned int fragmentShaderId;
+
+            unsigned int programId = 0;
+            unsigned int vertexShaderId = 0;
+            unsigned int fragmentShaderId = 0;
         private:
             void compileShader(unsigned int id, std::string shaderPath);
     };

@@ -1,21 +1,21 @@
 #pragma once
 
 struct Position {
-    float x;
-    float y;
-    float z;
+    float x = 0;
+    float y = 0;
+    float z = 0;
 };
 
 struct Color {
-    unsigned int r;
-    unsigned int g;
-    unsigned int b;
-    unsigned int a;
+    unsigned int r = 0;
+    unsigned int g = 0;
+    unsigned int b = 0;
+    unsigned int a = 0;
 };
 
 struct UV {
-    float u;
-    float v;
+    float u = 0;
+    float v = 0;
 };
 
 struct Vertex {

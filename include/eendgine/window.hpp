@@ -19,9 +19,9 @@ namespace Eendgine {
             void processInput();
 
         private:
-            int _width;
-            int _height;
-            GLFWwindow* _window;
+            int _width = 0;
+            int _height = 0;
+            GLFWwindow* _window = nullptr;
     };
 
 }

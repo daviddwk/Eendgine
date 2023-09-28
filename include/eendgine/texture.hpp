@@ -4,9 +4,9 @@
 namespace Eendgine
 {
     struct Texture {
-        uint id;
-        int width;
-        int height;
+        uint id = 0;
+        int width = 0;
+        int height = 0;
     }; 
 
     Texture loadTexture(std::string filePath);

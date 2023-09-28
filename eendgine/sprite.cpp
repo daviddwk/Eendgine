@@ -61,7 +61,7 @@ namespace Eendgine {
         glEnableVertexAttribArray(2);
     } 
 
-    void Sprite::render(Eendgine::Shader *shader) {
+    void Sprite::render(Eendgine::ShaderProgram *shader) {
         glBindTexture(GL_TEXTURE_2D, _texture.id);
         
         glm::mat4 trans = glm::mat4(1.0f);

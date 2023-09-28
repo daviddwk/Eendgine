@@ -13,7 +13,7 @@ int main(){
     Eend::Window myWindow;
     myWindow.init(1000, 1000, "Quack");
     
-    Eend::Shader myShader;
+    Eend::ShaderProgram myShader;
     myShader.init("shaders/shader.vert", "shaders/shader.frag");
     
     Eend::TextureCache texCache;

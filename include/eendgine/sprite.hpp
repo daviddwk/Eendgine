@@ -7,7 +7,7 @@ namespace Eendgine {
     class Sprite {
         public:
             void init(float x, float y, float w, float h, Texture texture);
-            void render(Eendgine::Shader *shader);
+            void render(Eendgine::ShaderProgram *shader);
             
             void setPosition(float x, float y) { _x = x; _y = y; };
             void setRotation(float rotation) { _rotation = rotation; };
@@ -18,13 +18,14 @@ namespace Eendgine {
             float getRotation() { return _rotation; };
             float getScale() { return _scale; };
 
-
         private:
-            float _x, _y;
-            float _w, _h;
-            float _rotation, _scale;
-            unsigned int _VAO;
+            float _x = 0, _y = 0;
+            float _w = 1, _h = 1;
+            float _rotation = 0, _scale = 1;
+            unsigned int _VAO = 0;
             Texture _texture;
-            Eendgine::Shader *_shader;
+            Eendgine::ShaderProgram *_shader;
     };
+
+    
 }
