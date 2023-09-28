@@ -1,5 +1,8 @@
-#include <iostream>
 #include <eendgine/window.hpp>
+
+#include <glad/glad.h>
+
+#include <iostream>
 
 namespace Eendgine {
 
@@ -15,42 +18,39 @@ namespace Eendgine {
         _width = width;
         _height = height;
 
-        glfwInit();
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-        glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
-
-
-        _window = glfwCreateWindow(_width, _height, name.c_str(), NULL, NULL);
-        if (_window == NULL) {
-            std::cout << "Failed to create GLFW window" << std::endl; 
+        
+        _window = SDL_CreateWindow(name.c_str(), 
+                SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, _width, _height, 0);
+        if (_window == nullptr) {
+            std::cout << "Failed to create SDL window" << std::endl; 
         }
 
-        glfwMakeContextCurrent(_window);
+        SDL_GLContext glContext = SDL_GL_CreateContext(_window);
+        if (glContext == nullptr) {
+            std::cout << "Failed to create SDL GL context" << std::endl; 
+        }
+        
+        SDL_GL_MakeCurrent(_window, glContext);
 
-        if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
+        if (!gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress)) {
             std::cout << "Failed to initialize GLAD" << std::endl;
-        }   
+        }    
+
         glViewport(0, 0, _width, _height);
 
     }
 
-    bool Window::shouldClose() {
-        return glfwWindowShouldClose(_window);
+    void Window::pollEvents() {
+        SDL_Event event;
+        while (SDL_PollEvent(&event)) {
+            if (event.type == SDL_QUIT) {
+                shouldClose = true;
+            }
+        }
     }
 
     void Window::swapBuffers() {
-        glfwSwapBuffers(_window);
+        SDL_GL_SwapWindow(_window);
     }
 
-    void Window::pollEvents() {
-        glfwPollEvents();
-    }
-
-    void Window::processInput() {
-        if (glfwGetKey(_window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
-            glfwSetWindowShouldClose(_window, true);
-        }
-    }
 }

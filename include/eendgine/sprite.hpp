@@ -25,7 +25,7 @@ namespace Eendgine {
             float _rotation = 0, _scale = 1;
             unsigned int _VAO = 0;
             Texture _texture;
-            Eendgine::ShaderProgram *_shader;
+            Eendgine::ShaderProgram *_shader = nullptr;
     };
 
     

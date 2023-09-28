@@ -22,6 +22,8 @@ int main(){
     myShader.init("shaders/shader.vert", "shaders/shader.frag");
     
     Eend::TextureCache texCache;
+    
+
 
     Eend::Sprite mySprite;
     mySprite.init(100.0f, 100.0f, 100.0f, 100.0f, texCache.getTexture("resources/duck2.png"));
@@ -33,9 +35,9 @@ int main(){
     
 
     int i = 0;
-    while(!myWindow.shouldClose()){
-        myWindow.processInput();
-       
+    while(!myWindow.shouldClose){
+        // processInput
+
         glClearColor(0.1f, 0.2f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
         
@@ -43,6 +45,8 @@ int main(){
 
         myWindow.pollEvents();
         myWindow.swapBuffers();
+    
+
     }
 
     return 0;
