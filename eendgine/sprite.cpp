@@ -61,10 +61,10 @@ namespace Eendgine {
         glEnableVertexAttribArray(2);
     } 
 
-    void Sprite::render(Eendgine::ShaderProgram *shader) {
+    void Sprite::render(Eendgine::ShaderProgram *shader, Eendgine::Camera2D *camera) {
         glBindTexture(GL_TEXTURE_2D, _texture.id);
         
-        glm::mat4 trans = glm::mat4(1.0f);
+        glm::mat4 trans = camera->getCameraMatrix(); //glm::mat4(1.0f);
         
         trans = glm::translate(trans, glm::vec3(_x, _y, 0.0f));
         trans = glm::rotate(trans, glm::radians(-_rotation), glm::vec3(0.0f, 0.0f, 1.0f));
@@ -73,6 +73,7 @@ namespace Eendgine {
 
         unsigned int transformLoc = glGetUniformLocation(shader->programId, "transform");
         glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
+        //glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
         
         shader->use();
 
