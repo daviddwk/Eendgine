@@ -10,7 +10,7 @@
 | Special thanks to the following    |
 |  for enabling me:                  |
 |   * github.com/Barnold1953         |
-\   * loarnopengl.com                /
+\   * learnopengl.com                /
  ------------------------------------ 
    \ 
      >()
