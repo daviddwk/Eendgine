@@ -1,18 +1,27 @@
 #include "eendgine/sprite.hpp"
 #include <eendgine/textureCache.hpp>
 
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
 namespace Eendgine {
 
     void Sprite::init(float x, float y, float w, float h, Texture texture) {
+
+        _x = x;
+        _y = y;
+        _scale = 1;
+        _rotation = 0;
 
         _texture = texture;
         
         Vertex verticies[4];
         
-        verticies[0].setPosition(x + (w / 2.0f), y + (h / 2.0f), 0.0f);
-        verticies[1].setPosition(x + (w / 2.0f), y - (h / 2.0f), 0.0f);
-        verticies[2].setPosition(x - (w / 2.0f), y - (h / 2.0f), 0.0f);
-        verticies[3].setPosition(x - (w / 2.0f), y + (h / 2.0f), 0.0f);
+        verticies[0].setPosition( (w / 2.0f),  (h / 2.0f), 0.0f);
+        verticies[1].setPosition( (w / 2.0f), -(h / 2.0f), 0.0f);
+        verticies[2].setPosition(-(w / 2.0f), -(h / 2.0f), 0.0f);
+        verticies[3].setPosition(-(w / 2.0f),  (h / 2.0f), 0.0f);
 
         verticies[0].setColor(0.0f, 0.0f, 1.0f, 1.0f);
         verticies[1].setColor(0.0f, 1.0f, 0.0f, 1.0f);
@@ -53,8 +62,20 @@ namespace Eendgine {
     } 
 
     void Sprite::render(Eendgine::Shader *shader) {
-        shader->use();
         glBindTexture(GL_TEXTURE_2D, _texture.id);
+        
+        glm::mat4 trans = glm::mat4(1.0f);
+        
+        trans = glm::translate(trans, glm::vec3(_x, _y, 0.0f));
+        trans = glm::rotate(trans, glm::radians(-_rotation), glm::vec3(0.0f, 0.0f, 1.0f));
+        trans = glm::scale(trans, glm::vec3(_scale, _scale, _scale));
+        
+
+        unsigned int transformLoc = glGetUniformLocation(shader->programId, "transform");
+        glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
+        
+        shader->use();
+
         glBindVertexArray(_VAO);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
     }

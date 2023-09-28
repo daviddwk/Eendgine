@@ -7,8 +7,8 @@ namespace Eendgine {
     Shader::~Shader() {}
     void Shader::init(std::string vertexShaderPath, std::string fragmentShaderPath) {
         
-        unsigned int vertexShaderId = glCreateShader(GL_VERTEX_SHADER);
-        unsigned int fragmentShaderId = glCreateShader(GL_FRAGMENT_SHADER);
+        vertexShaderId = glCreateShader(GL_VERTEX_SHADER);
+        fragmentShaderId = glCreateShader(GL_FRAGMENT_SHADER);
         
         compileShader(vertexShaderId, vertexShaderPath);
         compileShader(fragmentShaderId, fragmentShaderPath);
