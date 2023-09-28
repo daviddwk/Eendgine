@@ -1,7 +1,0 @@
--I
-include
-
-./eendgine/*
-./glad/*
-./stb/*
-./
