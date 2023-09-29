@@ -3,7 +3,9 @@
 #include <eendgine/sprite.hpp>
 #include <eendgine/textureCache.hpp>
 #include <eendgine/camera2D.hpp>
+#include <eendgine/frameLimiter.hpp>
 #include <stb/stb_image.h>
+
 
 #include <iostream>
 
@@ -13,7 +15,9 @@ int main(){
     
     Eend::Window myWindow;
     myWindow.init(1000, 1000, "Quack");
-    
+    Eend::FrameLimiter frameLimiter;
+    frameLimiter.setFPS(60.0f);
+
     Eend::Camera2D camera;
     camera.init(1000, 1000);
     camera.update();
@@ -31,22 +35,24 @@ int main(){
     mySprite.setPosition(mySprite.getX(), mySprite.getY() + 1.0f);
     mySprite.setRotation(mySprite.getRotation() + 25.0f);
     mySprite.setScale(5.0f);
-
+    
     
 
     int i = 0;
     while(!myWindow.shouldClose){
-        // processInput
-
+        frameLimiter.startInterval(); 
+        int start = SDL_GetTicks();
         glClearColor(0.1f, 0.2f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
         
         mySprite.render(&myShader, &camera);
 
         myWindow.pollEvents();
-        myWindow.swapBuffers();
-    
-
+        myWindow.swapBuffers(); 
+        
+        frameLimiter.stopInterval();
+        int stop = SDL_GetTicks();
+        std::cout << (1000.0f / (stop - start)) << ":fps" << std::endl;
     }
 
     return 0;

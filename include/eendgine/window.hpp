@@ -12,10 +12,8 @@ namespace Eendgine {
 
             void init(int width, int height, std::string name);
             void swapBuffers();
-
             void pollEvents();
-            void processInput();
-            
+
             bool shouldClose = false;
         private:
             int _width = 0;

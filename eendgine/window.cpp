@@ -17,7 +17,8 @@ namespace Eendgine {
     void Window::init(int width, int height, std::string name) {
         _width = width;
         _height = height;
-
+        
+        SDL_Init(SDL_INIT_EVERYTHING);
         
         _window = SDL_CreateWindow(name.c_str(), 
                 SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, _width, _height, 0);
@@ -30,13 +31,12 @@ namespace Eendgine {
             std::cout << "Failed to create SDL GL context" << std::endl; 
         }
         
-        SDL_GL_MakeCurrent(_window, glContext);
-
         if (!gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress)) {
             std::cout << "Failed to initialize GLAD" << std::endl;
         }    
-
-        glViewport(0, 0, _width, _height);
+        
+        // disable vsync
+        SDL_GL_SetSwapInterval(0);
 
     }
 
@@ -52,5 +52,5 @@ namespace Eendgine {
     void Window::swapBuffers() {
         SDL_GL_SwapWindow(_window);
     }
-
+    
 }
