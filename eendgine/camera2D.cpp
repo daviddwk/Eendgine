@@ -2,7 +2,7 @@
 
 namespace Eendgine {
     void Camera2D::init(int width, int height){
-        
+
         _width = width;
         _height = height;
 

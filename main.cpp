@@ -4,6 +4,7 @@
 #include <eendgine/textureCache.hpp>
 #include <eendgine/camera2D.hpp>
 #include <eendgine/frameLimiter.hpp>
+#include <eendgine/inputManager.hpp>
 #include <stb/stb_image.h>
 
 
@@ -12,11 +13,14 @@
 namespace Eend = Eendgine;
 
 int main(){
-    
+     
     Eend::Window myWindow;
     myWindow.init(1000, 1000, "Quack");
+    
     Eend::FrameLimiter frameLimiter;
     frameLimiter.setFPS(60.0f);
+    
+    Eend::InputManager inMan;
 
     Eend::Camera2D camera;
     camera.init(1000, 1000);
@@ -41,18 +45,33 @@ int main(){
     int i = 0;
     while(!myWindow.shouldClose){
         frameLimiter.startInterval(); 
-        int start = SDL_GetTicks();
         glClearColor(0.1f, 0.2f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
         
         mySprite.render(&myShader, &camera);
 
         myWindow.pollEvents();
+        inMan.processInput();
         myWindow.swapBuffers(); 
         
+
+        if (inMan.leftPress) {
+            mySprite.setPosition(mySprite.getX() - 10.0f, mySprite.getY());
+        }
+        if (inMan.rightPress) {
+            mySprite.setPosition(mySprite.getX() + 10.0f, mySprite.getY());
+        }
+        if (inMan.upPress) {
+            mySprite.setPosition(mySprite.getX(), mySprite.getY() + 10.0f);
+        }
+        if (inMan.downPress) {
+            mySprite.setPosition(mySprite.getX(), mySprite.getY() - 10.0f);
+        }
+        if (inMan.spacePress) {
+            mySprite.setRotation(mySprite.getRotation() + 2.0f);
+        }
+
         frameLimiter.stopInterval();
-        int stop = SDL_GetTicks();
-        std::cout << (1000.0f / (stop - start)) << ":fps" << std::endl;
     }
 
     return 0;

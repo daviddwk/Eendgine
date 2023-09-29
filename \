@@ -6,12 +6,11 @@ namespace Eendgine {
     class InputManager {
         public:
             void processInput();
-            void init();
+        private:
             bool leftPress = false;
             bool rightPress = false;
             bool upPress = false;
             bool downPress = false;
             bool spacePress = false; 
-        private:
     };
 }
