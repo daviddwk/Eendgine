@@ -33,4 +33,7 @@
 
 # Project
 resources/*
+glad/*
+include/glad/glad.h
+include/stb/stb_image.h
 compile_flags.txt
