@@ -7,8 +7,10 @@
 #include <eendgine/inputManager.hpp>
 #include <stb/stb_image.h>
 
+#include "player.hpp"
 
 #include <iostream>
+#include <vector>
 
 namespace Eend = Eendgine;
 
@@ -30,15 +32,20 @@ int main(){
     myShader.init("shaders/shader.vert", "shaders/shader.frag");
     
     Eend::TextureCache texCache;
-    
+   
+    Eend::Sprite wallSprites[4];
+    wallSprites[0].init(-475.0f,    0.0f, 50.0f, 1000.0f, texCache.getTexture("resources/duck2.png"));
+    wallSprites[1].init(   0.0f,  475.0f, 1000.0f, 50.0f, texCache.getTexture("resources/duck2.png"));
+    wallSprites[2].init( 475.0f,    0.0f, 50.0f, 1000.0f, texCache.getTexture("resources/duck2.png"));
+    wallSprites[3].init(   0.0f, -475.0f, 1000.0f, 50.0f, texCache.getTexture("resources/duck2.png"));
 
+    std::vector<Eend::Sprite> wallSpritePointers;
+    for(int i = 0; i < 4; i++){
+        wallSpritePointers.push_back(wallSprites[i]);
+    }
 
-    Eend::Sprite mySprite;
-    mySprite.init(100.0f, 100.0f, 100.0f, 100.0f, texCache.getTexture("resources/duck2.png"));
-
-    mySprite.setPosition(mySprite.getX(), mySprite.getY() + 1.0f);
-    mySprite.setRotation(mySprite.getRotation() + 25.0f);
-    mySprite.setScale(5.0f);
+    Player myPlayer;
+    myPlayer.init(100.0f, 100.0f, 100.0f, 100.0f, texCache.getTexture("resources/duck2.png"));
     
     
 
@@ -48,28 +55,19 @@ int main(){
         glClearColor(0.1f, 0.2f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
         
-        mySprite.render(&myShader, &camera);
+        myPlayer.render(&myShader, &camera);
+        
+        for(int i = 0; i < wallSpritePointers.size(); i++){
+            wallSprites[i].render(&myShader, &camera);
+        }
 
         myWindow.pollEvents();
         inMan.processInput();
+
+        myPlayer.update(inMan, wallSpritePointers);
+
         myWindow.swapBuffers(); 
         
-
-        if (inMan.leftPress) {
-            mySprite.setPosition(mySprite.getX() - 10.0f, mySprite.getY());
-        }
-        if (inMan.rightPress) {
-            mySprite.setPosition(mySprite.getX() + 10.0f, mySprite.getY());
-        }
-        if (inMan.upPress) {
-            mySprite.setPosition(mySprite.getX(), mySprite.getY() + 10.0f);
-        }
-        if (inMan.downPress) {
-            mySprite.setPosition(mySprite.getX(), mySprite.getY() - 10.0f);
-        }
-        if (inMan.spacePress) {
-            mySprite.setRotation(mySprite.getRotation() + 2.0f);
-        }
 
         frameLimiter.stopInterval();
     }

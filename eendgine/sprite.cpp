@@ -7,12 +7,14 @@
 
 namespace Eendgine {
 
-    void Sprite::init(float x, float y, float w, float h, Texture texture) {
+    void Sprite::init(float xPos, float yPos, float width, float height, Texture texture) {
 
-        _x = x;
-        _y = y;
-        _scale = 1;
-        _rotation = 0;
+        x = xPos;
+        y = yPos;
+        w = width;
+        h = height;
+        scale = 1;
+        rotation = 0;
 
         _texture = texture;
         
@@ -66,9 +68,9 @@ namespace Eendgine {
         
         glm::mat4 trans = camera->getCameraMatrix(); //glm::mat4(1.0f);
         
-        trans = glm::translate(trans, glm::vec3(_x, _y, 0.0f));
-        trans = glm::rotate(trans, glm::radians(-_rotation), glm::vec3(0.0f, 0.0f, 1.0f));
-        trans = glm::scale(trans, glm::vec3(_scale, _scale, _scale));
+        trans = glm::translate(trans, glm::vec3(x, y, 0.0f));
+        trans = glm::rotate(trans, glm::radians(-rotation), glm::vec3(0.0f, 0.0f, 1.0f));
+        trans = glm::scale(trans, glm::vec3(scale, scale, scale));
         
 
         unsigned int transformLoc = glGetUniformLocation(shader->programId, "transform");
