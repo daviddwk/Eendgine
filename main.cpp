@@ -33,15 +33,16 @@ int main(){
     
     Eend::TextureCache texCache;
    
-    Eend::Sprite wallSprites[4];
+    Eend::Sprite wallSprites[5];
     wallSprites[0].init(-475.0f,    0.0f, 50.0f, 1000.0f, texCache.getTexture("resources/duck2.png"));
     wallSprites[1].init(   0.0f,  475.0f, 1000.0f, 50.0f, texCache.getTexture("resources/duck2.png"));
     wallSprites[2].init( 475.0f,    0.0f, 50.0f, 1000.0f, texCache.getTexture("resources/duck2.png"));
     wallSprites[3].init(   0.0f, -475.0f, 1000.0f, 50.0f, texCache.getTexture("resources/duck2.png"));
+    wallSprites[4].init(   0.0f,  -300.0f, 10.0f,  10.0f, texCache.getTexture("resources/duck2.png"));
 
-    std::vector<Eend::Sprite> wallSpritePointers;
-    for(int i = 0; i < 4; i++){
-        wallSpritePointers.push_back(wallSprites[i]);
+    std::vector<Eend::Sprite *> wallSpritePointers;
+    for(int i = 0; i < 5; i++){
+        wallSpritePointers.push_back(&wallSprites[i]);
     }
 
     Player myPlayer;
@@ -64,7 +65,7 @@ int main(){
         myWindow.pollEvents();
         inMan.processInput();
 
-        myPlayer.update(inMan, wallSpritePointers);
+        myPlayer.update(&inMan, wallSpritePointers);
 
         myWindow.swapBuffers(); 
         
