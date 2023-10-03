@@ -24,7 +24,7 @@ namespace Eendgine {
 
 
         _textures = textures;
-        _textureIndex = 0;
+        _currentTexture = &_textures[0];
         
         Vertex verticies[4];
         
@@ -71,12 +71,16 @@ namespace Eendgine {
         glEnableVertexAttribArray(2);
     }  
 
-    void Sprite::setTexture(std::vector<Texture>::size_type texI){
-        _textureIndex = texI;
+    void Sprite::setTexture(std::vector<Texture>::size_type textureIndex){
+        _currentTexture = &_textures[textureIndex];
+    }
+
+    std::vector<Texture>::size_type Sprite::getNumTextures(){
+        return _textures.size();
     }
 
     void Sprite::render(Eendgine::ShaderProgram *shader, Eendgine::Camera2D *camera) {
-        glBindTexture(GL_TEXTURE_2D, _textures[_textureIndex].id);
+        glBindTexture(GL_TEXTURE_2D, _currentTexture->id);
         
         glm::mat4 trans = camera->getCameraMatrix(); //glm::mat4(1.0f);
         

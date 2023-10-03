@@ -12,7 +12,8 @@ namespace Eendgine {
         public:
             void init(float x, float y, float w, float h, Texture textures);
             void init(float x, float y, float w, float h, std::vector<Texture> textures);
-            void setTexture(std::vector<Texture>::size_type texI);
+            void setTexture(std::vector<Texture>::size_type textureIndex);
+            std::vector<Texture>::size_type getNumTextures();
             void render(Eendgine::ShaderProgram *shader, Eendgine::Camera2D *camera);
             
             float x = 0, y = 0;
@@ -21,7 +22,7 @@ namespace Eendgine {
         private:
             unsigned int _VAO = 0;
             std::vector<Texture> _textures;
-            std::vector<Texture>::size_type _textureIndex = 0;
+            Texture *_currentTexture = nullptr;
             Eendgine::ShaderProgram *_shader = nullptr;
     };
 
