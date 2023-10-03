@@ -3,9 +3,6 @@
 #include <SDL2/SDL.h>
 
 namespace Eendgine {
-    
-
-
     class FrameLimiter {
         public:
             static void setFPS(float fps);

@@ -6,8 +6,14 @@
 #include <glm/gtc/type_ptr.hpp>
 
 namespace Eendgine {
-
+    
     void Sprite::init(float xPos, float yPos, float width, float height, Texture texture) {
+        std::vector<Texture> textures;
+        textures.push_back(texture);
+        init(xPos, yPos, width, height, textures);
+    }
+    
+    void Sprite::init(float xPos, float yPos, float width, float height, std::vector<Texture> textures) {
 
         x = xPos;
         y = yPos;
@@ -16,7 +22,9 @@ namespace Eendgine {
         scale = 1;
         rotation = 0;
 
-        _texture = texture;
+
+        _textures = textures;
+        _textureIndex = 0;
         
         Vertex verticies[4];
         
@@ -61,10 +69,14 @@ namespace Eendgine {
         glEnableVertexAttribArray(1);
         glad_glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)(7 * sizeof(float)));
         glEnableVertexAttribArray(2);
-    } 
+    }  
+
+    void Sprite::setTexture(std::vector<Texture>::size_type texI){
+        _textureIndex = texI;
+    }
 
     void Sprite::render(Eendgine::ShaderProgram *shader, Eendgine::Camera2D *camera) {
-        glBindTexture(GL_TEXTURE_2D, _texture.id);
+        glBindTexture(GL_TEXTURE_2D, _textures[_textureIndex].id);
         
         glm::mat4 trans = camera->getCameraMatrix(); //glm::mat4(1.0f);
         

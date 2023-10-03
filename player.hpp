@@ -9,6 +9,7 @@
 class Player {
     public:
         void init(float x, float y, float w, float h, Eendgine::Texture texture);
+        void init(float x, float y, float w, float h, std::vector<Eendgine::Texture> texture);
         void update(std::vector<Eendgine::Sprite *> collisionSprites);
         void render(Eendgine::ShaderProgram *shader, Eendgine::Camera2D *camera);
     private:

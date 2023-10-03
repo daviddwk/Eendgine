@@ -2,10 +2,16 @@
 #include <eendgine/frameLimiter.hpp>
 #include <eendgine/inputManager.hpp>
 
+#include <vector>
+
 namespace Eend = Eendgine;
 
 void Player::init(float x, float y, float w, float h, Eend::Texture texture){
     _sprite.init(x, y, w, h, texture);
+}
+
+void Player::init(float x, float y, float w, float h, std::vector<Eend::Texture> textures){
+    _sprite.init(x, y, w, h, textures);
 }
 
 void Player::update(std::vector<Eend::Sprite *> collisionSprites){
@@ -30,6 +36,7 @@ void Player::update(std::vector<Eend::Sprite *> collisionSprites){
             _velocity.y = jumpSpeed;
             _groundJump = false;
             _releasedAfterJump = false;
+            _sprite.setTexture(0);
         } else if (_releasedAfterJump == false && !Eend::InputManager::spacePress) {
             _releasedAfterJump = true;
         }
@@ -72,6 +79,7 @@ void Player::update(std::vector<Eend::Sprite *> collisionSprites){
                         if(Eend::InputManager::spacePress && _velocity.y <= 0.0f){
                             _velocity.y = jumpSpeed;
                             _groundJump = true;
+                            _sprite.setTexture(1);
                         } else {
                             _velocity.y = 0;
                             _groundJump = false;

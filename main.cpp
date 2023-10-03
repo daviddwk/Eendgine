@@ -40,8 +40,11 @@ int main(){
         wallSpritePointers.push_back(&wallSprites[i]);
     }
 
+    std::vector<Eend::Texture> playerTextures;
+    playerTextures.push_back(texCache.getTexture("resources/duck.png"));
+    playerTextures.push_back(texCache.getTexture("resources/duck2.png"));
     Player myPlayer;
-    myPlayer.init(100.0f, 100.0f, 100.0f, 100.0f, texCache.getTexture("resources/duck2.png"));
+    myPlayer.init(100.0f, 100.0f, 100.0f, 100.0f, playerTextures);
     
     
 
