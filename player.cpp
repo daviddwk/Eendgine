@@ -1,12 +1,14 @@
 #include "player.hpp"
+#include <eendgine/frameLimiter.hpp>
 
 void Player::init(float x, float y, float w, float h, Eendgine::Texture texture){
     _sprite.init(x, y, w, h, texture);
 }
 
 void Player::update(Eendgine::InputManager *inMan, std::vector<Eendgine::Sprite *> collisionSprites){
-    float speed = 8.0f;
-    float jumpSpeed = 10.0f;
+    float dt = Eendgine::FrameLimiter::deltaTime;
+    float speed = 150.0f;
+    float jumpSpeed = 200.0f;
 
     if(inMan->leftPress && inMan->rightPress){
         _velocity.x = 0.0f;
@@ -28,11 +30,11 @@ void Player::update(Eendgine::InputManager *inMan, std::vector<Eendgine::Sprite 
         }
     }
 
-    _velocity.y -= speed * 0.03f;
+    _velocity.y -= speed * 1.0f * dt;
 
 
-    _sprite.x += _velocity.x;
-    _sprite.y += _velocity.y;
+    _sprite.x += _velocity.x * dt;
+    _sprite.y += _velocity.y * dt;
     
     int numSprites = collisionSprites.size();
     for(int i= 0; i < numSprites; i++){

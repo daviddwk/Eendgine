@@ -19,8 +19,7 @@ int main(){
     Eend::Window myWindow;
     myWindow.init(1000, 1000, "Quack");
     
-    Eend::FrameLimiter frameLimiter;
-    frameLimiter.setFPS(60.0f);
+    Eend::FrameLimiter::setFPS(60.0f);
     
     Eend::InputManager inMan;
 
@@ -52,7 +51,7 @@ int main(){
 
     int i = 0;
     while(!myWindow.shouldClose){
-        frameLimiter.startInterval(); 
+        Eend::FrameLimiter::startInterval(); 
         glClearColor(0.1f, 0.2f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
         
@@ -70,7 +69,7 @@ int main(){
         myWindow.swapBuffers(); 
         
 
-        frameLimiter.stopInterval();
+        Eend::FrameLimiter::stopInterval();
     }
 
     return 0;

@@ -3,15 +3,17 @@
 #include <SDL2/SDL.h>
 
 namespace Eendgine {
+    
+
+
     class FrameLimiter {
         public:
-            void setFPS(float fps);
-            void startInterval();
-            void stopInterval();
-            
+            static void setFPS(float fps);
+            static void startInterval();
+            static void stopInterval();
+            static float deltaTime; // sec 
         private:
-            int _startTicks;
-            float _frameTicks;
-
+            static int _startTicks;
+            static float _fps;
     };
 }

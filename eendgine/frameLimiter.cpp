@@ -4,8 +4,12 @@
 
 namespace Eendgine {
     
+    float FrameLimiter::deltaTime = 0;
+    int FrameLimiter::_startTicks = 0;
+    float FrameLimiter::_fps = 0;
+    
     void FrameLimiter::setFPS(float fps) {
-        _frameTicks = 1000.0f / fps;
+        _fps = fps;
     }
 
     void FrameLimiter::startInterval() {
@@ -13,9 +17,14 @@ namespace Eendgine {
     }
 
     void FrameLimiter::stopInterval() {
-        int intervalTicks = SDL_GetTicks() - _startTicks;
-        if (intervalTicks < _frameTicks){
-            SDL_Delay((Uint32)(_frameTicks - intervalTicks));
-        }
+        float intervalTicks = (float)(SDL_GetTicks() - _startTicks);
+        float frameTicks = 1000.0f / _fps;
+        if (intervalTicks < frameTicks){
+            SDL_Delay((Uint32)(frameTicks - intervalTicks));
+            deltaTime = frameTicks / 1000.0f;
+        } else {
+            deltaTime = intervalTicks / 1000.0f;
+        } 
+        std::cout << "dt:" << deltaTime << std::endl;
     }
 }
