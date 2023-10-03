@@ -1,36 +1,41 @@
 #include "player.hpp"
 #include <eendgine/frameLimiter.hpp>
+#include <eendgine/inputManager.hpp>
 
-void Player::init(float x, float y, float w, float h, Eendgine::Texture texture){
+namespace Eend = Eendgine;
+
+void Player::init(float x, float y, float w, float h, Eend::Texture texture){
     _sprite.init(x, y, w, h, texture);
 }
 
-void Player::update(Eendgine::InputManager *inMan, std::vector<Eendgine::Sprite *> collisionSprites){
-    float dt = Eendgine::FrameLimiter::deltaTime;
+void Player::update(std::vector<Eend::Sprite *> collisionSprites){
+    
+    float dt = Eend::FrameLimiter::deltaTime;
     float speed = 150.0f;
-    float jumpSpeed = 200.0f;
+    float fallSpeed = 400.0f;
+    float jumpSpeed = 300.0f;
 
-    if(inMan->leftPress && inMan->rightPress){
+    if(Eend::InputManager::leftPress && Eend::InputManager::rightPress){
         _velocity.x = 0.0f;
-    } else if(inMan->leftPress) {
+    } else if(Eend::InputManager::leftPress) {
         _velocity.x = -speed;
-    } else if(inMan->rightPress) {
+    } else if(Eend::InputManager::rightPress) {
         _velocity.x = speed;
     } else {
         _velocity.x = 0.0f;
     }
 
     if(_groundJump == true){
-        if(_releasedAfterJump == true && inMan->spacePress){
+        if(_releasedAfterJump == true && Eend::InputManager::spacePress){
             _velocity.y = jumpSpeed;
             _groundJump = false;
             _releasedAfterJump = false;
-        } else if (_releasedAfterJump == false && !inMan->spacePress) {
+        } else if (_releasedAfterJump == false && !Eend::InputManager::spacePress) {
             _releasedAfterJump = true;
         }
     }
 
-    _velocity.y -= speed * 1.0f * dt;
+    _velocity.y -= fallSpeed * dt;
 
 
     _sprite.x += _velocity.x * dt;
@@ -64,7 +69,7 @@ void Player::update(Eendgine::InputManager *inMan, std::vector<Eendgine::Sprite 
                 if(yDistance > 0){
                     // test if this if is nessary
                     if(_velocity.y < 0) {
-                        if(inMan->spacePress && _velocity.y <= 0.0f){
+                        if(Eend::InputManager::spacePress && _velocity.y <= 0.0f){
                             _velocity.y = jumpSpeed;
                             _groundJump = true;
                         } else {
@@ -85,6 +90,6 @@ void Player::update(Eendgine::InputManager *inMan, std::vector<Eendgine::Sprite 
     }
 }
 
-void Player::render(Eendgine::ShaderProgram *shader, Eendgine::Camera2D *camera){
+void Player::render(Eend::ShaderProgram *shader, Eend::Camera2D *camera){
     _sprite.render(shader, camera);
 }

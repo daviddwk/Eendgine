@@ -11,9 +11,9 @@ namespace Eendgine {
             static void setFPS(float fps);
             static void startInterval();
             static void stopInterval();
-            static float deltaTime; // sec 
+            inline static float deltaTime = 0; // sec 
         private:
-            static int _startTicks;
-            static float _fps;
+            inline static int _startTicks = 0;
+            inline static float _fps = 0;
     };
 }

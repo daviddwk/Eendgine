@@ -1,12 +1,6 @@
 #include <eendgine/frameLimiter.hpp>
 
-#include <iostream>
-
 namespace Eendgine {
-    
-    float FrameLimiter::deltaTime = 0;
-    int FrameLimiter::_startTicks = 0;
-    float FrameLimiter::_fps = 0;
     
     void FrameLimiter::setFPS(float fps) {
         _fps = fps;
@@ -25,6 +19,5 @@ namespace Eendgine {
         } else {
             deltaTime = intervalTicks / 1000.0f;
         } 
-        std::cout << "dt:" << deltaTime << std::endl;
     }
 }

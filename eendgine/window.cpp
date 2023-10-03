@@ -6,14 +6,6 @@
 
 namespace Eendgine {
 
-    Window::Window() {
-
-    }
-
-    Window::~Window() {
-
-    }
-
     void Window::init(int width, int height, std::string name) {
         _width = width;
         _height = height;
