@@ -6,12 +6,12 @@
 
 namespace Eend = Eendgine;
 
-void Player::init(float x, float y, float w, float h, Eend::Texture texture){
-    _sprite.init(x, y, w, h, texture);
+void Player::init(float x, float y, float z, float w, float h, Eend::Texture texture){
+    _sprite.init(x, y, z, w, h, texture);
 }
 
-void Player::init(float x, float y, float w, float h, std::vector<Eend::Texture> textures){
-    _sprite.init(x, y, w, h, textures);
+void Player::init(float x, float y, float z, float w, float h, std::vector<Eend::Texture> textures){
+    _sprite.init(x, y, z, w, h, textures);
 }
 
 void Player::update(std::vector<Eend::Sprite *> collisionSprites){
@@ -20,15 +20,26 @@ void Player::update(std::vector<Eend::Sprite *> collisionSprites){
     float speed = 150.0f;
     float fallSpeed = 400.0f;
     float jumpSpeed = 300.0f;
-
-    if(Eend::InputManager::leftPress && Eend::InputManager::rightPress){
-        _velocity.x = 0.0f;
-    } else if(Eend::InputManager::leftPress) {
-        _velocity.x = -speed;
-    } else if(Eend::InputManager::rightPress) {
-        _velocity.x = speed;
+    float airSpeed = 200.0f;
+    
+    if(_onGround) {
+        if(Eend::InputManager::leftPress && Eend::InputManager::rightPress){
+            _velocity.x = 0.0f;
+        } else if(Eend::InputManager::leftPress) {
+            _velocity.x = -speed;
+        } else if(Eend::InputManager::rightPress) {
+            _velocity.x = speed;
+        } else {
+            _velocity.x = 0.0f;
+        }
     } else {
-        _velocity.x = 0.0f;
+        if(Eend::InputManager::leftPress && Eend::InputManager::rightPress){
+
+        } else if(Eend::InputManager::leftPress && !(_velocity.x <= -speed)) {
+            _velocity.x -= airSpeed * dt;
+        } else if(Eend::InputManager::rightPress && !(_velocity.x >= speed)) {
+            _velocity.x += airSpeed * dt;
+        }
     }
 
     if(_groundJump == true){
@@ -49,11 +60,13 @@ void Player::update(std::vector<Eend::Sprite *> collisionSprites){
     _sprite.y += _velocity.y * dt;
     
     int numSprites = collisionSprites.size();
+    _onGround = false;
     for(int i= 0; i < numSprites; i++){
         float xDistance = _sprite.x - collisionSprites[i]->x;
         float xCollisionDepth = ((_sprite.w / 2) + (collisionSprites[i]->w / 2)) - abs(xDistance);
         float yDistance = _sprite.y - collisionSprites[i]->y;
         float yCollisionDepth = ((_sprite.h / 2) + (collisionSprites[i]->h / 2)) - abs(yDistance);
+
         if ((xCollisionDepth > 0) && (yCollisionDepth > 0)){
             // distance of centers of sprites
             if(xCollisionDepth > 0 && xCollisionDepth < yCollisionDepth) {
@@ -73,6 +86,7 @@ void Player::update(std::vector<Eend::Sprite *> collisionSprites){
                 }
             } else {
                 // player above of coliding object
+                _onGround = true;
                 if(yDistance > 0){
                     // test if this if is nessary
                     if(_velocity.y < 0) {
@@ -96,6 +110,8 @@ void Player::update(std::vector<Eend::Sprite *> collisionSprites){
             }
         }
     }
+
+    std::cout<< _onGround << std::endl;
 }
 
 void Player::render(Eend::ShaderProgram *shader, Eend::Camera2D *camera){
