@@ -10,13 +10,13 @@
 namespace Eendgine {
     class Sprite {
         public:
-            void init(float xPos, float yPos, float zPos, float width, float height, Texture textures);
-            void init(float xPos, float yPos, float zPos, float width, float height, std::vector<Texture> textures);
+            void init(float x, float y, float w, float h, Texture textures);
+            void init(float x, float y, float w, float h, std::vector<Texture> textures);
             void setTexture(std::vector<Texture>::size_type textureIndex);
             std::vector<Texture>::size_type getNumTextures();
             void render(Eendgine::ShaderProgram *shader, Eendgine::Camera2D *camera);
             
-            float x = 0, y = 0, z = 0;
+            float x = 0, y = 0;
             float w = 1, h = 1;
             float rotation = 0, scale = 1;
         private:

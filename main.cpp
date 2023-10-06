@@ -28,16 +28,15 @@ int main(){
     
     Eend::TextureCache texCache;
    
-    Eend::Sprite wallSprites[6];
-    wallSprites[0].init(-475.0f,    0.0f, 0.1f, 50.0f, 1000.0f, texCache.getTexture("resources/duck2.png"));
-    wallSprites[1].init(   0.0f,  475.0f, 0.2f, 1000.0f, 50.0f, texCache.getTexture("resources/duck2.png"));
-    wallSprites[2].init( 475.0f,    0.0f, 0.3f, 50.0f, 1000.0f, texCache.getTexture("resources/duck2.png"));
-    wallSprites[3].init(   0.0f, -475.0f, 0.4f, 1000.0f, 50.0f, texCache.getTexture("resources/duck2.png"));
-    wallSprites[4].init(   0.0f,  -300.0f, 0.5f, 50.0f,  50.0f, texCache.getTexture("resources/duck2.png"));
-    wallSprites[5].init(   0.0f,  -300.0f, 0.6f, 50.0f,  50.0f, texCache.getTexture("resources/duck.png"));
+    Eend::Sprite wallSprites[5];
+    wallSprites[0].init(-475.0f,    0.0f, 50.0f, 1000.0f, texCache.getTexture("resources/duck2.png"));
+    wallSprites[1].init(   0.0f,  475.0f, 1000.0f, 50.0f, texCache.getTexture("resources/duck2.png"));
+    wallSprites[2].init( 475.0f,    0.0f, 50.0f, 1000.0f, texCache.getTexture("resources/duck2.png"));
+    wallSprites[3].init(   0.0f, -475.0f, 1000.0f, 50.0f, texCache.getTexture("resources/duck2.png"));
+    wallSprites[4].init(   0.0f,  -300.0f, 10.0f,  10.0f, texCache.getTexture("resources/duck2.png"));
 
     std::vector<Eend::Sprite *> wallSpritePointers;
-    for(int i = 0; i < 6; i++){
+    for(int i = 0; i < 5; i++){
         wallSpritePointers.push_back(&wallSprites[i]);
     }
 
@@ -45,7 +44,7 @@ int main(){
     playerTextures.push_back(texCache.getTexture("resources/duck.png"));
     playerTextures.push_back(texCache.getTexture("resources/duck2.png"));
     Player myPlayer;
-    myPlayer.init(100.0f, 100.0f, 1.0f, 100.0f, 100.0f, playerTextures);
+    myPlayer.init(100.0f, 100.0f, 100.0f, 100.0f, playerTextures);
     
     
 
