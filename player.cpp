@@ -7,11 +7,11 @@
 namespace Eend = Eendgine;
 
 void Player::init(float x, float y, float w, float h, Eend::Texture texture){
-    _sprite.init(x, y, w, h, texture);
+    _sprite = Eend::Sprite(x, y, w, h, texture);
 }
 
 void Player::init(float x, float y, float w, float h, std::vector<Eend::Texture> textures){
-    _sprite.init(x, y, w, h, textures);
+    _sprite = Eend::Sprite(x, y, w, h, textures);
 }
 
 void Player::update(std::vector<Eend::Sprite *> collisionSprites){

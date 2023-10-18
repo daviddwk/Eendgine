@@ -7,13 +7,17 @@
 
 namespace Eendgine {
     
-    void Sprite::init(float xPos, float yPos, float width, float height, Texture texture) {
+    Sprite::Sprite(float xPos, float yPos, float width, float height, Texture texture) {
         std::vector<Texture> textures;
         textures.push_back(texture);
-        init(xPos, yPos, width, height, textures);
+        setup(xPos, yPos, width, height, textures);
+    }
+
+    Sprite::Sprite(float xPos, float yPos, float width, float height, std::vector<Texture> textures) {
+        setup(xPos, yPos, width, height, textures);
     }
     
-    void Sprite::init(float xPos, float yPos, float width, float height, std::vector<Texture> textures) {
+    void Sprite::setup(float xPos, float yPos, float width, float height, std::vector<Texture> textures) {
 
         x = xPos;
         y = yPos;

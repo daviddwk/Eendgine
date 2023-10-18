@@ -7,7 +7,7 @@
 #include <eendgine/inputManager.hpp>
 #include <stb/stb_image.h>
 
-#include "player.hpp"
+//#include "player.hpp"
 
 #include <iostream>
 #include <vector>
@@ -28,23 +28,18 @@ int main(){
     
     Eend::TextureCache texCache;
    
-    Eend::Sprite wallSprites[5];
-    wallSprites[0].init(-475.0f,    0.0f, 50.0f, 1000.0f, texCache.getTexture("resources/duck2.png"));
-    wallSprites[1].init(   0.0f,  475.0f, 1000.0f, 50.0f, texCache.getTexture("resources/duck2.png"));
-    wallSprites[2].init( 475.0f,    0.0f, 50.0f, 1000.0f, texCache.getTexture("resources/duck2.png"));
-    wallSprites[3].init(   0.0f, -475.0f, 1000.0f, 50.0f, texCache.getTexture("resources/duck2.png"));
-    wallSprites[4].init(   0.0f,  -300.0f, 10.0f,  10.0f, texCache.getTexture("resources/duck2.png"));
-
-    std::vector<Eend::Sprite *> wallSpritePointers;
-    for(int i = 0; i < 5; i++){
-        wallSpritePointers.push_back(&wallSprites[i]);
-    }
+    std::vector<Eend::Sprite> wallSprites;
+    wallSprites.emplace_back(Eend::Sprite(-475.0f,    0.0f, 50.0f, 1000.0f, texCache.getTexture("resources/duck2.png")));
+    wallSprites.emplace_back(Eend::Sprite(   0.0f,  475.0f, 1000.0f, 50.0f, texCache.getTexture("resources/duck2.png")));
+    wallSprites.emplace_back(Eend::Sprite( 475.0f,    0.0f, 50.0f, 1000.0f, texCache.getTexture("resources/duck2.png")));
+    wallSprites.emplace_back(Eend::Sprite(   0.0f, -475.0f, 1000.0f, 50.0f, texCache.getTexture("resources/duck2.png")));
+    wallSprites.emplace_back(Eend::Sprite(   0.0f,  -300.0f, 10.0f,  10.0f, texCache.getTexture("resources/duck2.png")));
 
     std::vector<Eend::Texture> playerTextures;
     playerTextures.push_back(texCache.getTexture("resources/duck.png"));
     playerTextures.push_back(texCache.getTexture("resources/duck2.png"));
-    Player myPlayer;
-    myPlayer.init(100.0f, 100.0f, 100.0f, 100.0f, playerTextures);
+    //Player myPlayer;
+    //myPlayer.init(100.0f, 100.0f, 100.0f, 100.0f, playerTextures);
     
     
 
@@ -54,16 +49,16 @@ int main(){
         glClearColor(0.1f, 0.2f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
         
-        myPlayer.render(&myShader, &camera);
+        //myPlayer.render(&myShader, &camera);
         
-        for(int i = 0; i < wallSpritePointers.size(); i++){
-            wallSprites[i].render(&myShader, &camera);
+        for(Eend::Sprite &w : wallSprites) {
+            w.render(&myShader, &camera);
         }
 
         Eend::Window::pollEvents();
         Eend::InputManager::processInput();
 
-        myPlayer.update(wallSpritePointers);
+        //myPlayer.update(wallSpritePointers);
 
         Eend::Window::swapBuffers(); 
         
