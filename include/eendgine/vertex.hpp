@@ -1,44 +1,27 @@
 #pragma once
 
-struct Position {
-    float x = 0;
-    float y = 0;
-    float z = 0;
-};
-
-struct Color {
-    unsigned int r = 0;
-    unsigned int g = 0;
-    unsigned int b = 0;
-    unsigned int a = 0;
-};
-
-struct UV {
-    float u = 0;
-    float v = 0;
-};
+#include<glm/glm.hpp>
 
 struct Vertex {
-    Position position;
-    Color color;
-    UV uv;
+    glm::vec3 position;
+    glm::vec4 color;
+    glm::vec2 uv;
+    glm::vec3 normal;
     
     void setPosition(float x, float y, float z) {
-        position.x = x;
-        position.y = y;
-        position.z = z;
+        position = glm::vec3(x, y, z);
     }
 
-    void setColor(unsigned int r, unsigned int g, unsigned int b, unsigned int a) {
-        color.r = r;
-        color.g = g;
-        color.b = b;
-        color.a = a;
+    void setColor(float r, float g, float b, float a) {
+        color = glm::vec4(r, g, b, a);
     }
 
     void setUv(float u, float v) {
-        uv.u = u;
-        uv.v = v;
+        uv = glm::vec2(u, v);
+    }
+
+    void setNormal(float x, float y, float z) {
+        normal = glm::vec3(x, y, z); 
     }
 };
 
