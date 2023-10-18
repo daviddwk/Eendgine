@@ -85,7 +85,7 @@ namespace Eendgine {
         return _textures.size();
     }
 
-    void Sprite::render(Eendgine::ShaderProgram *shader, Eendgine::Camera2D *camera) {
+    void Sprite::draw(Eendgine::ShaderProgram *shader, Eendgine::Camera2D *camera) {
         glBindTexture(GL_TEXTURE_2D, _currentTexture->id);
         
         glm::mat4 trans = camera->getCameraMatrix(); //glm::mat4(1.0f);

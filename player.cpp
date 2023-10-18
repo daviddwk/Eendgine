@@ -6,11 +6,15 @@
 
 namespace Eend = Eendgine;
 
-void Player::init(float x, float y, float w, float h, Eend::Texture texture){
+Player::Player(float x, float y, float w, float h, Eend::Texture texture) : 
+    _sprite(Eend::Sprite(x, y, w, h, texture)) 
+{
     _sprite = Eend::Sprite(x, y, w, h, texture);
 }
 
-void Player::init(float x, float y, float w, float h, std::vector<Eend::Texture> textures){
+Player::Player(float x, float y, float w, float h, std::vector<Eend::Texture> textures) :
+    _sprite(Eend::Sprite(x, y, w, h, textures)) 
+{
     _sprite = Eend::Sprite(x, y, w, h, textures);
 }
 
@@ -114,6 +118,6 @@ void Player::update(std::vector<Eend::Sprite *> collisionSprites){
     std::cout<< _onGround << std::endl;
 }
 
-void Player::render(Eend::ShaderProgram *shader, Eend::Camera2D *camera){
-    _sprite.render(shader, camera);
+void Player::draw(Eend::ShaderProgram *shader, Eend::Camera2D *camera){
+    _sprite.draw(shader, camera);
 }

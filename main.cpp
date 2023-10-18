@@ -7,7 +7,7 @@
 #include <eendgine/inputManager.hpp>
 #include <stb/stb_image.h>
 
-//#include "player.hpp"
+#include "player.hpp"
 
 #include <iostream>
 #include <vector>
@@ -38,8 +38,7 @@ int main(){
     std::vector<Eend::Texture> playerTextures;
     playerTextures.push_back(texCache.getTexture("resources/duck.png"));
     playerTextures.push_back(texCache.getTexture("resources/duck2.png"));
-    //Player myPlayer;
-    //myPlayer.init(100.0f, 100.0f, 100.0f, 100.0f, playerTextures);
+    Player myPlayer(100.0f, 100.0f, 100.0f, 100.0f, playerTextures);
     
     
 
@@ -49,10 +48,10 @@ int main(){
         glClearColor(0.1f, 0.2f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
         
-        //myPlayer.render(&myShader, &camera);
+        myPlayer.draw(&myShader, &camera);
         
         for(Eend::Sprite &w : wallSprites) {
-            w.render(&myShader, &camera);
+            w.draw(&myShader, &camera);
         }
 
         Eend::Window::pollEvents();
