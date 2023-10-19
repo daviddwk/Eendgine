@@ -5,7 +5,9 @@
 #include <eendgine/camera2D.hpp>
 #include <eendgine/frameLimiter.hpp>
 #include <eendgine/inputManager.hpp>
+#include <eendgine/model.hpp>
 #include <stb/stb_image.h>
+
 
 #include "player.hpp"
 
@@ -40,14 +42,14 @@ int main(){
     playerTextures.push_back(texCache.getTexture("resources/duck2.png"));
     Player myPlayer(100.0f, 100.0f, 100.0f, 100.0f, playerTextures);
     
-    
+    Eend::Model myModel("resources/backpack/backpack.obj", &texCache);
 
     int i = 0;
     while(!Eend::Window::shouldClose){
         Eend::FrameLimiter::startInterval(); 
         glClearColor(0.1f, 0.2f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
-        
+        myModel.draw(&myShader, &camera);
         myPlayer.draw(&myShader, &camera);
         
         for(Eend::Sprite &w : wallSprites) {

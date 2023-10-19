@@ -114,8 +114,6 @@ void Player::update(std::vector<Eend::Sprite *> collisionSprites){
             }
         }
     }
-
-    std::cout<< _onGround << std::endl;
 }
 
 void Player::draw(Eend::ShaderProgram *shader, Eend::Camera2D *camera){
