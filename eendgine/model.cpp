@@ -7,7 +7,7 @@ namespace Eendgine {
         loadModel(path);
     }
 
-    void Model::draw(ShaderProgram *shader, Camera2D *camera){
+    void Model::draw(ShaderProgram *shader, Camera3D *camera){
         for (auto &m : _meshes) {
             m.draw(shader, camera);
         }

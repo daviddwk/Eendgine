@@ -36,13 +36,30 @@ namespace Eendgine {
 
     }
 
-    void Mesh::draw(ShaderProgram *shader, Camera2D *camera) {
+    void Mesh::draw(ShaderProgram *shader, Camera3D *camera) {
+        shader->use();
         for(int i = 0; i < _textures.size(); i++) {
             glActiveTexture(GL_TEXTURE0 + i);
             std::string texName = "texture" + std::to_string(i);
             glUniform1i(glGetUniformLocation(shader->programId, texName.c_str()), i);
             glBindTexture(GL_TEXTURE_2D, _textures[i].id);
         }
+        
+        unsigned int projectionLoc = glGetUniformLocation(shader->programId, "projection");
+        unsigned int viewLoc = glGetUniformLocation(shader->programId, "view");
+        glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, &camera->projectionMat[0][0]);
+        glUniformMatrix4fv(viewLoc, 1, GL_FALSE, &camera->viewMat[0][0]);
+
+        //glm::mat4 trans = camera->getCameraMatrix(); //glm::mat4(1.0f);
+        
+        //trans = glm::translate(trans, glm::vec3(0.0f, 0.0f, 0.0f));
+        //trans = glm::rotate(trans, glm::radians(1.0f), glm::vec3(0.0f, 0.0f, 0.0f));
+        //trans = glm::scale(trans, glm::vec3(1.0f, 1.0f, 1.0f));
+        
+        //unsigned int transformLoc = glGetUniformLocation(shader->programId, "transform");
+        //glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
+        
+        
         glBindVertexArray(_VAO);
         glDrawElements(GL_TRIANGLES, _indices.size(), GL_UNSIGNED_INT, 0);
 

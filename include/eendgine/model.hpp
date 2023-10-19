@@ -2,6 +2,7 @@
 
 #include <eendgine/mesh.hpp>
 #include <eendgine/textureCache.hpp>
+#include <eendgine/camera3D.hpp>
 
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
@@ -14,7 +15,7 @@ namespace Eendgine {
     class Model {
         public:
             Model(std::string path, TextureCache *texCache);
-            void draw(ShaderProgram *shader, Camera2D *camera);
+            void draw(ShaderProgram *shader, Camera3D *camera);
         private:
             std::vector<Mesh> _meshes;
             std::string _directory;
