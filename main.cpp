@@ -21,63 +21,34 @@ int main(){
      
     Eend::Window::init(1000, 1000, "Quack");
     Eend::FrameLimiter::setFPS(60.0f);
-    
-    float vertices[] = {
-        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-         0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
-         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+   
+       
+    std::vector<Eend::Vertex> myVertices;
+    Eend::Vertex v1;
+    Eend::Vertex v2;
+    Eend::Vertex v3;
 
-        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-         0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-         0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-        -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+    v1.setPosition(-0.5f, -0.5f, -0.5f);
+    v2.setPosition( 0.5f, -0.5f, -0.5f);
+    v3.setPosition( 0.5f,  0.5f, -0.5f);
+    myVertices.push_back(v1);
+    myVertices.push_back(v2);
+    myVertices.push_back(v3);
 
-        -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-        -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-        -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+    std::vector<unsigned int> myIndices = {0, 1, 2};
+    std::vector<Eend::Texture> myTextures;
 
-         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-         0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-         0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-         0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+    Eend::ShaderProgram myShader3D;
+    myShader3D.init("shaders/shader3D.vert", "shaders/shader3D.frag");
 
-        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-         0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
-         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+    Eend::Camera3D my3DCamera(1000.0f, 1000.0f,
+            glm::vec3(10.0f, 10.0f, 10.0f), glm::vec3(0.0f, 0.0f, 0.0f));
 
-        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-        -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
-        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
-    };
-    // world space positions of our cubes
-    glm::vec3 cubePositions[] = {
-        glm::vec3( 0.0f,  0.0f,  0.0f),
-        glm::vec3( 2.0f,  5.0f, -15.0f),
-        glm::vec3(-1.5f, -2.2f, -2.5f),
-        glm::vec3(-3.8f, -2.0f, -12.3f),
-        glm::vec3( 2.4f, -0.4f, -3.5f),
-        glm::vec3(-1.7f,  3.0f, -7.5f),
-        glm::vec3( 1.3f, -2.0f, -2.5f),
-        glm::vec3( 1.5f,  2.0f, -2.5f),
-        glm::vec3( 1.5f,  0.2f, -1.5f),
-        glm::vec3(-1.3f,  1.0f, -1.5f)
-    };
+    Eend::Mesh myMesh(myVertices, myIndices, myTextures);
+
+
+    /*
+
     unsigned int VBO, VAO;
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
@@ -85,14 +56,16 @@ int main(){
     glBindVertexArray(VAO);
 
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Eend::Vertex), &vertices[0], GL_STATIC_DRAW);
 
     // position attribute
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+    
+    //glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+    //glEnableVertexAttribArray(0);
+    
+
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Eend::Vertex), (void*)offsetof(Eend::Vertex, position));
     glEnableVertexAttribArray(0);
-    // texture coord attribute
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
-    glEnableVertexAttribArray(1);
       
     Eend::ShaderProgram myShader3D;
     myShader3D.init("shaders/shader3D.vert", "shaders/shader3D.frag");
@@ -105,29 +78,17 @@ int main(){
             glm::vec3(10.0f, 10.0f, 10.0f), glm::vec3(0.0f, 0.0f, 0.0f));
     glUniformMatrix4fv(glGetUniformLocation(myShader3D.programId, "projection"), 1, GL_FALSE, &my3DCamera.projectionMat[0][0]);
     glUniformMatrix4fv(glGetUniformLocation(myShader3D.programId, "view"), 1, GL_FALSE, &my3DCamera.viewMat[0][0]);
-    
+    */
     while(!Eend::Window::shouldClose){
         Eend::FrameLimiter::startInterval(); 
 
         glClearColor(0.1f, 0.2f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
         
-        // render boxes
-        
-        glBindVertexArray(VAO);
-        for (unsigned int i = 0; i < 10; i++)
-        {
-            // calculate the model matrix for each object and pass it to shader before drawing
-            glm::mat4 model = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
-            model = glm::translate(model, cubePositions[i]);
-            float angle = 20.0f * i;
-            model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
-            glUniformMatrix4fv(glGetUniformLocation(myShader3D.programId, "model"), 1, GL_FALSE, &model[0][0]);
+        //glBindVertexArray(VAO);
+        //glDrawArrays(GL_TRIANGLES, 0, 36);
+        myMesh.draw(&myShader3D, &my3DCamera);
 
-
-            glDrawArrays(GL_TRIANGLES, 0, 36);
-        }
-        
         Eend::Window::pollEvents();
         Eend::InputManager::processInput();
         Eend::Window::swapBuffers(); 
