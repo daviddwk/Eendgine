@@ -31,12 +31,18 @@ int main(){
     v1.setPosition(-0.5f, -0.5f, -0.5f);
     v2.setPosition( 0.5f, -0.5f, -0.5f);
     v3.setPosition( 0.5f,  0.5f, -0.5f);
+    v1.setUv(0.0, 0.0);
+    v2.setUv(1.0, 0.0);
+    v3.setUv(0.0, 1.0);
     myVertices.push_back(v1);
     myVertices.push_back(v2);
     myVertices.push_back(v3);
 
+
+    Eend::TextureCache myTextureCache;
     std::vector<unsigned int> myIndices = {0, 1, 2};
     std::vector<Eend::Texture> myTextures;
+    myTextures.push_back(myTextureCache.getTexture("resources/duck.png"));
 
     Eend::ShaderProgram myShader3D;
     myShader3D.init("shaders/shader3D.vert", "shaders/shader3D.frag");
@@ -46,47 +52,12 @@ int main(){
 
     Eend::Mesh myMesh(myVertices, myIndices, myTextures);
 
-
-    /*
-
-    unsigned int VBO, VAO;
-    glGenVertexArrays(1, &VAO);
-    glGenBuffers(1, &VBO);
-
-    glBindVertexArray(VAO);
-
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Eend::Vertex), &vertices[0], GL_STATIC_DRAW);
-
-    // position attribute
-    
-    //glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
-    //glEnableVertexAttribArray(0);
-    
-
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Eend::Vertex), (void*)offsetof(Eend::Vertex, position));
-    glEnableVertexAttribArray(0);
-      
-    Eend::ShaderProgram myShader3D;
-    myShader3D.init("shaders/shader3D.vert", "shaders/shader3D.frag");
-
-    // activate shader
-    myShader3D.use();
-
-    
-    Eend::Camera3D my3DCamera(1000.0f, 1000.0f,
-            glm::vec3(10.0f, 10.0f, 10.0f), glm::vec3(0.0f, 0.0f, 0.0f));
-    glUniformMatrix4fv(glGetUniformLocation(myShader3D.programId, "projection"), 1, GL_FALSE, &my3DCamera.projectionMat[0][0]);
-    glUniformMatrix4fv(glGetUniformLocation(myShader3D.programId, "view"), 1, GL_FALSE, &my3DCamera.viewMat[0][0]);
-    */
     while(!Eend::Window::shouldClose){
         Eend::FrameLimiter::startInterval(); 
 
         glClearColor(0.1f, 0.2f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
         
-        //glBindVertexArray(VAO);
-        //glDrawArrays(GL_TRIANGLES, 0, 36);
         myMesh.draw(&myShader3D, &my3DCamera);
 
         Eend::Window::pollEvents();
