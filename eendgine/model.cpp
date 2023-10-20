@@ -43,40 +43,36 @@ namespace Eendgine {
 
         for (int i = 0; i < mesh->mNumVertices; i++) {
             Vertex vertex;
-            glm::vec3 vector;
-
             vertex.position = glm::vec3(
                     mesh->mVertices[i].x,
                     mesh->mVertices[i].y,
                     mesh->mVertices[i].z);
-
             if (mesh->mColors[0]) {
                 vertex.color = glm::vec4(
                         mesh->mColors[0][i].r,
                         mesh->mColors[0][i].g,
                         mesh->mColors[0][i].b,
-                        mesh->mColors[0][i].a);
-
+                        1.0f);
             }
-
             if (mesh->mTextureCoords[0]) {
                 vertex.uv = glm::vec2(
                         mesh->mTextureCoords[0][i].x,
                         mesh->mTextureCoords[0][i].y);
             }
-
-            vertex.normal = glm::vec3(
-                    mesh->mNormals[i].x,
-                    mesh->mNormals[i].y,
-                    mesh->mNormals[i].z);        
+            if (mesh->HasNormals()){
+                vertex.normal = glm::vec3(
+                        mesh->mNormals[i].x,
+                        mesh->mNormals[i].y,
+                        mesh->mNormals[i].z);        
+            }
+            vertices.push_back(vertex);
         }
        
         for (int i = 0; i < mesh->mNumFaces; i++) {
             aiFace face = mesh->mFaces[i];
             for (int j = 0; j < face.mNumIndices; j++) {
-                indices.push_back(face.mIndices[i]);
+                indices.push_back(face.mIndices[j]);
             }
-
         }
 
         if (mesh->mMaterialIndex >= 0) {
@@ -93,6 +89,7 @@ namespace Eendgine {
             aiString str;
             mat->GetTexture(type, i, &str);
             textures.emplace_back(_texCache->getTexture(_directory + '/' + (std::string)str.C_Str()));
+            std::cout << _directory + '/' + (std::string)str.C_Str() << std::endl;
         }
         return textures;
     }
