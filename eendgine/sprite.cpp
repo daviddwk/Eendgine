@@ -86,6 +86,8 @@ namespace Eendgine {
     }
 
     void Sprite::draw(Eendgine::ShaderProgram *shader, Eendgine::Camera2D *camera) {
+        shader->use();
+        glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, _currentTexture->id);
         
         glm::mat4 trans = camera->getCameraMatrix(); //glm::mat4(1.0f);
@@ -97,12 +99,11 @@ namespace Eendgine {
 
         unsigned int transformLoc = glGetUniformLocation(shader->programId, "transform");
         glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
-        //glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
-        
-        shader->use();
+        //glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans)); 
 
         glBindVertexArray(_VAO);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+        glBindVertexArray(0);
     }
 
 }

@@ -39,7 +39,7 @@ int main(){
     myCamera.init(1000, 1000);
     myCamera.update();
     
-    //Eend::Sprite mySprite(0.0f, 0.0f, 750.0f, 750.0f, myTextureCache.getTexture("resources/ost/diffuse.png"));
+    Eend::Sprite mySprite(0.0f, 0.0f, 100.0f, 100.0f, myTextureCache.getTexture("resources/ost/diffuse.png"));
     Eend::Model myModel("resources/ost/ost.obj", &myTextureCache);
     //Eend::Model myModel("resources/backpack/backpack.obj", &myTextureCache);
 
@@ -51,8 +51,9 @@ int main(){
         
         myModel.draw(&myShader3D, &my3DCamera);
 
+        glClear(GL_DEPTH_BUFFER_BIT);
 
-        //mySprite.draw(&myShader, &myCamera);
+        mySprite.draw(&myShader, &myCamera);
 
         Eend::Window::pollEvents();
         Eend::InputManager::processInput();
