@@ -46,8 +46,6 @@ namespace Eendgine {
             glActiveTexture(GL_TEXTURE0 + i);
             std::string texType = (i == 0 ? "diffuse" : "opacity");
             std::string texName = "texture_" + texType;
-            std::cout << texName << std::endl;
-            std::cout << _textures.size() << std::endl;
             glUniform1i(glGetUniformLocation(shader.programId, texName.c_str()), i);
             glBindTexture(GL_TEXTURE_2D, _textures[i].id);
         }
