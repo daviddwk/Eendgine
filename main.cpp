@@ -54,6 +54,25 @@ int main(){
         glClear(GL_DEPTH_BUFFER_BIT);
 
         mySprite.draw(myShader, myCamera);
+        
+        float dt = Eend::FrameLimiter::deltaTime;
+        float speed = 100.0f;
+        if (Eendgine::InputManager::upPress) {
+            glm::vec3 currentCamPos = my3DCamera.getPosition();
+            my3DCamera.setPosition(currentCamPos.x, currentCamPos.y, currentCamPos.z + (speed * dt)); 
+        }
+        if (Eendgine::InputManager::downPress) {
+            glm::vec3 currentCamPos = my3DCamera.getPosition();
+            my3DCamera.setPosition(currentCamPos.x, currentCamPos.y, currentCamPos.z - (speed * dt)); 
+        }
+        if (Eendgine::InputManager::leftPress) {
+            glm::vec3 currentCamPos = my3DCamera.getPosition();
+            my3DCamera.setPosition(currentCamPos.x + (speed * dt), currentCamPos.y, currentCamPos.z); 
+        }
+        if (Eendgine::InputManager::rightPress) {
+            glm::vec3 currentCamPos = my3DCamera.getPosition();
+            my3DCamera.setPosition(currentCamPos.x - (speed * dt), currentCamPos.y, currentCamPos.z); 
+        }
 
         Eend::Window::pollEvents();
         Eend::InputManager::processInput();
