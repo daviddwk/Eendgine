@@ -38,9 +38,15 @@ namespace Eendgine {
 
     void Mesh::draw(ShaderProgram &shader, Camera3D &camera) {
         shader.use();
-        for(unsigned int i = 0; i < _textures.size(); i++) {
+        // first texture is treated as diffure
+        // second is treated as opacity texture
+        // feels dirty, but is easy to expand later
+        for(unsigned int i = 0; i < _textures.size() && i < 2; i++) {
             glActiveTexture(GL_TEXTURE0 + i);
-            std::string texName = "texture_" + _textures[i].type + std::to_string(i);
+            std::string texType = (i == 0 ? "diffuse" : "opacity");
+            std::string texName = "texture_" + texType;
+            std::cout << texName << std::endl;
+            std::cout << _textures.size() << std::endl;
             glUniform1i(glGetUniformLocation(shader.programId, texName.c_str()), i);
             glBindTexture(GL_TEXTURE_2D, _textures[i].id);
         }

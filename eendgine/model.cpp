@@ -78,25 +78,24 @@ namespace Eendgine {
         
         for (unsigned int i = 0; i < scene->mNumMaterials; i++){
             aiMaterial *material  = scene->mMaterials[i];
-
-            std::vector<Texture> diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, "diffuse");
+            std::vector<Texture> diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE);
             textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
             
-            std::vector<Texture> opacityMaps = loadMaterialTextures(material, aiTextureType_OPACITY, "opacity");
-            textures.insert(textures.end(), opacityMaps.begin(), opacityMaps.end());
+            // add other map types here whenever
+            //
+            //std::vector<Texture> opacityMaps = loadMaterialTextures(material, aiTextureType_OPACITY, "opacity");
+            //textures.insert(textures.end(), opacityMaps.begin(), opacityMaps.end());
         }
         return Mesh(vertices, indices, textures);
     }
 
-    std::vector<Texture> Model::loadMaterialTextures(aiMaterial *mat, aiTextureType type, std::string typeName){
+    std::vector<Texture> Model::loadMaterialTextures(aiMaterial *mat, aiTextureType type){
         std::vector<Texture> textures;
         for (unsigned int i = 0; i < mat->GetTextureCount(type); i++) {
             aiString str;
             mat->GetTexture(type, i, &str);
-            Texture texture = _texCache->getTexture(_directory + '/' + (std::string)str.C_Str());
-            texture.type = typeName;
+            Texture texture = _texCache.getTexture(_directory + '/' + (std::string)str.C_Str());
             textures.push_back(texture);
-            std::cout << _directory + '/' + (std::string)str.C_Str() << std::endl;
         }
         return textures;
     }
