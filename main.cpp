@@ -40,8 +40,8 @@ int main(){
     
     Eend::Sprite mySprite(300.0f, 300.0f, 100.0f, 100.0f, myTextureCache.getTexture("resources/ost/diffuse.png"));
     Eend::Model myModel("resources/ost/ost.obj", myTextureCache);
-    myModel.setScale(0.5f, 0.5f, 0.5f);
-    myModel.setPosition(2.0f, 2.0f, 2.0f);
+    myModel.setScale(1.0f, 1.0f, 1.0f);
+    myModel.setPosition(0.0f, 0.0f, 0.0f);
 
     while(!Eend::Window::shouldClose){
         Eend::FrameLimiter::startInterval(); 
