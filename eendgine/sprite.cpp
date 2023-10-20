@@ -19,22 +19,21 @@ namespace Eendgine {
     
     void Sprite::setup(float xPos, float yPos, float width, float height, std::vector<Texture> textures) {
 
-        x = xPos;
-        y = yPos;
-        w = width;
-        h = height;
-        scale = 1;
-        rotation = 0;
+        _position = glm::vec3(xPos, yPos, 0.0f);
+        _size = glm::vec3(width, height, 1.0f);
+        _rotation = 0;
 
         _textures = textures;
-        _currentTexture = &_textures[0];
+        _textureIdx = 0;
         
         Vertex verticies[4];
         
-        verticies[0].setPosition( (w / 2.0f),  (h / 2.0f), 0.0f);
-        verticies[1].setPosition( (w / 2.0f), -(h / 2.0f), 0.0f);
-        verticies[2].setPosition(-(w / 2.0f), -(h / 2.0f), 0.0f);
-        verticies[3].setPosition(-(w / 2.0f),  (h / 2.0f), 0.0f);
+        // centered on origin
+        // with width and height of 1
+        verticies[0].setPosition( 0.5f, 0.5f, 0.0f);
+        verticies[1].setPosition( 0.5f,-0.5f, 0.0f);
+        verticies[2].setPosition(-0.5f,-0.5f, 0.0f);
+        verticies[3].setPosition(-0.5f, 0.5f, 0.0f);
 
         verticies[0].setColor(0.0f, 0.0f, 1.0f, 1.0f);
         verticies[1].setColor(0.0f, 1.0f, 0.0f, 1.0f);
@@ -76,10 +75,6 @@ namespace Eendgine {
         glEnableVertexAttribArray(3);
     }  
 
-    void Sprite::setTexture(std::vector<Texture>::size_type textureIndex){
-        _currentTexture = &_textures[textureIndex];
-    }
-
     std::vector<Texture>::size_type Sprite::getNumTextures(){
         return _textures.size();
     }
@@ -87,13 +82,13 @@ namespace Eendgine {
     void Sprite::draw(Eendgine::ShaderProgram &shader, Eendgine::Camera2D &camera) {
         shader.use();
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, _currentTexture->id);
+        glBindTexture(GL_TEXTURE_2D, _textures[_textureIdx].id);
         
         glm::mat4 trans = camera.getCameraMatrix(); //glm::mat4(1.0f);
         
-        trans = glm::translate(trans, glm::vec3(x, y, 0.0f));
-        trans = glm::rotate(trans, glm::radians(-rotation), glm::vec3(0.0f, 0.0f, 1.0f));
-        trans = glm::scale(trans, glm::vec3(scale, scale, scale));
+        trans = glm::translate(trans, _position);
+        trans = glm::rotate(trans, glm::radians(-_rotation), glm::vec3(0.0f, 0.0f, 1.0f));
+        trans = glm::scale(trans, _size);
 
         unsigned int transformLoc = glGetUniformLocation(shader.programId, "transform");
         glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));

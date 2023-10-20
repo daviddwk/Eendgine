@@ -1,3 +1,4 @@
+/*
 #include <eendgine/sprite.hpp>
 
 namespace Eendgine {
@@ -12,3 +13,4 @@ namespace Eendgine {
     }
     
 }
+*/

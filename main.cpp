@@ -10,7 +10,7 @@
 #include <stb/stb_image.h>
 
 
-#include "player.hpp"
+//#include "player.hpp"
 
 #include <iostream>
 #include <vector>
@@ -40,6 +40,8 @@ int main(){
     
     Eend::Sprite mySprite(300.0f, 300.0f, 100.0f, 100.0f, myTextureCache.getTexture("resources/ost/diffuse.png"));
     Eend::Model myModel("resources/ost/ost.obj", myTextureCache);
+    myModel.setScale(0.5f, 0.5f, 0.5f);
+    myModel.setPosition(2.0f, 2.0f, 2.0f);
 
     while(!Eend::Window::shouldClose){
         Eend::FrameLimiter::startInterval(); 

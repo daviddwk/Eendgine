@@ -1,3 +1,4 @@
+/*
 #include "player.hpp"
 #include <eendgine/frameLimiter.hpp>
 #include <eendgine/inputManager.hpp>
@@ -119,3 +120,4 @@ void Player::update(std::vector<Eend::Sprite *> collisionSprites){
 void Player::draw(Eend::ShaderProgram &shader, Eend::Camera2D &camera){
     _sprite.draw(shader, camera);
 }
+*/

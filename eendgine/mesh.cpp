@@ -1,5 +1,6 @@
 #include <eendgine/mesh.hpp>
 #include <string>
+#include <glm/glm.hpp>
 
 namespace Eendgine {
 
@@ -37,7 +38,7 @@ namespace Eendgine {
     }
 
     void Mesh::draw(ShaderProgram &shader, Camera3D &camera) {
-        shader.use();
+        //shader.use();
         // first texture is treated as diffure
         // second is treated as opacity texture
         // feels dirty, but is easy to expand later
@@ -51,10 +52,6 @@ namespace Eendgine {
             glBindTexture(GL_TEXTURE_2D, _textures[i].id);
         }
         
-        unsigned int projectionLoc = glGetUniformLocation(shader.programId, "projection");
-        unsigned int viewLoc = glGetUniformLocation(shader.programId, "view");
-        glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, &camera.projectionMat[0][0]);
-        glUniformMatrix4fv(viewLoc, 1, GL_FALSE, &camera.viewMat[0][0]);
 
         glBindVertexArray(_VAO);
         glDrawElements(GL_TRIANGLES, _indices.size(), GL_UNSIGNED_INT, 0);

@@ -1,3 +1,4 @@
+/*
 #pragma once
 
 #include <eendgine/sprite.hpp>
@@ -23,3 +24,4 @@ class Player {
         bool _groundJump = false;
         bool _releasedAfterJump = false; 
 };
+*/

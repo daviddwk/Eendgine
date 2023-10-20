@@ -1,12 +1,29 @@
 #include <eendgine/model.hpp>
 #include <iostream>
+#include <glm/gtc/matrix_transform.hpp>
 
 namespace Eendgine {
-    Model::Model(std::string path, TextureCache &texCache): _texCache(texCache) {
+    Model::Model(std::string path, TextureCache &texCache): _texCache(texCache) 
+    {
+        _position = glm::vec3(0.0f);
+        _scale = glm::vec3(1.0f);
         loadModel(path);
     }
 
     void Model::draw(ShaderProgram &shader, Camera3D &camera){
+        shader.use();
+
+        glm::mat4 transform = glm::mat4(1.0f);
+        transform = glm::translate(transform, _position);
+        transform = glm::scale(transform, _scale);
+
+        unsigned int projectionLoc = glGetUniformLocation(shader.programId, "projection");
+        unsigned int viewLoc = glGetUniformLocation(shader.programId, "view");
+        unsigned int transformLoc = glGetUniformLocation(shader.programId, "transform");
+        glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, &camera.projectionMat[0][0]);
+        glUniformMatrix4fv(viewLoc, 1, GL_FALSE, &camera.viewMat[0][0]);
+        glUniformMatrix4fv(transformLoc, 1, GL_FALSE, &transform[0][0]);
+
         for (auto &m : _meshes) {
             m.draw(shader, camera);
         }

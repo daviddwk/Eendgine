@@ -8,6 +8,8 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
+#include <glm/glm.hpp>
+
 #include <string>
 #include <vector>
 
@@ -16,10 +18,19 @@ namespace Eendgine {
         public:
             Model(std::string path, TextureCache &texCache);
             void draw(ShaderProgram &shader, Camera3D &camera);
+
+            void setPosition(float x, float y, float z) { _position = glm::vec3(x, y, z); };
+            void setScale(float x, float y, float z) { _scale = glm::vec3(x, y, z); };
+
+            glm::vec3 getPosition() { return _position; };
+            glm::vec3 getScale() {return _scale; };
         private:
+            TextureCache &_texCache;
+            glm::vec3 _position;
+            glm::vec3 _scale;
+
             std::vector<Mesh> _meshes;
             std::string _directory;
-            TextureCache &_texCache;
 
             void loadModel(std::string path);
             void processNode(aiNode *node, const aiScene *scene);
