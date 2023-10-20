@@ -116,6 +116,6 @@ void Player::update(std::vector<Eend::Sprite *> collisionSprites){
     }
 }
 
-void Player::draw(Eend::ShaderProgram *shader, Eend::Camera2D *camera){
+void Player::draw(Eend::ShaderProgram &shader, Eend::Camera2D &camera){
     _sprite.draw(shader, camera);
 }

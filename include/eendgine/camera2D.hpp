@@ -7,7 +7,7 @@
 namespace Eendgine {
     class Camera2D {
         public:
-            void init(int width, int height);
+            Camera2D(int width, int height);
             void update();
             glm::vec2 convertScreenToWorld(glm::vec2 screenChoords);
             

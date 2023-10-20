@@ -11,7 +11,7 @@ class Player {
         Player(float x, float y, float w, float h, Eendgine::Texture texture);
         Player(float x, float y, float w, float h, std::vector<Eendgine::Texture> texture);
         void update(std::vector<Eendgine::Sprite *> collisionSprites);
-        void draw(Eendgine::ShaderProgram *shader, Eendgine::Camera2D *camera);
+        void draw(Eendgine::ShaderProgram &shader, Eendgine::Camera2D &camera);
     private:
         // bool colliding(Eendgine::Sprite sprite1, Eendgine::Sprite sprite2);
         Eendgine::Sprite _sprite; 

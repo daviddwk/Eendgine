@@ -17,31 +17,29 @@
 
 namespace Eend = Eendgine;
 
+const unsigned int screenHeight = 1000;
+const unsigned int screenWidth = 1000; 
+
 int main(){
-     
-    Eend::Window::init(1000, 1000, "Quack");
+    Eend::Window::init(screenWidth, screenHeight, "Quack");
     Eend::FrameLimiter::setFPS(60.0f);
     
     glEnable(GL_DEPTH_TEST);
 
     Eend::TextureCache myTextureCache;
     
-    Eend::ShaderProgram myShader;
-    myShader.init("shaders/shader.vert", "shaders/shader.frag");
+    Eend::ShaderProgram myShader("shaders/shader.vert", "shaders/shader.frag");
 
-    Eend::ShaderProgram myShader3D;
-    myShader3D.init("shaders/shader3D.vert", "shaders/shader3D.frag");
+    Eend::ShaderProgram myShader3D("shaders/shader3D.vert", "shaders/shader3D.frag");
 
     Eend::Camera3D my3DCamera(1000.0f, 1000.0f,
             glm::vec3(15.0f, 10.0f, 15.0f), glm::vec3(0.0f, 4.0f, 0.0f));
     
-    Eend::Camera2D myCamera;
-    myCamera.init(1000, 1000);
+    Eend::Camera2D myCamera(1000, 1000);
     myCamera.update();
     
-    Eend::Sprite mySprite(0.0f, 0.0f, 100.0f, 100.0f, myTextureCache.getTexture("resources/ost/diffuse.png"));
-    Eend::Model myModel("resources/ost/ost.obj", &myTextureCache);
-    //Eend::Model myModel("resources/backpack/backpack.obj", &myTextureCache);
+    Eend::Sprite mySprite(300.0f, 300.0f, 100.0f, 100.0f, myTextureCache.getTexture("resources/ost/diffuse.png"));
+    Eend::Model myModel("resources/ost/ost.obj", myTextureCache);
 
     while(!Eend::Window::shouldClose){
         Eend::FrameLimiter::startInterval(); 
@@ -49,11 +47,11 @@ int main(){
         glClearColor(0.1f, 0.2f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         
-        myModel.draw(&myShader3D, &my3DCamera);
+        myModel.draw(myShader3D, my3DCamera);
 
         glClear(GL_DEPTH_BUFFER_BIT);
 
-        mySprite.draw(&myShader, &myCamera);
+        mySprite.draw(myShader, myCamera);
 
         Eend::Window::pollEvents();
         Eend::InputManager::processInput();

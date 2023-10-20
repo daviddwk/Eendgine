@@ -3,9 +3,7 @@
 
 namespace Eendgine {
 
-    ShaderProgram::ShaderProgram() {}
-    ShaderProgram::~ShaderProgram() {}
-    void ShaderProgram::init(std::string vertexShaderPath, std::string fragmentShaderPath) {
+    ShaderProgram::ShaderProgram(std::string vertexShaderPath, std::string fragmentShaderPath) {
         
         vertexShaderId = glCreateShader(GL_VERTEX_SHADER);
         fragmentShaderId = glCreateShader(GL_FRAGMENT_SHADER);

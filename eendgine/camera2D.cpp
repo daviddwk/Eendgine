@@ -1,7 +1,7 @@
 #include <eendgine/camera2D.hpp>
 
 namespace Eendgine {
-    void Camera2D::init(int width, int height){
+    Camera2D::Camera2D(int width, int height){
 
         _width = width;
         _height = height;

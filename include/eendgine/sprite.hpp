@@ -14,7 +14,7 @@ namespace Eendgine {
             Sprite(float x, float y, float w, float h, std::vector<Texture> textures);
             void setTexture(std::vector<Texture>::size_type textureIndex);
             std::vector<Texture>::size_type getNumTextures();
-            void draw(ShaderProgram *shader, Camera2D *camera);
+            void draw(ShaderProgram &shader, Camera2D &camera);
             
             float x = 0, y = 0;
             float w = 1, h = 1;

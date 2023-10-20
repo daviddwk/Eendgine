@@ -7,9 +7,7 @@ namespace Eendgine {
     
     class ShaderProgram {
         public:
-            ShaderProgram();
-            ~ShaderProgram();
-            void init(std::string vertexShaderPath, std::string fragmentShaderPath); 
+            ShaderProgram(std::string vertexShaderPath, std::string fragmentShaderPath);
             void use();
 
             unsigned int programId = 0;

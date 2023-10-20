@@ -14,12 +14,12 @@
 namespace Eendgine {
     class Model {
         public:
-            Model(std::string path, TextureCache *texCache);
-            void draw(ShaderProgram *shader, Camera3D *camera);
+            Model(std::string path, TextureCache &texCache);
+            void draw(ShaderProgram &shader, Camera3D &camera);
         private:
             std::vector<Mesh> _meshes;
             std::string _directory;
-            TextureCache *_texCache;
+            TextureCache &_texCache;
 
             void loadModel(std::string path);
             void processNode(aiNode *node, const aiScene *scene);

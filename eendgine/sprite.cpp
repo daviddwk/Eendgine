@@ -26,7 +26,6 @@ namespace Eendgine {
         scale = 1;
         rotation = 0;
 
-
         _textures = textures;
         _currentTexture = &_textures[0];
         
@@ -85,21 +84,19 @@ namespace Eendgine {
         return _textures.size();
     }
 
-    void Sprite::draw(Eendgine::ShaderProgram *shader, Eendgine::Camera2D *camera) {
-        shader->use();
+    void Sprite::draw(Eendgine::ShaderProgram &shader, Eendgine::Camera2D &camera) {
+        shader.use();
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, _currentTexture->id);
         
-        glm::mat4 trans = camera->getCameraMatrix(); //glm::mat4(1.0f);
+        glm::mat4 trans = camera.getCameraMatrix(); //glm::mat4(1.0f);
         
         trans = glm::translate(trans, glm::vec3(x, y, 0.0f));
         trans = glm::rotate(trans, glm::radians(-rotation), glm::vec3(0.0f, 0.0f, 1.0f));
         trans = glm::scale(trans, glm::vec3(scale, scale, scale));
-        
 
-        unsigned int transformLoc = glGetUniformLocation(shader->programId, "transform");
+        unsigned int transformLoc = glGetUniformLocation(shader.programId, "transform");
         glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
-        //glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans)); 
 
         glBindVertexArray(_VAO);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
