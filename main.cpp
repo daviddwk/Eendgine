@@ -43,7 +43,7 @@ int main(){
     mySprite.setSize(100.0f, 100.0f);
 
     Eend::Sprite my3DSprite(myTextureCache.getTexture("resources/ost/diffuse.png"));
-    my3DSprite.setPosition(0.0f, 0.0f);
+    my3DSprite.setPosition(10.0f, 0.0f);
     my3DSprite.setSize(10.0f, 10.0f);
 
     Eend::Model myModel("resources/ost/ost.obj", myTextureCache);
@@ -68,10 +68,12 @@ int main(){
         if (Eendgine::InputManager::upPress) {
             glm::vec3 currentCamPos = my3DCamera.getPosition();
             my3DCamera.setPosition(currentCamPos.x, currentCamPos.y, currentCamPos.z + (speed * dt)); 
+            myModel.setTextureIdx(0);
         }
         if (Eendgine::InputManager::downPress) {
             glm::vec3 currentCamPos = my3DCamera.getPosition();
             my3DCamera.setPosition(currentCamPos.x, currentCamPos.y, currentCamPos.z - (speed * dt)); 
+            myModel.setTextureIdx(1);
         }
         if (Eendgine::InputManager::leftPress) {
             glm::vec3 currentCamPos = my3DCamera.getPosition();

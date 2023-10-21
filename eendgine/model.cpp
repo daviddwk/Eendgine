@@ -96,7 +96,7 @@ namespace Eendgine {
         for (unsigned int i = 0; i < scene->mNumMaterials; i++){
             aiMaterial *material  = scene->mMaterials[i];
             std::vector<Texture> diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE);
-            textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
+            _textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
             
             // add other map types here whenever
             //
