@@ -8,7 +8,7 @@ uniform sampler2D texture_diffuse;
 uniform sampler2D texture_opacity;
 
 void main() {
-    if(texture(texture_opacity, vertUV).x == 0){
+    if(texture(texture_diffuse, vertUV).xyz == vec3(1.0f, 0.0f, 1.0f)) {
         discard;
     }
     FragColor = texture(texture_diffuse, vertUV);
