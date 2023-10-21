@@ -24,11 +24,7 @@ namespace Eendgine {
             
             // pull out textures into the model class, not per mesh, and then make this
             // not stupid
-            void setTextureIdx(unsigned int idx) {
-                for (auto &m : _meshes){
-                    m.setTextureIdx(idx);
-                }
-            }
+            void setTextureIdx(unsigned int idx) { _textureIdx = (idx < _textures.size() ? idx : 0); }
 
             glm::vec3 getPosition() { return _position; };
             glm::vec3 getScale() {return _scale; };
@@ -36,7 +32,9 @@ namespace Eendgine {
             TextureCache &_texCache;
             glm::vec3 _position;
             glm::vec3 _scale;
+            unsigned int _textureIdx = 0;
 
+            std::vector<Texture> _textures;
             std::vector<Mesh> _meshes;
             std::string _directory;
 

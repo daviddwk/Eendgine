@@ -7,9 +7,6 @@ namespace Eendgine {
     Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures) {
         _vertices = vertices;
         _indices = indices;
-        _textures = textures;
-        _textureIdx = 0;
-
         setup();
     }
 
@@ -38,14 +35,7 @@ namespace Eendgine {
 
     }
 
-    void Mesh::draw(ShaderProgram &shader) {
-        // using RGB(1,0,1) for transparent
-        // parts of the texture using shaders
-        glActiveTexture(GL_TEXTURE0);
-        std::string texName = "texture_diffuse";
-        glUniform1i(glGetUniformLocation(shader.programId, texName.c_str()), 0);
-        glBindTexture(GL_TEXTURE_2D, _textures[_textureIdx].id);
-        
+    void Mesh::draw(ShaderProgram &shader) { 
 
         glBindVertexArray(_VAO);
         glDrawElements(GL_TRIANGLES, _indices.size(), GL_UNSIGNED_INT, 0);

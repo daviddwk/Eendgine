@@ -7,12 +7,20 @@ namespace Eendgine {
     {
         _position = glm::vec3(0.0f);
         _scale = glm::vec3(1.0f);
+        _textureIdx = 0;
         loadModel(path);
     }
 
     void Model::draw(ShaderProgram &shader, Camera3D &camera){
         shader.use();
 
+        // using RGB(1,0,1) for transparent
+        // parts of the texture using shaders
+        glActiveTexture(GL_TEXTURE0);
+        std::string texName = "texture_diffuse";
+        glUniform1i(glGetUniformLocation(shader.programId, texName.c_str()), 0);
+        glBindTexture(GL_TEXTURE_2D, _textures[_textureIdx].id);
+        
         glm::mat4 transform = glm::mat4(1.0f);
         transform = glm::translate(transform, _position);
         transform = glm::scale(transform, _scale);
@@ -55,7 +63,6 @@ namespace Eendgine {
     Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene) {
         std::vector<Vertex> vertices;
         std::vector<unsigned int> indices;
-        std::vector<Texture> textures;
 
         for (unsigned int i = 0; i < mesh->mNumVertices; i++) {
             Vertex vertex;
@@ -96,14 +103,14 @@ namespace Eendgine {
         for (unsigned int i = 0; i < scene->mNumMaterials; i++){
             aiMaterial *material  = scene->mMaterials[i];
             std::vector<Texture> diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE);
-            _textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
+            _textures.insert(_textures.end(), diffuseMaps.begin(), diffuseMaps.end());
             
             // add other map types here whenever
             //
             //std::vector<Texture> opacityMaps = loadMaterialTextures(material, aiTextureType_OPACITY, "opacity");
             //textures.insert(textures.end(), opacityMaps.begin(), opacityMaps.end());
         }
-        return Mesh(vertices, indices, textures);
+        return Mesh(vertices, indices, _textures);
     }
 
     std::vector<Texture> Model::loadMaterialTextures(aiMaterial *mat, aiTextureType type){
