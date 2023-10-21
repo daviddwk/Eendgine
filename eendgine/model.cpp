@@ -25,7 +25,7 @@ namespace Eendgine {
         glUniformMatrix4fv(transformLoc, 1, GL_FALSE, &transform[0][0]);
 
         for (auto &m : _meshes) {
-            m.draw(shader, camera);
+            m.draw(shader);
         }
     }
 

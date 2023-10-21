@@ -38,7 +38,14 @@ int main(){
     Eend::Camera2D myCamera(1000, 1000);
     myCamera.update();
     
-    Eend::Sprite mySprite(300.0f, 300.0f, 100.0f, 100.0f, myTextureCache.getTexture("resources/ost/diffuse.png"));
+    Eend::Sprite mySprite(myTextureCache.getTexture("resources/ost/diffuse.png"));
+    mySprite.setPosition(300.0f, 300.0f);
+    mySprite.setSize(100.0f, 100.0f);
+
+    Eend::Sprite my3DSprite(myTextureCache.getTexture("resources/ost/diffuse.png"));
+    my3DSprite.setPosition(0.0f, 0.0f);
+    my3DSprite.setSize(3.0f, 3.0f);
+
     Eend::Model myModel("resources/ost/ost.obj", myTextureCache);
     myModel.setScale(1.0f, 1.0f, 1.0f);
     myModel.setPosition(0.0f, 0.0f, 0.0f);
@@ -49,7 +56,8 @@ int main(){
         glClearColor(0.1f, 0.2f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         
-        myModel.draw(myShader3D, my3DCamera);
+        //myModel.draw(myShader3D, my3DCamera);
+        my3DSprite.draw(myShader3D, my3DCamera);
 
         glClear(GL_DEPTH_BUFFER_BIT);
 

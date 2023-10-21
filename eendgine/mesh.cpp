@@ -37,7 +37,7 @@ namespace Eendgine {
 
     }
 
-    void Mesh::draw(ShaderProgram &shader, Camera3D &camera) {
+    void Mesh::draw(ShaderProgram &shader) {
         //shader.use();
         // first texture is treated as diffure
         // second is treated as opacity texture

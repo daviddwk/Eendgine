@@ -7,20 +7,20 @@
 
 namespace Eendgine {
     
-    Sprite::Sprite(float xPos, float yPos, float width, float height, Texture texture) {
+    Sprite::Sprite(Texture texture) {
         std::vector<Texture> textures;
         textures.push_back(texture);
-        setup(xPos, yPos, width, height, textures);
+        setup(textures);
     }
 
-    Sprite::Sprite(float xPos, float yPos, float width, float height, std::vector<Texture> textures) {
-        setup(xPos, yPos, width, height, textures);
+    Sprite::Sprite(std::vector<Texture> textures) {
+        setup(textures);
     }
     
-    void Sprite::setup(float xPos, float yPos, float width, float height, std::vector<Texture> textures) {
+    void Sprite::setup(std::vector<Texture> textures) {
 
-        _position = glm::vec3(xPos, yPos, 0.0f);
-        _size = glm::vec3(width, height, 1.0f);
+        _position = glm::vec3(0.0f);
+        _size = glm::vec3(1.0f);
         _rotation = 0;
 
         _textures = textures;
@@ -92,6 +92,28 @@ namespace Eendgine {
 
         unsigned int transformLoc = glGetUniformLocation(shader.programId, "transform");
         glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
+
+        glBindVertexArray(_VAO);
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+        glBindVertexArray(0);
+    }
+    
+    void Sprite::draw(Eendgine::ShaderProgram &shader, Eendgine::Camera3D &camera) {
+        shader.use();
+        
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, _textures[_textureIdx].id);
+
+        glm::mat4 transform = glm::mat4(1.0f);
+        transform = glm::translate(transform, _position);
+        transform = glm::scale(transform, _size);
+
+        unsigned int projectionLoc = glGetUniformLocation(shader.programId, "projection");
+        unsigned int viewLoc = glGetUniformLocation(shader.programId, "view");
+        unsigned int transformLoc = glGetUniformLocation(shader.programId, "transform");
+        glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, &camera.projectionMat[0][0]);
+        glUniformMatrix4fv(viewLoc, 1, GL_FALSE, &camera.viewMat[0][0]);
+        glUniformMatrix4fv(transformLoc, 1, GL_FALSE, &transform[0][0]);
 
         glBindVertexArray(_VAO);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);

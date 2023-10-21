@@ -32,7 +32,7 @@ namespace Eendgine {
 
 
         private:
-            void setup(float x, float y, float w, float h, std::vector<Texture> textures);
+            void setup(std::vector<Texture> textures);
             glm::vec3 _position = glm::vec3(0.0f);
             glm::vec3 _size = glm::vec3(1.0f);
             float _rotation = 0.0f;
