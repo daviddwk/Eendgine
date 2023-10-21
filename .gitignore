@@ -5,7 +5,6 @@
 *.slo
 *.lo
 *.o
-*.obj
 
 # Precompiled Headers
 *.gch
@@ -32,7 +31,6 @@
 *.app
 
 # Project
-resources/*
 glad/*
 include/glad/glad.h
 include/stb/stb_image.h
