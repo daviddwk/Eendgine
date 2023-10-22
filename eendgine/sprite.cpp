@@ -106,8 +106,14 @@ namespace Eendgine {
         
         glm::mat4 transform = glm::mat4(1.0f);
         transform = glm::translate(transform, _position);
-        //rotate to always face camera
-        transform = transform * glm::inverse(glm::lookAt(_position, camera.getPosition(), glm::vec3(0.0f, 0.1f, 0.0f)));
+        glm::mat3 rot = glm::inverse(glm::mat3(camera.viewMat));
+        // there must be a cleaner way to do this
+        transform = {
+            {rot[0][0], rot[0][1], rot[0][2], transform[0][3]},
+            {rot[1][0], rot[1][1], rot[1][2], transform[1][3]},
+            {rot[2][0], rot[2][1], rot[2][2], transform[2][3]},
+            {transform[3][0], transform[3][1], transform[3][2], transform[3][3]}
+        };
         transform = glm::scale(transform, _size);
 
         unsigned int projectionLoc = glGetUniformLocation(shader.programId, "projection");
