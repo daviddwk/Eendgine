@@ -5,12 +5,12 @@
 namespace Eendgine {
     class Camera3D {
         public:
-            Camera3D(float width, float height, glm::vec3 position, glm::vec3 target);
+            Camera3D(float aspectRatio, glm::vec3 position, glm::vec3 target);
             glm::mat4 viewMat = glm::mat4(0.0f);
             glm::mat4 projectionMat = glm::mat4(0.0f);
             
             // concider not updating and making do manually
-            void setAspectRatio(float width, float height) { _aspectRatio = width / height; update(); };
+            void setAspectRatio(float aspectRatio) { _aspectRatio = aspectRatio; update(); };
             void setPosition(float x, float y, float z) { _position = glm::vec3(x, y, z); update(); };
             void setTarget(float x, float y, float z) { _target = glm::vec3(x, y, z); update(); };
 

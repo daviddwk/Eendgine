@@ -103,15 +103,18 @@ namespace Eendgine {
         
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, _textures[_textureIdx].id);
-
+        
         glm::mat4 transform = glm::mat4(1.0f);
         transform = glm::translate(transform, _position);
+        //rotate to always face camera
+        transform = transform * glm::inverse(glm::lookAt(_position, camera.getPosition(), glm::vec3(0.0f, 0.1f, 0.0f)));
         transform = glm::scale(transform, _size);
 
         unsigned int projectionLoc = glGetUniformLocation(shader.programId, "projection");
         unsigned int viewLoc = glGetUniformLocation(shader.programId, "view");
         unsigned int transformLoc = glGetUniformLocation(shader.programId, "transform");
         glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, &camera.projectionMat[0][0]);
+        
         glUniformMatrix4fv(viewLoc, 1, GL_FALSE, &camera.viewMat[0][0]);
         glUniformMatrix4fv(transformLoc, 1, GL_FALSE, &transform[0][0]);
 

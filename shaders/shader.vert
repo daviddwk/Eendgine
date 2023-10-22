@@ -12,5 +12,5 @@ uniform mat4 transform;
 void main() {
     gl_Position = transform * vec4(aPos, 1.0f);
     vertColor = aCol;
-    vertUV = vec2(aUV.x, aUV.y);
+    vertUV = vec2(aUV.x, -aUV.y);
 }

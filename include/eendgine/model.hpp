@@ -21,9 +21,6 @@ namespace Eendgine {
 
             void setPosition(float x, float y, float z) { _position = glm::vec3(x, y, z); };
             void setScale(float x, float y, float z) { _scale = glm::vec3(x, y, z); };
-            
-            // pull out textures into the model class, not per mesh, and then make this
-            // not stupid
             void setTextureIdx(unsigned int idx) { _textureIdx = (idx < _textures.size() ? idx : 0); }
 
             glm::vec3 getPosition() { return _position; };
