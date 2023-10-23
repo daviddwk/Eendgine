@@ -22,14 +22,18 @@ namespace Eendgine {
             void setPosition(float x, float y, float z) { _position = glm::vec3(x, y, z); };
             void setScale(float x, float y, float z) { _scale = glm::vec3(x, y, z); };
             void setTextureIdx(unsigned int idx) { _textureIdx = (idx < _textures.size() ? idx : 0); }
-
+            void setLerp(float f) { _lerp = f;
+                    if (_lerp > 1.0f) { _lerp = 1.0f; }
+                    if (_lerp < 0.0f) { _lerp = 0.0f; }};
             glm::vec3 getPosition() { return _position; };
-            glm::vec3 getScale() {return _scale; };
+            glm::vec3 getScale() { return _scale; };
+            unsigned int getTextureIdx() { return _textureIdx; };
+            float getLerp() { return _lerp; };
         private:
             TextureCache &_texCache;
             glm::vec3 _position;
             glm::vec3 _scale;
-            float lerp = 0.0f;
+            float _lerp = 0.0f;
             unsigned int _textureIdx = 0;
 
             std::vector<Texture> _textures;

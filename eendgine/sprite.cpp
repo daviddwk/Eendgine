@@ -30,20 +30,20 @@ namespace Eendgine {
         
         // centered on origin
         // with width and height of 1
-        verticies[0].setPosition( 0.5f, 0.5f, 0.0f);
-        verticies[1].setPosition( 0.5f,-0.5f, 0.0f);
-        verticies[2].setPosition(-0.5f,-0.5f, 0.0f);
-        verticies[3].setPosition(-0.5f, 0.5f, 0.0f);
+        verticies[0].position = glm::vec3( 0.5f, 0.5f, 0.0f);
+        verticies[1].position = glm::vec3( 0.5f,-0.5f, 0.0f);
+        verticies[2].position = glm::vec3(-0.5f,-0.5f, 0.0f);
+        verticies[3].position = glm::vec3(-0.5f, 0.5f, 0.0f);
 
-        verticies[0].setColor(0.0f, 0.0f, 1.0f, 1.0f);
-        verticies[1].setColor(0.0f, 1.0f, 0.0f, 1.0f);
-        verticies[2].setColor(1.0f, 0.0f, 0.0f, 1.0f);
-        verticies[3].setColor(0.0f, 1.0f, 1.0f, 1.0f);
+        verticies[0].color = glm::vec4(0.0f, 0.0f, 1.0f, 1.0f);
+        verticies[1].color = glm::vec4(0.0f, 1.0f, 0.0f, 1.0f);
+        verticies[2].color = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
+        verticies[3].color = glm::vec4(0.0f, 1.0f, 1.0f, 1.0f);
         
-        verticies[0].setUv(1.0f, 1.0f);
-        verticies[1].setUv(1.0f, 0.0f);
-        verticies[2].setUv(0.0f, 0.0f);
-        verticies[3].setUv(0.0f, 1.0f);
+        verticies[0].uv = glm::vec2(1.0f, 1.0f);
+        verticies[1].uv = glm::vec2(1.0f, 0.0f);
+        verticies[2].uv = glm::vec2(0.0f, 0.0f);
+        verticies[3].uv = glm::vec2(0.0f, 1.0f);
         
         unsigned int indices[] = {
             0, 1, 2,

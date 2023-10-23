@@ -5,7 +5,7 @@
 namespace Eendgine {
     LerpModel::LerpModel(std::string modelPath, std::string nextModelPath, TextureCache &texCache): _texCache(texCache) 
     {
-        lerp = 0.0f;
+        _lerp = 0.0f;
         _position = glm::vec3(0.0f);
         _scale = glm::vec3(1.0f);
         _textureIdx = 0;
@@ -33,7 +33,7 @@ namespace Eendgine {
         glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, &camera.projectionMat[0][0]);
         glUniformMatrix4fv(viewLoc, 1, GL_FALSE, &camera.viewMat[0][0]);
         glUniformMatrix4fv(transformLoc, 1, GL_FALSE, &transform[0][0]);
-        glUniform1f(lerpLoc, 0.5f);
+        glUniform1f(lerpLoc, _lerp);
 
         for (auto &m : _meshes) {
             m.draw(shader);
@@ -73,17 +73,6 @@ namespace Eendgine {
 
         for (unsigned int i = 0; i < mesh->mNumVertices; i++) {
             LerpVertex vertex;
-            /*
-            if ( glm::vec3(
-                    mesh->mVertices[i].x,
-                    mesh->mVertices[i].y,
-                    mesh->mVertices[i].z) 
-                    ==
-                    glm::vec3(
-                    nextMesh->mVertices[i].x,
-                    nextMesh->mVertices[i].y,
-                    nextMesh->mVertices[i].z)) {std::cout << "same" << std::endl;}
-                */
             vertex.position = glm::vec3(
                     mesh->mVertices[i].x,
                     mesh->mVertices[i].y,

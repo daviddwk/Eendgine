@@ -8,6 +8,7 @@
 #include <eendgine/inputManager.hpp>
 #include <eendgine/lerpModel.hpp>
 #include <eendgine/model.hpp>
+#include <eendgine/animatedModel.hpp>
 #include <stb/stb_image.h>
 
 
@@ -55,13 +56,19 @@ int main(){
     myModel.setScale(1.0f, 1.0f, 1.0f);
     myModel.setPosition(0.0f, 0.0f, 0.0f);
 
+    Eend::AnimatedModel myAnimatedModel({"resources/ost/ost.obj", "resources/ost/ost_bent.obj", "resources/ost/ost.obj"}, myTextureCache);
+    myModel.setScale(1.0f, 1.0f, 1.0f);
+    myModel.setPosition(0.0f, 0.0f, 0.0f);
+    
+
     while(!Eend::Window::shouldClose){
         Eend::FrameLimiter::startInterval(); 
 
         glClearColor(0.1f, 0.2f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         
-        myLerpModel.draw(myLerpShader, my3DCamera);
+        myAnimatedModel.draw(myLerpShader, my3DCamera);
+        //myLerpModel.draw(myLerpShader, my3DCamera);
         //myModel.draw(myShader3D, my3DCamera);
         my3DSprite.draw(myShader3D, my3DCamera);
 
@@ -73,13 +80,17 @@ int main(){
         float speed = 100.0f;
         if (Eendgine::InputManager::upPress) {
             glm::vec3 currentCamPos = my3DCamera.getPosition();
-            my3DCamera.setPosition(currentCamPos.x, currentCamPos.y + (speed * dt), currentCamPos.z + (speed * dt)); 
+            //my3DCamera.setPosition(currentCamPos.x, currentCamPos.y + (speed * dt), currentCamPos.z + (speed * dt)); 
             myModel.setTextureIdx(0);
+            myLerpModel.setLerp(myLerpModel.getLerp() + 0.01f);
+            myAnimatedModel.setAnimTime(myAnimatedModel.getAnimTime() + 0.01f);
         }
         if (Eendgine::InputManager::downPress) {
             glm::vec3 currentCamPos = my3DCamera.getPosition();
-            my3DCamera.setPosition(currentCamPos.x, currentCamPos.y - (speed * dt), currentCamPos.z - (speed * dt)); 
+            //my3DCamera.setPosition(currentCamPos.x, currentCamPos.y - (speed * dt), currentCamPos.z - (speed * dt)); 
             myModel.setTextureIdx(1);
+            myAnimatedModel.setAnimTime(myAnimatedModel.getAnimTime() - 0.01f);
+            myLerpModel.setLerp(myLerpModel.getLerp() - 0.01f);
         }
         if (Eendgine::InputManager::leftPress) {
             glm::vec3 currentCamPos = my3DCamera.getPosition();
