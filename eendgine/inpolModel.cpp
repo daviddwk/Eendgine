@@ -1,18 +1,18 @@
-#include <eendgine/lerpModel.hpp>
+#include <eendgine/inpolModel.hpp>
 #include <iostream>
 #include <glm/gtc/matrix_transform.hpp>
 
 namespace Eendgine {
-    LerpModel::LerpModel(std::string modelPath, std::string nextModelPath, TextureCache &texCache): _texCache(texCache) 
+    InpolModel::InpolModel(std::string modelPath, std::string nextModelPath, TextureCache &texCache): _texCache(texCache) 
     {
-        _lerp = 0.0f;
+        _inpolScale = 0.0f;
         _position = glm::vec3(0.0f);
         _scale = glm::vec3(1.0f);
         _textureIdx = 0;
         loadModel(modelPath, nextModelPath);
     }
 
-    void LerpModel::draw(ShaderProgram &shader, Camera3D &camera){
+    void InpolModel::draw(ShaderProgram &shader, Camera3D &camera){
         shader.use();
 
         // using RGB(1,0,1) for transparent
@@ -29,18 +29,18 @@ namespace Eendgine {
         unsigned int projectionLoc = glGetUniformLocation(shader.programId, "projection");
         unsigned int viewLoc = glGetUniformLocation(shader.programId, "view");
         unsigned int transformLoc = glGetUniformLocation(shader.programId, "transform");
-        unsigned int lerpLoc = glGetUniformLocation(shader.programId, "lerp");
+        unsigned int inpolLoc = glGetUniformLocation(shader.programId, "inpol");
         glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, &camera.projectionMat[0][0]);
         glUniformMatrix4fv(viewLoc, 1, GL_FALSE, &camera.viewMat[0][0]);
         glUniformMatrix4fv(transformLoc, 1, GL_FALSE, &transform[0][0]);
-        glUniform1f(lerpLoc, _lerp);
+        glUniform1f(inpolLoc, _inpolScale);
 
         for (auto &m : _meshes) {
             m.draw(shader);
         }
     }
 
-    void LerpModel::loadModel(std::string modelPath, std::string nextModelPath) {
+    void InpolModel::loadModel(std::string modelPath, std::string nextModelPath) {
         Assimp::Importer importer;
         Assimp::Importer nextImport;
         const aiScene *scene = importer.ReadFile(modelPath, aiProcess_Triangulate | aiProcess_GenNormals);
@@ -54,7 +54,7 @@ namespace Eendgine {
         processNode(scene->mRootNode, nextScene->mRootNode, scene, nextScene);
     }
 
-    void LerpModel::processNode(aiNode *node, aiNode *nextNode, const aiScene *scene, const aiScene *nextScene) {
+    void InpolModel::processNode(aiNode *node, aiNode *nextNode, const aiScene *scene, const aiScene *nextScene) {
         // add error checking to make sure mNumMeshes is the same
         // among other things
         for (unsigned int i = 0; i < node->mNumMeshes; i++) {
@@ -67,12 +67,12 @@ namespace Eendgine {
         }
     }
     
-    LerpMesh LerpModel::processMesh(aiMesh *mesh, aiMesh *nextMesh, const aiScene *scene) {
-        std::vector<LerpVertex> vertices;
+    InpolMesh InpolModel::processMesh(aiMesh *mesh, aiMesh *nextMesh, const aiScene *scene) {
+        std::vector<InpolVertex> vertices;
         std::vector<unsigned int> indices;
 
         for (unsigned int i = 0; i < mesh->mNumVertices; i++) {
-            LerpVertex vertex;
+            InpolVertex vertex;
             vertex.position = glm::vec3(
                     mesh->mVertices[i].x,
                     mesh->mVertices[i].y,
@@ -125,10 +125,10 @@ namespace Eendgine {
             //std::vector<Texture> opacityMaps = loadMaterialTextures(material, aiTextureType_OPACITY, "opacity");
             //textures.insert(textures.end(), opacityMaps.begin(), opacityMaps.end());
         }
-        return LerpMesh(vertices, indices, _textures);
+        return InpolMesh(vertices, indices, _textures);
     }
 
-    std::vector<Texture> LerpModel::loadMaterialTextures(aiMaterial *mat, aiTextureType type){
+    std::vector<Texture> InpolModel::loadMaterialTextures(aiMaterial *mat, aiTextureType type){
         std::vector<Texture> textures;
         for (unsigned int i = 0; i < mat->GetTextureCount(type); i++) {
             aiString str;

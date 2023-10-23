@@ -4,16 +4,16 @@
 
 namespace Eendgine {
     AnimatedModel::AnimatedModel(std::vector<std::string> modelPaths, TextureCache texCache) {
-        _animTime = 0.0f;
+        _animScale = 0.0f;
         for (int i = 0; i < modelPaths.size() - 1; i++) {
-            _lerpModels.emplace_back(LerpModel(modelPaths[i], modelPaths[i + 1], texCache));
+            _inpolModels.emplace_back(InpolModel(modelPaths[i], modelPaths[i + 1], texCache));
         }
     }
 
     void AnimatedModel::draw(ShaderProgram &shader, Camera3D &camera) {
-        float wrappedAnimTime = std::abs(_animTime - (int)_animTime);
-        float scaledAnimTime = _lerpModels.size() * wrappedAnimTime;
-        _lerpModels[(int)scaledAnimTime].setLerp(scaledAnimTime - ((int)scaledAnimTime));
-        _lerpModels[(int)scaledAnimTime].draw(shader, camera);
+        float wrappedAnimScale = std::abs(_animScale - (int)_animScale);
+        float scaledAnimScale = _inpolModels.size() * wrappedAnimScale;
+        _inpolModels[(int)scaledAnimScale].setInpol(scaledAnimScale - ((int)scaledAnimScale));
+        _inpolModels[(int)scaledAnimScale].draw(shader, camera);
     }
 }

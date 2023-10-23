@@ -6,7 +6,7 @@
 #include <eendgine/camera3D.hpp>
 #include <eendgine/frameLimiter.hpp>
 #include <eendgine/inputManager.hpp>
-#include <eendgine/lerpModel.hpp>
+#include <eendgine/inpolModel.hpp>
 #include <eendgine/model.hpp>
 #include <eendgine/animatedModel.hpp>
 #include <stb/stb_image.h>
@@ -48,9 +48,9 @@ int main(){
     my3DSprite.setPosition(0.0f, 0.0f, 0.0f);
     my3DSprite.setSize(10.0f, 10.0f);
 
-    Eend::LerpModel myLerpModel("resources/ost/ost.obj", "resources/ost/ost_bent.obj", myTextureCache);
-    myLerpModel.setScale(1.0f, 1.0f, 1.0f);
-    myLerpModel.setPosition(0.0f, 0.0f, 0.0f);
+    //Eend::LerpModel myLerpModel("resources/ost/ost.obj", "resources/ost/ost_bent.obj", myTextureCache);
+    //myLerpModel.setScale(1.0f, 1.0f, 1.0f);
+    //myLerpModel.setPosition(0.0f, 0.0f, 0.0f);
 
     Eend::Model myModel("resources/ost/ost.obj", myTextureCache);
     myModel.setScale(1.0f, 1.0f, 1.0f);
@@ -82,15 +82,15 @@ int main(){
             glm::vec3 currentCamPos = my3DCamera.getPosition();
             //my3DCamera.setPosition(currentCamPos.x, currentCamPos.y + (speed * dt), currentCamPos.z + (speed * dt)); 
             myModel.setTextureIdx(0);
-            myLerpModel.setLerp(myLerpModel.getLerp() + 0.01f);
-            myAnimatedModel.setAnimTime(myAnimatedModel.getAnimTime() + 0.01f);
+            //myLerpModel.setInpolScale(myLerpModel.getInpolScale() + 0.01f);
+            myAnimatedModel.setAnim(myAnimatedModel.getAnim() + 0.01f);
         }
         if (Eendgine::InputManager::downPress) {
             glm::vec3 currentCamPos = my3DCamera.getPosition();
             //my3DCamera.setPosition(currentCamPos.x, currentCamPos.y - (speed * dt), currentCamPos.z - (speed * dt)); 
             myModel.setTextureIdx(1);
-            myAnimatedModel.setAnimTime(myAnimatedModel.getAnimTime() - 0.01f);
-            myLerpModel.setLerp(myLerpModel.getLerp() - 0.01f);
+            myAnimatedModel.setAnim(myAnimatedModel.getAnim() - 0.01f);
+            //myLerpModel.setInpolScale(myLerpModel.getInpolScale() - 0.01f);
         }
         if (Eendgine::InputManager::leftPress) {
             glm::vec3 currentCamPos = my3DCamera.getPosition();

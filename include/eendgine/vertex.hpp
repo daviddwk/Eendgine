@@ -10,7 +10,7 @@ namespace Eendgine {
         glm::vec3 normal = glm::vec3(0.0f);
     };
 
-    struct LerpVertex {
+    struct InpolVertex {
         glm::vec3 position = glm::vec3(0.0f);
         glm::vec3 nextPosition = glm::vec3(0.0f);
         glm::vec4 color = glm::vec4(0.0f);
