@@ -6,6 +6,7 @@
 #include <eendgine/camera3D.hpp>
 #include <eendgine/frameLimiter.hpp>
 #include <eendgine/inputManager.hpp>
+#include <eendgine/lerpModel.hpp>
 #include <eendgine/model.hpp>
 #include <stb/stb_image.h>
 
@@ -29,8 +30,8 @@ int main(){
     Eend::TextureCache myTextureCache;
     
     Eend::ShaderProgram myShader("shaders/shader.vert", "shaders/shader.frag");
-
     Eend::ShaderProgram myShader3D("shaders/shader3D.vert", "shaders/shader3D.frag");
+    Eend::ShaderProgram myLerpShader("shaders/shaderLerp.vert", "shaders/shaderLerp.frag");
 
     Eend::Camera3D my3DCamera(1000.0f / 1000.0f,
             glm::vec3(15.0f, 10.0f, 15.0f), glm::vec3(0.0f, 4.0f, 0.0f));
@@ -46,6 +47,10 @@ int main(){
     my3DSprite.setPosition(0.0f, 0.0f, 0.0f);
     my3DSprite.setSize(10.0f, 10.0f);
 
+    Eend::LerpModel myLerpModel("resources/ost/ost.obj", "resources/ost/ost_bent.obj", myTextureCache);
+    myLerpModel.setScale(1.0f, 1.0f, 1.0f);
+    myLerpModel.setPosition(0.0f, 0.0f, 0.0f);
+
     Eend::Model myModel("resources/ost/ost.obj", myTextureCache);
     myModel.setScale(1.0f, 1.0f, 1.0f);
     myModel.setPosition(0.0f, 0.0f, 0.0f);
@@ -56,7 +61,8 @@ int main(){
         glClearColor(0.1f, 0.2f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         
-        myModel.draw(myShader3D, my3DCamera);
+        myLerpModel.draw(myLerpShader, my3DCamera);
+        //myModel.draw(myShader3D, my3DCamera);
         my3DSprite.draw(myShader3D, my3DCamera);
 
         glClear(GL_DEPTH_BUFFER_BIT);

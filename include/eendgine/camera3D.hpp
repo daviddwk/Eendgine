@@ -15,8 +15,8 @@ namespace Eendgine {
             void setTarget(float x, float y, float z) { _target = glm::vec3(x, y, z); update(); };
 
             float getAspectRatio() { return _aspectRatio; };
-            glm::vec3 getPosition() {return _position; };
-            glm::vec3 getTarget() {return _target; };
+            glm::vec3 getPosition() { return _position; };
+            glm::vec3 getTarget() { return _target; };
 
         private:
             void update();
