@@ -3,6 +3,11 @@ project(quack)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+if (NOT EXISTS "${CMAKE_SOURCE_DIR}lib/stb/stb_image.h")
+    file(DOWNLOAD
+        https://raw.githubusercontent.com/nothings/stb/master/stb_image.h
+        ${CMAKE_SOURCE_DIR}/lib/stb/stb_image.h)
+endif()
 include_directories("lib")
 
 add_subdirectory(lib/glad)

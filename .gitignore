@@ -33,7 +33,7 @@
 build/*
 
 # Project
-glad/*
 lib/glad/glad.h
+lib/glad/glad.c
 lib/stb/stb_image.h
 compile_flags.txt
