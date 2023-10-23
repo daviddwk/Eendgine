@@ -34,13 +34,13 @@ mkdir build
 cd build
 cmake ..
 make
-mv quack ..
+mv game.out ..
 cd ..
 ```
 
 ### Executing
 
-Just run quack!
+Just run game.out!
 ```
-./quack
+./game.out
 ```

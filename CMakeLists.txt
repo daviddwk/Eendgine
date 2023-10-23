@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.18.1)
-project(quack)
+project(game)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
@@ -16,5 +16,11 @@ add_subdirectory(lib/eendgine)
 
 
 file(GLOB_RECURSE SOURCES RELATIVE ${CMAKE_SOURCE_DIR} "src/*.cpp")
-add_executable(quack ${SOURCES})
-target_link_libraries(quack eendgine SDL2 assimp stb glad)
+add_executable(game ${SOURCES})
+set_target_properties(
+    game 
+    PROPERTIES 
+        OUTPUT_NAME "game"
+        SUFFIX ".out"
+)
+target_link_libraries(game eendgine SDL2 assimp stb glad)
