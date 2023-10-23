@@ -1,4 +1,4 @@
-#include <eendgine/shader.hpp>
+#include "shader.hpp"
 #include <fstream>
 
 namespace Eendgine {

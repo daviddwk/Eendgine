@@ -1,5 +1,5 @@
-#include "eendgine/sprite.hpp"
-#include <eendgine/textureCache.hpp>
+#include "sprite.hpp"
+#include "textureCache.hpp"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>

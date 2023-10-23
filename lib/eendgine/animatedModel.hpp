@@ -1,9 +1,9 @@
 #pragma once
 
-#include <eendgine/textureCache.hpp>
-#include <eendgine/inpolModel.hpp>
-#include <eendgine/camera3D.hpp>
-#include <eendgine/shader.hpp>
+#include "textureCache.hpp"
+#include "inpolModel.hpp"
+#include "camera3D.hpp"
+#include "shader.hpp"
 
 #include <vector>
 #include <string>

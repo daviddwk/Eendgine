@@ -1,6 +1,6 @@
-#include <eendgine/texture.hpp>
-#include <stb/stb_image.h>
-#include <glad/glad.h>
+#include "texture.hpp"
+#include "stb/stb_image.h"
+#include "glad/glad.h"
 #include <iostream>
 
 namespace Eendgine {

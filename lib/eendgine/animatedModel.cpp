@@ -1,4 +1,4 @@
-#include <eendgine/animatedModel.hpp>
+#include "animatedModel.hpp"
 
 #include <cmath>
 

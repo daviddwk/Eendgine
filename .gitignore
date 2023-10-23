@@ -30,6 +30,8 @@
 *.out
 *.app
 
+build/*
+
 # Project
 glad/*
 include/glad/glad.h

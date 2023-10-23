@@ -1,4 +1,4 @@
-#include <eendgine/mesh.hpp>
+#include "mesh.hpp"
 #include <string>
 #include <glm/glm.hpp>
 

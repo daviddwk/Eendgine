@@ -65,7 +65,6 @@ int main(){
     myModel.setScale(1.0f, 1.0f, 1.0f);
     myModel.setPosition(0.0f, 0.0f, 0.0f);
     
-
     while(!Eend::Window::shouldClose){
         Eend::FrameLimiter::startInterval(); 
 

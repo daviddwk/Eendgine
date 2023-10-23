@@ -1,17 +1,19 @@
-#include <eendgine/model.hpp>
+#include "inpolModel.hpp"
 #include <iostream>
 #include <glm/gtc/matrix_transform.hpp>
+#include "fatalError.hpp"
 
 namespace Eendgine {
-    Model::Model(std::string path, TextureCache &texCache): _texCache(texCache) 
+    InpolModel::InpolModel(std::string modelPath, std::string nextModelPath, TextureCache &texCache): _texCache(texCache) 
     {
+        _inpolScale = 0.0f;
         _position = glm::vec3(0.0f);
         _scale = glm::vec3(1.0f);
         _textureIdx = 0;
-        loadModel(path);
+        loadModel(modelPath, nextModelPath);
     }
 
-    void Model::draw(ShaderProgram &shader, Camera3D &camera){
+    void InpolModel::draw(ShaderProgram &shader, Camera3D &camera){
         shader.use();
 
         // using RGB(1,0,1) for transparent
@@ -28,48 +30,71 @@ namespace Eendgine {
         unsigned int projectionLoc = glGetUniformLocation(shader.programId, "projection");
         unsigned int viewLoc = glGetUniformLocation(shader.programId, "view");
         unsigned int transformLoc = glGetUniformLocation(shader.programId, "transform");
+        unsigned int inpolLoc = glGetUniformLocation(shader.programId, "inpol");
         glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, &camera.projectionMat[0][0]);
         glUniformMatrix4fv(viewLoc, 1, GL_FALSE, &camera.viewMat[0][0]);
         glUniformMatrix4fv(transformLoc, 1, GL_FALSE, &transform[0][0]);
+        glUniform1f(inpolLoc, _inpolScale);
 
         for (auto &m : _meshes) {
             m.draw(shader);
         }
     }
 
-    void Model::loadModel(std::string path) {
-        Assimp::Importer import;
-        const aiScene *scene = import.ReadFile(path, 
-                aiProcess_Triangulate | aiProcess_GenNormals);
+    void InpolModel::loadModel(std::string modelPath, std::string nextModelPath) {
+        Assimp::Importer importer;
+        Assimp::Importer nextImport;
+        const aiScene *scene = importer.ReadFile(modelPath, aiProcess_Triangulate | aiProcess_GenNormals);
+        const aiScene *nextScene = nextImport.ReadFile(nextModelPath, aiProcess_Triangulate | aiProcess_GenNormals);
         if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode){
-            std::cout << "ERROR loadModel" << path << std::endl;
+            fatalError("failed to load model");
             return;
+        } else if (!nextScene || nextScene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !nextScene->mRootNode) {
+            fatalError("failed to load model");
         }
-        _directory = path.substr(0, path.find_last_of('/'));
-        processNode(scene->mRootNode, scene);
-
+        // for now assume that both are in the same directory
+        _directory = modelPath.substr(0, modelPath.find_last_of('/'));
+        processNode(scene->mRootNode, nextScene->mRootNode, scene, nextScene);
     }
 
-    void Model::processNode(aiNode *node, const aiScene *scene) {
+    void InpolModel::processNode(aiNode *node, aiNode *nextNode, const aiScene *scene, const aiScene *nextScene) {
+        // add error checking to make sure mNumMeshes is the same
+        // among other things
+        if (node->mNumMeshes != nextNode->mNumMeshes) {
+            fatalError("model NumMeshes mismatch");
+        }
         for (unsigned int i = 0; i < node->mNumMeshes; i++) {
             aiMesh *mesh = scene->mMeshes[node->mMeshes[i]];
-            _meshes.push_back(processMesh(mesh, scene));
+            aiMesh *nextMesh = nextScene->mMeshes[nextNode->mMeshes[i]]; 
+            _meshes.push_back(processMesh(mesh, nextMesh, scene));
+        }
+        if (node->mNumChildren != nextNode->mNumChildren) {
+            fatalError("model NumChildren mismatch");
         }
         for(unsigned int i = 0; i < node->mNumChildren; i++) {
-            processNode(node->mChildren[i], scene);
+            processNode(node->mChildren[i], nextNode->mChildren[i], scene, nextScene);
         }
     }
     
-    Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene) {
-        std::vector<Vertex> vertices;
+    InpolMesh InpolModel::processMesh(aiMesh *mesh, aiMesh *nextMesh, const aiScene *scene) {
+        std::vector<InpolVertex> vertices;
         std::vector<unsigned int> indices;
-
+        
+        if (mesh->mNumVertices != nextMesh->mNumVertices) {
+            fatalError("mesh NumVertices mismatch");
+        } else if (mesh->HasNormals() != nextMesh->HasNormals()) {
+            fatalError("mesh HasNormals mismatch");
+        }
         for (unsigned int i = 0; i < mesh->mNumVertices; i++) {
-            Vertex vertex;
+            InpolVertex vertex;
             vertex.position = glm::vec3(
                     mesh->mVertices[i].x,
                     mesh->mVertices[i].y,
                     mesh->mVertices[i].z);
+            vertex.nextPosition = glm::vec3(
+                    nextMesh->mVertices[i].x,
+                    nextMesh->mVertices[i].y,
+                    nextMesh->mVertices[i].z);
             if (mesh->mColors[0]) {
                 vertex.color = glm::vec4(
                         mesh->mColors[0][i].r,
@@ -89,12 +114,22 @@ namespace Eendgine {
                         mesh->mNormals[i].x,
                         mesh->mNormals[i].y,
                         mesh->mNormals[i].z);        
+                vertex.nextNormal = glm::vec3(
+                        nextMesh->mNormals[i].x,
+                        nextMesh->mNormals[i].y,
+                        nextMesh->mNormals[i].z);        
             }
             vertices.push_back(vertex);
         }
-       
+        
+        if (mesh->mNumFaces != nextMesh->mNumFaces) {
+            fatalError("mesh NumFaces mismatch");
+        }
         for (unsigned int i = 0; i < mesh->mNumFaces; i++) {
             aiFace face = mesh->mFaces[i];
+            if (face.mNumIndices != nextMesh->mFaces[i].mNumIndices) {
+                fatalError("mesh NumFaces mismatch");
+            }
             for (unsigned int j = 0; j < face.mNumIndices; j++) {
                 indices.push_back(face.mIndices[j]);
             }
@@ -110,10 +145,10 @@ namespace Eendgine {
             //std::vector<Texture> opacityMaps = loadMaterialTextures(material, aiTextureType_OPACITY, "opacity");
             //textures.insert(textures.end(), opacityMaps.begin(), opacityMaps.end());
         }
-        return Mesh(vertices, indices, _textures);
+        return InpolMesh(vertices, indices, _textures);
     }
 
-    std::vector<Texture> Model::loadMaterialTextures(aiMaterial *mat, aiTextureType type){
+    std::vector<Texture> InpolModel::loadMaterialTextures(aiMaterial *mat, aiTextureType type){
         std::vector<Texture> textures;
         for (unsigned int i = 0; i < mat->GetTextureCount(type); i++) {
             aiString str;

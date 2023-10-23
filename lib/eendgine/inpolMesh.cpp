@@ -1,4 +1,4 @@
-#include <eendgine/inpolMesh.hpp>
+#include "inpolMesh.hpp"
 #include <string>
 #include <glm/glm.hpp>
 

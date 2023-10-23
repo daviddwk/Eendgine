@@ -1,5 +1,5 @@
 #include <SDL2/SDL_events.h>
-#include <eendgine/inputManager.hpp>
+#include "inputManager.hpp"
 #include <iostream>
 
 namespace Eendgine {
