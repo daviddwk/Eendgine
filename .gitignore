@@ -34,6 +34,6 @@ build/*
 
 # Project
 glad/*
-include/glad/glad.h
-include/stb/stb_image.h
+lib/glad/glad.h
+lib/stb/stb_image.h
 compile_flags.txt
