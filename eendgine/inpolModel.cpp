@@ -1,6 +1,7 @@
 #include <eendgine/inpolModel.hpp>
 #include <iostream>
 #include <glm/gtc/matrix_transform.hpp>
+#include <eendgine/fatalError.hpp>
 
 namespace Eendgine {
     InpolModel::InpolModel(std::string modelPath, std::string nextModelPath, TextureCache &texCache): _texCache(texCache) 
@@ -46,8 +47,10 @@ namespace Eendgine {
         const aiScene *scene = importer.ReadFile(modelPath, aiProcess_Triangulate | aiProcess_GenNormals);
         const aiScene *nextScene = nextImport.ReadFile(nextModelPath, aiProcess_Triangulate | aiProcess_GenNormals);
         if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode){
-            std::cout << "ERROR loadModel" << modelPath << std::endl;
+            fatalError("failed to load model");
             return;
+        } else if (!nextScene || nextScene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !nextScene->mRootNode) {
+            fatalError("failed to load model");
         }
         // for now assume that both are in the same directory
         _directory = modelPath.substr(0, modelPath.find_last_of('/'));
@@ -57,10 +60,16 @@ namespace Eendgine {
     void InpolModel::processNode(aiNode *node, aiNode *nextNode, const aiScene *scene, const aiScene *nextScene) {
         // add error checking to make sure mNumMeshes is the same
         // among other things
+        if (node->mNumMeshes != nextNode->mNumMeshes) {
+            fatalError("model NumMeshes mismatch");
+        }
         for (unsigned int i = 0; i < node->mNumMeshes; i++) {
             aiMesh *mesh = scene->mMeshes[node->mMeshes[i]];
             aiMesh *nextMesh = nextScene->mMeshes[nextNode->mMeshes[i]]; 
             _meshes.push_back(processMesh(mesh, nextMesh, scene));
+        }
+        if (node->mNumChildren != nextNode->mNumChildren) {
+            fatalError("model NumChildren mismatch");
         }
         for(unsigned int i = 0; i < node->mNumChildren; i++) {
             processNode(node->mChildren[i], nextNode->mChildren[i], scene, nextScene);
@@ -70,7 +79,12 @@ namespace Eendgine {
     InpolMesh InpolModel::processMesh(aiMesh *mesh, aiMesh *nextMesh, const aiScene *scene) {
         std::vector<InpolVertex> vertices;
         std::vector<unsigned int> indices;
-
+        
+        if (mesh->mNumVertices != nextMesh->mNumVertices) {
+            fatalError("mesh NumVertices mismatch");
+        } else if (mesh->HasNormals() != nextMesh->HasNormals()) {
+            fatalError("mesh HasNormals mismatch");
+        }
         for (unsigned int i = 0; i < mesh->mNumVertices; i++) {
             InpolVertex vertex;
             vertex.position = glm::vec3(
@@ -107,9 +121,15 @@ namespace Eendgine {
             }
             vertices.push_back(vertex);
         }
-       
+        
+        if (mesh->mNumFaces != nextMesh->mNumFaces) {
+            fatalError("mesh NumFaces mismatch");
+        }
         for (unsigned int i = 0; i < mesh->mNumFaces; i++) {
             aiFace face = mesh->mFaces[i];
+            if (face.mNumIndices != nextMesh->mFaces[i].mNumIndices) {
+                fatalError("mesh NumFaces mismatch");
+            }
             for (unsigned int j = 0; j < face.mNumIndices; j++) {
                 indices.push_back(face.mIndices[j]);
             }
