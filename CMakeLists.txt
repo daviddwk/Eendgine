@@ -22,5 +22,6 @@ set_target_properties(
     PROPERTIES 
         OUTPUT_NAME "game"
         SUFFIX ".out"
+        RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}"
 )
 target_link_libraries(game eendgine SDL2 assimp stb glad)
