@@ -1,7 +1,7 @@
 #include "inpolModel.hpp"
-#include <iostream>
-#include <glm/gtc/matrix_transform.hpp>
 #include "fatalError.hpp"
+#include <glm/gtc/matrix_transform.hpp>
+#include <iostream>
 
 namespace Eendgine {
     InpolModel::InpolModel(std::string modelPath, std::string nextModelPath, TextureCache &texCache): _texCache(texCache) 

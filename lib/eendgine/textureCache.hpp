@@ -1,7 +1,7 @@
 #pragma once
+#include "texture.hpp"
 #include <map>
 #include <string>
-#include "texture.hpp"
 
 namespace Eendgine
 {

@@ -1,7 +1,5 @@
 #include "window.hpp"
-
-#include "glad/glad.h"
-
+#include <glad/glad.h>
 #include <iostream>
 
 namespace Eendgine {

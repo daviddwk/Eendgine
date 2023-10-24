@@ -1,10 +1,8 @@
 #pragma once
-
 #include "vertex.hpp"
 #include "texture.hpp"
 #include "shader.hpp"
 #include "camera3D.hpp"
-
 #include <string>
 #include <vector>
 

@@ -1,5 +1,4 @@
 #include "animatedModel.hpp"
-
 #include <cmath>
 
 namespace Eendgine {

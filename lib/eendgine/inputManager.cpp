@@ -1,6 +1,5 @@
-#include <SDL2/SDL_events.h>
 #include "inputManager.hpp"
-#include <iostream>
+#include <SDL2/SDL_events.h>
 
 namespace Eendgine {
     void InputManager::init() {

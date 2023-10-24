@@ -1,13 +1,10 @@
 #pragma once
-
 #include "shader.hpp"
 #include "texture.hpp"
 #include "vertex.hpp"
 #include "camera2D.hpp"
 #include "camera3D.hpp"
-
 #include <glm/glm.hpp>
-
 #include <vector>
 
 namespace Eendgine {

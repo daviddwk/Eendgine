@@ -1,6 +1,6 @@
 #include "inpolMesh.hpp"
-#include <string>
 #include <glm/glm.hpp>
+#include <string>
 
 namespace Eendgine {
 

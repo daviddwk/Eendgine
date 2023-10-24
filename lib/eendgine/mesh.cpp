@@ -1,6 +1,6 @@
 #include "mesh.hpp"
-#include <string>
 #include <glm/glm.hpp>
+#include <string>
 
 namespace Eendgine {
 

@@ -1,10 +1,8 @@
 #pragma once
-
 #include "textureCache.hpp"
 #include "inpolModel.hpp"
 #include "camera3D.hpp"
 #include "shader.hpp"
-
 #include <vector>
 #include <string>
 

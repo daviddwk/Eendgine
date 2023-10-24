@@ -1,6 +1,6 @@
-#include <iostream>
-#include <SDL2/SDL.h>
 #include "fatalError.hpp"
+#include <SDL2/SDL.h>
+#include <iostream>
 
 namespace Eendgine {
     void fatalError(std::string errorMessage) {

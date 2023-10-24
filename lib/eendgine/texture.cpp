@@ -1,7 +1,7 @@
 #include "texture.hpp"
-#include "stb/stb_image.h"
-#include "glad/glad.h"
-#include <iostream>
+#include "fatalError.hpp"
+#include <stb/stb_image.h>
+#include <glad/glad.h>
 
 namespace Eendgine {
     Texture loadTexture(std::string filePath){
@@ -23,8 +23,7 @@ namespace Eendgine {
                     0, GL_RGB, texture.width, texture.height, 
                     0, GL_RGB, GL_UNSIGNED_BYTE, imageData);
         } else {
-            std::cout << "Failed to load image" << std::endl;
-            std::cout << filePath << std::endl;
+            fatalError("Failed to load image" + filePath);
         }
         stbi_image_free(imageData);
         return texture;
