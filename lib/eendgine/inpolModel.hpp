@@ -17,18 +17,21 @@ namespace Eendgine {
 
             void setPosition(float x, float y, float z) { _position = glm::vec3(x, y, z); };
             void setScale(float x, float y, float z) { _scale = glm::vec3(x, y, z); };
+            void setRot(float x, float y) { _rotation = glm::vec2(x, y); };
             void setTextureIdx(unsigned int idx) { _textureIdx = (idx < _textures.size() ? idx : 0); }
             void setInpol(float scale) { _inpolScale = scale;
                     if (_inpolScale > 1.0f) { _inpolScale = 1.0f; }
                     if (_inpolScale < 0.0f) { _inpolScale = 0.0f; }};
             glm::vec3 getPosition() { return _position; };
             glm::vec3 getScale() { return _scale; };
+            glm::vec2 getRot() { return _rotation; };
             unsigned int getTextureIdx() { return _textureIdx; };
             float getInpolScale() { return _inpolScale; };
         private:
             TextureCache &_texCache;
             glm::vec3 _position;
             glm::vec3 _scale;
+            glm::vec2 _rotation;
             float _inpolScale = 0.0f;
             unsigned int _textureIdx = 0;
 

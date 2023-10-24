@@ -52,7 +52,7 @@ int main(){
     //myLerpModel.setScale(1.0f, 1.0f, 1.0f);
     //myLerpModel.setPosition(0.0f, 0.0f, 0.0f);
 
-    Eend::Model myModel("resources/ost/ost.obj", myTextureCache);
+    Eend::Model myModel("resources/ost_walk/ost16.obj", myTextureCache);
     myModel.setScale(1.0f, 1.0f, 1.0f);
     myModel.setPosition(0.0f, 0.0f, 0.0f);
 
@@ -64,6 +64,7 @@ int main(){
     Eend::AnimatedModel myAnimatedModel(walkAnim, myTextureCache);
     myModel.setScale(1.0f, 1.0f, 1.0f);
     myModel.setPosition(0.0f, 0.0f, 0.0f);
+    myAnimatedModel.setRot(180.0f, 180.0f);
     
     Eend::CollisionSphere myColSphere1(0.0f, 0.0f, 2.01f, 1.0f);
     Eend::CollisionSphere myColSphere2(0.0f, 0.0f, 0.0f, 1.0f);
@@ -78,7 +79,7 @@ int main(){
         
         myAnimatedModel.draw(myLerpShader, my3DCamera);
         //myLerpModel.draw(myLerpShader, my3DCamera);
-        //myModel.draw(myShader3D, my3DCamera);
+        myModel.draw(myShader3D, my3DCamera);
         my3DSprite.draw(myShader3D, my3DCamera);
 
         glClear(GL_DEPTH_BUFFER_BIT);
@@ -87,18 +88,24 @@ int main(){
         
         float dt = Eend::FrameLimiter::deltaTime;
         float speed = 100.0f;
+        glm::vec2 currRot = myAnimatedModel.getRot();
+        glm::vec2 currRot2 = myModel.getRot();
         if (Eendgine::InputManager::upPress) {
             glm::vec3 currentCamPos = my3DCamera.getPosition();
             //my3DCamera.setPosition(currentCamPos.x, currentCamPos.y + (speed * dt), currentCamPos.z + (speed * dt)); 
-            myModel.setTextureIdx(0);
+            myAnimatedModel.setTextureIdx(0);
             //myLerpModel.setInpolScale(myLerpModel.getInpolScale() + 0.01f);
+            myAnimatedModel.setRot(currRot.x + 1.0f, currRot.y);
+            myModel.setRot(currRot2.x + 5.0f, currRot2.y);
             myAnimatedModel.setAnim(myAnimatedModel.getAnim() + 0.01f);
         }
         if (Eendgine::InputManager::downPress) {
             glm::vec3 currentCamPos = my3DCamera.getPosition();
             //my3DCamera.setPosition(currentCamPos.x, currentCamPos.y - (speed * dt), currentCamPos.z - (speed * dt)); 
-            myModel.setTextureIdx(1);
+            myAnimatedModel.setTextureIdx(1);
             myAnimatedModel.setAnim(myAnimatedModel.getAnim() - 0.01f);
+            myAnimatedModel.setRot(currRot.x, currRot.y + 1.0f);
+            myModel.setRot(currRot2.x, currRot2.y + 5.0f);
             //myLerpModel.setInpolScale(myLerpModel.getInpolScale() - 0.01f);
         }
         if (Eendgine::InputManager::leftPress) {

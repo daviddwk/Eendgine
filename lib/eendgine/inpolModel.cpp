@@ -9,6 +9,7 @@ namespace Eendgine {
         _inpolScale = 0.0f;
         _position = glm::vec3(0.0f);
         _scale = glm::vec3(1.0f);
+        _rotation = glm::vec2(0.0f);
         _textureIdx = 0;
         loadModel(modelPath, nextModelPath);
     }
@@ -25,6 +26,8 @@ namespace Eendgine {
         
         glm::mat4 transform = glm::mat4(1.0f);
         transform = glm::translate(transform, _position);
+        transform = glm::rotate(transform, glm::radians(-_rotation.x), glm::vec3( 0.0f, 1.0f, 0.0f));
+        transform = glm::rotate(transform, glm::radians(-_rotation.y), glm::vec3(-1.0f, 0.0f, 0.0f));
         transform = glm::scale(transform, _scale);
 
         unsigned int projectionLoc = glGetUniformLocation(shader.programId, "projection");
