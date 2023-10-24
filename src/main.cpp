@@ -10,10 +10,7 @@
 #include <eendgine/model.hpp>
 #include <eendgine/animatedModel.hpp>
 #include <eendgine/collisionGeometry.hpp>
-
 #include <stb/stb_image.h>
-//#include "player.hpp"
-
 #include <iostream>
 #include <vector>
 
@@ -48,28 +45,31 @@ int main(){
     my3DSprite.setPosition(20.0f, 0.0f, 0.0f);
     my3DSprite.setSize(10.0f, 10.0f);
 
-    //Eend::LerpModel myLerpModel("resources/ost/ost.obj", "resources/ost/ost_bent.obj", myTextureCache);
-    //myLerpModel.setScale(1.0f, 1.0f, 1.0f);
-    //myLerpModel.setPosition(0.0f, 0.0f, 0.0f);
-
     Eend::Model myModel("resources/ost_walk/ost16.obj", myTextureCache);
     myModel.setScale(1.0f, 1.0f, 1.0f);
-    myModel.setPosition(0.0f, 0.0f, 0.0f);
+    myModel.setPosition(3.0f, 3.0f, 3.0f);
 
     std::vector<std::string> walkAnim;
     for (int i = 16; i <= 55; i++) {
         walkAnim.emplace_back("resources/ost_walk/ost" + std::to_string(i) + ".obj");
     }
-    //Eend::AnimatedModel myAnimatedModel({"resources/ost/ost.obj", "resources/ost/ost_bent.obj", "resources/ost/ost.obj"}, myTextureCache);
     Eend::AnimatedModel myAnimatedModel(walkAnim, myTextureCache);
     myModel.setScale(1.0f, 1.0f, 1.0f);
-    myModel.setPosition(0.0f, 0.0f, 0.0f);
+    myModel.setPosition(3.0f, 3.0f, 3.0f);
+    myAnimatedModel.setPosition(3.0f, 3.0f, 3.0f);
     myAnimatedModel.setRot(180.0f, 180.0f);
     
-    Eend::CollisionSphere myColSphere1(0.0f, 0.0f, 2.01f, 1.0f);
-    Eend::CollisionSphere myColSphere2(0.0f, 0.0f, 0.0f, 1.0f);
-    
-    std::cout << Eend::colliding(myColSphere1, myColSphere2) << std::endl;
+    Eend::CollisionSphere myColSphere1(0.0f, 1.0f, 0.0f, 1.0f);
+    Eend::CollisionSphere myColSphere2(0.0f, 0.0f, 0.0f, 0.5f);
+
+    Eend::CollisionPlane myColPlane;
+    myColPlane.setPosition(0.0f, 0.0f, 0.0f);
+    myColPlane.setSize(1.0f, 1.0f);
+    myColPlane.setNormal(0.0f, 1.0f, 0.0f);
+   
+    glm::vec3 penVec = glm::vec3(0.0f, 0.0f, 0.0f);
+    std::cout << Eend::colliding(myColSphere1, myColSphere2, &penVec) << std::endl;
+    std::cout << penVec.x << ',' << penVec.y << ',' << penVec.z << std::endl;
 
     while(!Eend::Window::shouldClose){
         Eend::FrameLimiter::startInterval(); 
@@ -78,7 +78,6 @@ int main(){
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         
         myAnimatedModel.draw(myLerpShader, my3DCamera);
-        //myLerpModel.draw(myLerpShader, my3DCamera);
         myModel.draw(myShader3D, my3DCamera);
         my3DSprite.draw(myShader3D, my3DCamera);
 

@@ -1,9 +1,31 @@
 #include "collisionGeometry.hpp"
 #include <cmath>
+#include <iostream>
 
 namespace Eendgine {
+    bool colliding(CollisionSphere s1, CollisionSphere s2, glm::vec3 *penetration) {
+        glm::vec3 distance = s2.getPosition() - s1.getPosition();
+        float depth = (s1.getRadius() + s2.getRadius()) - glm::length(distance);
+        std::cout << "depth"<< depth << std::endl;
+        if (penetration != nullptr) {
+            *penetration = depth * glm::normalize(distance);
+            std::cout << "depth"<< depth << std::endl;
+        }
+        return depth > 0.0f;
+    }
     bool colliding(CollisionSphere s1, CollisionSphere s2) {
-        float dis = std::abs(glm::distance(s1.getPosition(), s2.getPosition()));
-        return (dis < (s1.getRadius() + s2.getRadius())); 
+        return colliding(s1, s2, nullptr);
+    }
+    
+    bool colliding(CollisionSphere s, CollisionPlane p, glm::vec3 *penetration) {
+        glm::vec3 distance = (p.getPosition() - s.getPosition()) * p.getNormal();
+        float depth = s.getRadius() - glm::length(distance);
+        if (penetration != nullptr) {
+            *penetration = depth * glm::normalize(distance);
+        }
+        return depth > 0.0f;
+    }
+    bool colliding(CollisionSphere s, CollisionPlane p){
+        return colliding(s, p, nullptr);
     }
 }
