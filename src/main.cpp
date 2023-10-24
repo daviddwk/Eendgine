@@ -9,9 +9,9 @@
 #include <eendgine/inpolModel.hpp>
 #include <eendgine/model.hpp>
 #include <eendgine/animatedModel.hpp>
+#include <eendgine/collisionGeometry.hpp>
+
 #include <stb/stb_image.h>
-
-
 //#include "player.hpp"
 
 #include <iostream>
@@ -65,6 +65,11 @@ int main(){
     myModel.setScale(1.0f, 1.0f, 1.0f);
     myModel.setPosition(0.0f, 0.0f, 0.0f);
     
+    Eend::CollisionSphere myColSphere1(0.0f, 0.0f, 2.01f, 1.0f);
+    Eend::CollisionSphere myColSphere2(0.0f, 0.0f, 0.0f, 1.0f);
+    
+    std::cout << Eend::colliding(myColSphere1, myColSphere2) << std::endl;
+
     while(!Eend::Window::shouldClose){
         Eend::FrameLimiter::startInterval(); 
 
