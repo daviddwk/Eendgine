@@ -1,3 +1,16 @@
+/*
+ *  ____________________________________
+ * / At the moment this file is         \
+ * |  being used as a testing ground    |
+ * |  for the engine, so please mind    |
+ * \  the bad code!                     /
+ *  ------------------------------------ 
+ *    \
+ *      >()
+ *       (v >
+ *        ^^
+ */
+
 #include <eendgine/window.hpp>
 #include <eendgine/shader.hpp>
 #include <eendgine/sprite.hpp>
@@ -59,16 +72,16 @@ int main(){
     myAnimatedModel.setPosition(3.0f, 3.0f, 3.0f);
     myAnimatedModel.setRot(180.0f, 180.0f);
     
-    Eend::CollisionSphere myColSphere1(0.0f, 1.0f, 0.0f, 1.0f);
+    Eend::CollisionSphere myColSphere1(0.1f, 1.0f, 0.2f, 1.2f);
     Eend::CollisionSphere myColSphere2(0.0f, 0.0f, 0.0f, 0.5f);
 
     Eend::CollisionPlane myColPlane;
     myColPlane.setPosition(0.0f, 0.0f, 0.0f);
-    myColPlane.setSize(1.0f, 1.0f);
+    myColPlane.setSize(1.0f, 1.0f);https://duckduckgo.com/?t=ffab&q=subtracting+two+vectors&iax=images&ia=images&iai=https%3A%2F%2Fwww.dummies.com%2Fwp-content%2Fuploads%2F329855.image0.jpg
     myColPlane.setNormal(0.0f, 1.0f, 0.0f);
    
     glm::vec3 penVec = glm::vec3(0.0f, 0.0f, 0.0f);
-    std::cout << Eend::colliding(myColSphere1, myColSphere2, &penVec) << std::endl;
+    std::cout << Eend::colliding(myColSphere1, myColPlane, &penVec) << std::endl;
     std::cout << penVec.x << ',' << penVec.y << ',' << penVec.z << std::endl;
 
     while(!Eend::Window::shouldClose){
