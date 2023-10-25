@@ -9,16 +9,16 @@ namespace Eendgine {
         std::cout << "depth"<< depth << std::endl;
         if (penetration != nullptr) {
             *penetration = depth * glm::normalize(distance);
-            std::cout << "depth"<< depth << std::endl;
         }
         return depth > 0.0f;
     }
     
     bool colliding(CollisionSphere s, CollisionPlane p, glm::vec3 *penetration) {
-        glm::vec3 distance = (p.getPosition() - s.getPosition()) * p.getNormal();
-        float depth = s.getRadius() - glm::length(distance);
+        float distance = glm::dot(p.getNormal(), (s.getPosition() - p.getPosition()));
+        float depth = s.getRadius() - distance;
         if (penetration != nullptr) {
-            *penetration = depth * glm::normalize(distance);
+            glm::vec3 pen = (-p.getNormal()) * depth;
+            *penetration = pen;
         }
         return depth > 0.0f;
     }

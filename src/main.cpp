@@ -56,9 +56,10 @@ int main(){
     myModel.setPosition(mp.x, mp.y, mp.z);
     Eend::CollisionSphere mySphere(mp.x, mp.y, mp.z , 0.5f);
     Eend::CollisionPlane myPlane;
-    myPlane.setNormal(0.0f, 1.0f, 0.0f);
+    glm::vec3 planeNormal(0.8f, 1.0f, 0.8f);
+    planeNormal = glm::normalize(planeNormal);
+    myPlane.setNormal(planeNormal.x, planeNormal.y, planeNormal.z);
     myPlane.setPosition(0.0f, 0.0f, 0.0f);
-    myPlane.setSize(100.0f, 100.0f);
 
     
     /*
@@ -92,17 +93,16 @@ int main(){
         
         fv -= 0.001;
         if (Eendgine::InputManager::upPress) {
-            mp.x -= 0.01;
-            fv = 0.05;
+            mp.x -= 0.02;
         }
         if (Eendgine::InputManager::downPress) {
-            mp.x += 0.01;
+            mp.x += 0.02;
         }
         if (Eendgine::InputManager::leftPress) {
-            mp.z += 0.01;
+            mp.z += 0.02;
         }
         if (Eendgine::InputManager::rightPress) {
-            mp.z -= 0.01;
+            mp.z -= 0.02;
         }
         
         mp.y += fv;
@@ -112,14 +112,15 @@ int main(){
         glm::vec3 p;
         if (Eend::colliding(mySphere, myPlane, &p)) {
             std::cout << "colliding" << std::endl;
-            std::cout << p.x << ' ' << p.y << ' ' << p.z;
-            mp.x -= p.x;
-            mp.y -= p.y;
-            mp.z -= p.z;
+            std::cout << p.x << ' ' << p.y << ' ' << p.z << std::endl;
+            mp -= p;
             fv = 0.0f;
             myModel.setPosition(mp.x, mp.y, mp.z);
             mySphere.setPosition(mp.x, mp.y, mp.z);
         }
+        //std::cout << "location" << std::endl;
+        //std::cout << mp.x << ' ' << mp.y << ' ' << mp.z << std::endl;
+
         
 
         Eend::Window::pollEvents();

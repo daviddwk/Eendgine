@@ -25,21 +25,17 @@ namespace Eendgine {
         public:
             CollisionPlane(){ 
                     _position = glm::vec3(0.0f);
-                    _size = glm::vec2(0.0f);
-                    _normal = glm::vec3(0.0f);
+                    _normal = glm::vec3(0.0f, 0.1f, 0.0f);
             };
 
             void setPosition(float x, float y, float z) { _position = glm::vec3(x, y, z); };
-            void setSize(float w, float h) { _size = glm::vec2(w, h); };
             void setNormal(float x, float y, float z) { _normal = glm::vec3(x, y, z); };
 
             glm::vec3 getPosition() { return _position; };
-            glm::vec2 getSize() { return _size; };
             glm::vec3 getNormal() { return _normal; };
 
         private:
             glm::vec3 _position;
-            glm::vec2 _size;
             glm::vec3 _normal;
     };
 
