@@ -13,9 +13,6 @@ namespace Eendgine {
         }
         return depth > 0.0f;
     }
-    bool colliding(CollisionSphere s1, CollisionSphere s2) {
-        return colliding(s1, s2, nullptr);
-    }
     
     bool colliding(CollisionSphere s, CollisionPlane p, glm::vec3 *penetration) {
         glm::vec3 distance = (p.getPosition() - s.getPosition()) * p.getNormal();
@@ -24,8 +21,5 @@ namespace Eendgine {
             *penetration = depth * glm::normalize(distance);
         }
         return depth > 0.0f;
-    }
-    bool colliding(CollisionSphere s, CollisionPlane p){
-        return colliding(s, p, nullptr);
     }
 }

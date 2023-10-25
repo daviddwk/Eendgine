@@ -44,7 +44,5 @@ namespace Eendgine {
     };
 
     bool colliding(CollisionSphere s1, CollisionSphere s2, glm::vec3 *penetration);
-    bool colliding(CollisionSphere s1, CollisionSphere s2);
     bool colliding(CollisionSphere s, CollisionPlane p, glm::vec3 *penetration);
-    bool colliding(CollisionSphere s, CollisionPlane p);
 }
