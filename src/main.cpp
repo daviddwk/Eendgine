@@ -1,16 +1,3 @@
-/*
- *  ____________________________________
- * / At the moment this file is         \
- * |  being used as a testing ground    |
- * |  for the engine, so please mind    |
- * \  the bad code!                     /
- *  ------------------------------------ 
- *    \
- *      >()
- *       (v >
- *        ^^
- */
-
 #include <eendgine/window.hpp>
 #include <eendgine/shader.hpp>
 #include <eendgine/sprite.hpp>
@@ -23,7 +10,10 @@
 #include <eendgine/model.hpp>
 #include <eendgine/animatedModel.hpp>
 #include <eendgine/collisionGeometry.hpp>
+
 #include <stb/stb_image.h>
+//#include "player.hpp"
+
 #include <iostream>
 #include <vector>
 
@@ -45,7 +35,7 @@ int main(){
     Eend::ShaderProgram myLerpShader("shaders/shaderLerp.vert", "shaders/shaderLerp.frag");
 
     Eend::Camera3D my3DCamera(1000.0f / 1000.0f,
-            glm::vec3(15.0f, 10.0f, 15.0f), glm::vec3(0.0f, 4.0f, 0.0f));
+            glm::vec3(15.0f, 10.0f, 15.0f), glm::vec3(0.0f, 0.0f, 0.0f));
     
     Eend::Camera2D myCamera(1000, 1000);
     myCamera.update();
@@ -58,31 +48,31 @@ int main(){
     my3DSprite.setPosition(20.0f, 0.0f, 0.0f);
     my3DSprite.setSize(10.0f, 10.0f);
 
-    Eend::Model myModel("resources/ost_walk/ost16.obj", myTextureCache);
-    myModel.setScale(1.0f, 1.0f, 1.0f);
-    myModel.setPosition(3.0f, 3.0f, 3.0f);
+    
 
+    glm::vec3 mp = glm::vec3(0.0f, 3.0f, 0.0f);
+    Eend::Model myModel("resources/cube/cube.obj", myTextureCache);
+    myModel.setScale(1.0f, 1.0f, 1.0f);
+    myModel.setPosition(mp.x, mp.y, mp.z);
+    Eend::CollisionSphere mySphere(mp.x, mp.y, mp.z , 0.5f);
+    Eend::CollisionPlane myPlane;
+    myPlane.setNormal(0.0f, 1.0f, 0.0f);
+    myPlane.setPosition(0.0f, 0.0f, 0.0f);
+    myPlane.setSize(100.0f, 100.0f);
+
+    
+    /*
     std::vector<std::string> walkAnim;
     for (int i = 16; i <= 55; i++) {
         walkAnim.emplace_back("resources/ost_walk/ost" + std::to_string(i) + ".obj");
     }
-    Eend::AnimatedModel myAnimatedModel(walkAnim, myTextureCache);
     myModel.setScale(1.0f, 1.0f, 1.0f);
-    myModel.setPosition(3.0f, 3.0f, 3.0f);
-    myAnimatedModel.setPosition(3.0f, 3.0f, 3.0f);
+    myModel.setPosition(0.0f, 0.0f, 0.0f);
     myAnimatedModel.setRot(180.0f, 180.0f);
-    
-    Eend::CollisionSphere myColSphere1(0.1f, 1.0f, 0.2f, 1.2f);
-    Eend::CollisionSphere myColSphere2(0.0f, 0.0f, 0.0f, 0.5f);
+    */
 
-    Eend::CollisionPlane myColPlane;
-    myColPlane.setPosition(0.0f, 0.0f, 0.0f);
-    myColPlane.setSize(1.0f, 1.0f);https://duckduckgo.com/?t=ffab&q=subtracting+two+vectors&iax=images&ia=images&iai=https%3A%2F%2Fwww.dummies.com%2Fwp-content%2Fuploads%2F329855.image0.jpg
-    myColPlane.setNormal(0.0f, 1.0f, 0.0f);
-   
-    glm::vec3 penVec = glm::vec3(0.0f, 0.0f, 0.0f);
-    std::cout << Eend::colliding(myColSphere1, myColPlane, &penVec) << std::endl;
-    std::cout << penVec.x << ',' << penVec.y << ',' << penVec.z << std::endl;
+    
+    float fv = 0.0f;
 
     while(!Eend::Window::shouldClose){
         Eend::FrameLimiter::startInterval(); 
@@ -90,7 +80,6 @@ int main(){
         glClearColor(0.1f, 0.2f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         
-        myAnimatedModel.draw(myLerpShader, my3DCamera);
         myModel.draw(myShader3D, my3DCamera);
         my3DSprite.draw(myShader3D, my3DCamera);
 
@@ -100,34 +89,38 @@ int main(){
         
         float dt = Eend::FrameLimiter::deltaTime;
         float speed = 100.0f;
-        glm::vec2 currRot = myAnimatedModel.getRot();
-        glm::vec2 currRot2 = myModel.getRot();
+        
+        fv -= 0.001;
         if (Eendgine::InputManager::upPress) {
-            glm::vec3 currentCamPos = my3DCamera.getPosition();
-            //my3DCamera.setPosition(currentCamPos.x, currentCamPos.y + (speed * dt), currentCamPos.z + (speed * dt)); 
-            myAnimatedModel.setTextureIdx(0);
-            //myLerpModel.setInpolScale(myLerpModel.getInpolScale() + 0.01f);
-            myAnimatedModel.setRot(currRot.x + 1.0f, currRot.y);
-            myModel.setRot(currRot2.x + 5.0f, currRot2.y);
-            myAnimatedModel.setAnim(myAnimatedModel.getAnim() + 0.01f);
+            mp.x -= 0.01;
+            fv = 0.05;
         }
         if (Eendgine::InputManager::downPress) {
-            glm::vec3 currentCamPos = my3DCamera.getPosition();
-            //my3DCamera.setPosition(currentCamPos.x, currentCamPos.y - (speed * dt), currentCamPos.z - (speed * dt)); 
-            myAnimatedModel.setTextureIdx(1);
-            myAnimatedModel.setAnim(myAnimatedModel.getAnim() - 0.01f);
-            myAnimatedModel.setRot(currRot.x, currRot.y + 1.0f);
-            myModel.setRot(currRot2.x, currRot2.y + 5.0f);
-            //myLerpModel.setInpolScale(myLerpModel.getInpolScale() - 0.01f);
+            mp.x += 0.01;
         }
         if (Eendgine::InputManager::leftPress) {
-            glm::vec3 currentCamPos = my3DCamera.getPosition();
-            my3DCamera.setPosition(currentCamPos.x + (speed * dt), currentCamPos.y, currentCamPos.z); 
+            mp.z += 0.01;
         }
         if (Eendgine::InputManager::rightPress) {
-            glm::vec3 currentCamPos = my3DCamera.getPosition();
-            my3DCamera.setPosition(currentCamPos.x - (speed * dt), currentCamPos.y, currentCamPos.z); 
+            mp.z -= 0.01;
         }
+        
+        mp.y += fv;
+        myModel.setPosition(mp.x, mp.y, mp.z);
+        mySphere.setPosition(mp.x, mp.y, mp.z);
+
+        glm::vec3 p;
+        if (Eend::colliding(mySphere, myPlane, &p)) {
+            std::cout << "colliding" << std::endl;
+            std::cout << p.x << ' ' << p.y << ' ' << p.z;
+            mp.x -= p.x;
+            mp.y -= p.y;
+            mp.z -= p.z;
+            fv = 0.0f;
+            myModel.setPosition(mp.x, mp.y, mp.z);
+            mySphere.setPosition(mp.x, mp.y, mp.z);
+        }
+        
 
         Eend::Window::pollEvents();
         Eend::InputManager::processInput();
