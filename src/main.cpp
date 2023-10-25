@@ -56,7 +56,7 @@ int main(){
     myModel.setPosition(mp.x, mp.y, mp.z);
     Eend::CollisionSphere mySphere(mp.x, mp.y, mp.z , 0.5f);
     Eend::CollisionPlane myPlane;
-    glm::vec3 planeNormal(0.8f, 1.0f, 0.8f);
+    glm::vec3 planeNormal(0.5f, 1.0f, 0.0f);
     planeNormal = glm::normalize(planeNormal);
     myPlane.setNormal(planeNormal.x, planeNormal.y, planeNormal.z);
     myPlane.setPosition(0.0f, 0.0f, 0.0f);
@@ -111,15 +111,11 @@ int main(){
 
         glm::vec3 p;
         if (Eend::colliding(mySphere, myPlane, &p)) {
-            std::cout << "colliding" << std::endl;
-            std::cout << p.x << ' ' << p.y << ' ' << p.z << std::endl;
-            mp -= p;
+            mp.y += std::sqrt(2 * (p.y * p.y));
             fv = 0.0f;
             myModel.setPosition(mp.x, mp.y, mp.z);
             mySphere.setPosition(mp.x, mp.y, mp.z);
         }
-        //std::cout << "location" << std::endl;
-        //std::cout << mp.x << ' ' << mp.y << ' ' << mp.z << std::endl;
 
         
 
