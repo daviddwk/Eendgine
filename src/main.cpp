@@ -32,7 +32,7 @@ int main(){
     
     Eend::ShaderProgram myShader("shaders/shader.vert", "shaders/shader.frag");
     Eend::ShaderProgram myShader3D("shaders/shader3D.vert", "shaders/shader3D.frag");
-    Eend::ShaderProgram myLerpShader("shaders/shaderLerp.vert", "shaders/shaderLerp.frag");
+    Eend::ShaderProgram myLerpShader("shaders/shaderInpol.vert", "shaders/shaderInpol.frag");
 
     Eend::Camera3D my3DCamera(1000.0f / 1000.0f,
             glm::vec3(15.0f, 10.0f, 15.0f), glm::vec3(0.0f, 0.0f, 0.0f));
@@ -48,19 +48,19 @@ int main(){
     my3DSprite.setPosition(20.0f, 0.0f, 0.0f);
     my3DSprite.setSize(10.0f, 10.0f);
 
-    
-
     glm::vec3 mp = glm::vec3(0.0f, 3.0f, 0.0f);
     Eend::Model myModel("resources/cube/cube.obj", myTextureCache);
     myModel.setScale(1.0f, 1.0f, 1.0f);
     myModel.setPosition(mp.x, mp.y, mp.z);
     Eend::CollisionSphere mySphere(mp.x, mp.y, mp.z , 0.5f);
     Eend::CollisionPlane myPlane;
-    glm::vec3 planeNormal(0.5f, 1.0f, 0.0f);
+    glm::vec3 planeNormal(50.f, 100.0f, 100.0f);
     planeNormal = glm::normalize(planeNormal);
     myPlane.setNormal(planeNormal.x, planeNormal.y, planeNormal.z);
     myPlane.setPosition(0.0f, 0.0f, 0.0f);
+    Eend::CollisionTriangle myTriangle;
 
+    myTriangle.setVerts(glm::vec3(0,1.0,0), glm::vec3(0,0,1), glm::vec3(1,0,0));
     
     /*
     std::vector<std::string> walkAnim;
@@ -110,7 +110,7 @@ int main(){
         mySphere.setPosition(mp.x, mp.y, mp.z);
 
         glm::vec3 p;
-        if (Eend::colliding(mySphere, myPlane, &p)) {
+        if (Eend::colliding(mySphere, myTriangle, &p)) {
             mp.y += std::sqrt(2 * (p.y * p.y));
             fv = 0.0f;
             myModel.setPosition(mp.x, mp.y, mp.z);

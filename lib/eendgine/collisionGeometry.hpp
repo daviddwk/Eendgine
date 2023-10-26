@@ -39,6 +39,18 @@ namespace Eendgine {
             glm::vec3 _normal;
     };
 
+    class CollisionTriangle {
+        public:
+            CollisionTriangle(){ for (int i = 0; i < 3; i++) verts[i] = glm::vec3(0.0f); };
+            
+            void setVerts(glm::vec3 v0, glm::vec3 v1, glm::vec3 v2){ 
+                    verts[0] = v0;
+                    verts[1] = v1;
+                    verts[2] = v2; };
+            glm::vec3 verts[3];
+    };
+
     bool colliding(CollisionSphere s1, CollisionSphere s2, glm::vec3 *penetration);
     bool colliding(CollisionSphere s, CollisionPlane p, glm::vec3 *penetration);
+    bool colliding(CollisionSphere s, CollisionTriangle t, glm::vec3 *penetration);
 }
