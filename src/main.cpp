@@ -58,9 +58,10 @@ int main(){
     planeNormal = glm::normalize(planeNormal);
     myPlane.setNormal(planeNormal.x, planeNormal.y, planeNormal.z);
     myPlane.setPosition(0.0f, 0.0f, 0.0f);
-    Eend::CollisionTriangle myTriangle;
-
-    myTriangle.setVerts(glm::vec3(0,1.0,0), glm::vec3(0,0,1), glm::vec3(1,0,0));
+    Eend::CollisionTriangle myTriangle0;
+    Eend::CollisionTriangle myTriangle1;
+    myTriangle0.setVerts(glm::vec3(-5,0,-5), glm::vec3(-5,0,5), glm::vec3(5,0,5));
+    myTriangle1.setVerts(glm::vec3(-5,0,-5), glm::vec3(5,0,-5), glm::vec3(5,0,5));
     
     /*
     std::vector<std::string> walkAnim;
@@ -110,13 +111,20 @@ int main(){
         mySphere.setPosition(mp.x, mp.y, mp.z);
 
         glm::vec3 p;
-        if (Eend::colliding(mySphere, myTriangle, &p)) {
+        if (Eend::colliding(mySphere, myTriangle0, &p)) {
             mp.y += std::sqrt(2 * (p.y * p.y));
             fv = 0.0f;
             myModel.setPosition(mp.x, mp.y, mp.z);
             mySphere.setPosition(mp.x, mp.y, mp.z);
         }
-
+        if (Eend::colliding(mySphere, myTriangle1, &p)) {
+            mp.y += std::sqrt(2 * (p.y * p.y));
+            fv = 0.0f;
+            myModel.setPosition(mp.x, mp.y, mp.z);
+            mySphere.setPosition(mp.x, mp.y, mp.z);
+        }
+        glm::vec3 spherePos = mySphere.getPosition();
+        std::cout << spherePos.x << ' ' << spherePos.y << ' ' << spherePos.z << std::endl;
         
 
         Eend::Window::pollEvents();

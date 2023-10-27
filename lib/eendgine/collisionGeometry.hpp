@@ -49,6 +49,8 @@ namespace Eendgine {
                     verts[2] = v2; };
             glm::vec3 verts[3];
     };
+    
+    glm::vec3 closestTriPoint(glm::vec3 p, CollisionTriangle t);
 
     bool colliding(CollisionSphere s1, CollisionSphere s2, glm::vec3 *penetration);
     bool colliding(CollisionSphere s, CollisionPlane p, glm::vec3 *penetration);
