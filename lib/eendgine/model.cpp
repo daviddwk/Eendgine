@@ -1,14 +1,17 @@
 #include "model.hpp"
+#include "fatalError.hpp"
+#include "shader.hpp"
+#include <glad/glad.h>
 #include <glm/gtc/matrix_transform.hpp>
 
 namespace Eendgine {
-    Model::Model(std::string path, TextureCache &texCache): _texCache(texCache) 
+    Model::Model(std::string modelPath, TextureCache &texCache): _texCache(texCache) 
     {
         _position = glm::vec3(0.0f);
         _scale = glm::vec3(1.0f);
         _rotation = glm::vec2(1.0f);
         _textureIdx = 0;
-        loadModel(path);
+        loadModel(modelPath);
     }
 
     void Model::draw(ShaderProgram &shader, Camera3D &camera){
@@ -35,7 +38,7 @@ namespace Eendgine {
         glUniformMatrix4fv(transformLoc, 1, GL_FALSE, &transform[0][0]);
 
         for (auto &m : _meshes) {
-            m.draw(shader);
+            m.draw();
         }
     }
 
@@ -44,7 +47,7 @@ namespace Eendgine {
         const aiScene *scene = import.ReadFile(path, 
                 aiProcess_Triangulate | aiProcess_GenNormals);
         if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode){
-            std::cout << "ERROR loadModel" << path << std::endl;
+            fatalError("failed to load model");
             return;
         }
         _directory = path.substr(0, path.find_last_of('/'));

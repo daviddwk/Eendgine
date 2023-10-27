@@ -1,4 +1,5 @@
 #include "mesh.hpp"
+#include <glad/glad.h>
 #include <glm/glm.hpp>
 #include <string>
 
@@ -35,7 +36,7 @@ namespace Eendgine {
 
     }
 
-    void Mesh::draw(ShaderProgram &shader) { 
+    void Mesh::draw() { 
 
         glBindVertexArray(_VAO);
         glDrawElements(GL_TRIANGLES, _indices.size(), GL_UNSIGNED_INT, 0);

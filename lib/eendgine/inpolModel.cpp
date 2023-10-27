@@ -1,7 +1,7 @@
 #include "inpolModel.hpp"
 #include "fatalError.hpp"
+#include <glad/glad.h>
 #include <glm/gtc/matrix_transform.hpp>
-#include <iostream>
 
 namespace Eendgine {
     InpolModel::InpolModel(std::string modelPath, std::string nextModelPath, TextureCache &texCache): _texCache(texCache) 
@@ -40,7 +40,7 @@ namespace Eendgine {
         glUniform1f(inpolLoc, _inpolScale);
 
         for (auto &m : _meshes) {
-            m.draw(shader);
+            m.draw();
         }
     }
 
