@@ -2,8 +2,7 @@
 #include <eendgine/shader.hpp>
 #include <eendgine/sprite.hpp>
 #include <eendgine/textureCache.hpp>
-#include <eendgine/camera2D.hpp>
-#include <eendgine/camera3D.hpp>
+#include <eendgine/camera.hpp>
 #include <eendgine/frameLimiter.hpp>
 #include <eendgine/inputManager.hpp>
 #include <eendgine/model.hpp>

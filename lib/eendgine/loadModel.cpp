@@ -1,6 +1,9 @@
 #include "loadModel.hpp"
 #include "fatalError.hpp"
 
+
+#include <iostream>
+
 namespace Eendgine {
     void loadModel(std::string modelPath, std::vector<Vertex> &vertices,
             std::vector<unsigned int> &indices, 
@@ -29,7 +32,7 @@ namespace Eendgine {
         Assimp::Importer importer;
         Assimp::Importer nextImporter;
         const aiScene *scene = importer.ReadFile(modelPath, aiProcess_Triangulate | aiProcess_GenNormals);
-        const aiScene *nextScene = nextImporter.ReadFile(modelPath, aiProcess_Triangulate | aiProcess_GenNormals);
+        const aiScene *nextScene = nextImporter.ReadFile(nextModelPath, aiProcess_Triangulate | aiProcess_GenNormals);
         if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode ||
                 !nextScene || nextScene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !nextScene->mRootNode) {
             fatalError("failed to load model");
@@ -38,7 +41,9 @@ namespace Eendgine {
         // assuming they are in the same directory here
         std::string modelDir = modelPath.substr(0, modelPath.find_last_of('/'));
         std::vector<aiMesh*> aiMeshes;
+        std::vector<aiMesh*> nextAiMeshes;
         processNode(scene->mRootNode, scene, aiMeshes);
+        processNode(nextScene->mRootNode, nextScene, nextAiMeshes);
 
         std::vector<Vertex> tmpVertices;
         std::vector<unsigned int> tmpIndices;
@@ -58,14 +63,15 @@ namespace Eendgine {
         tmpVertices.clear();
         tmpIndices.clear();
         startIdx = 0;
-        for (aiMesh *m : aiMeshes){
-            processMesh(m, scene, tmpVertices, indices, startIdx);
+        for (aiMesh *m : nextAiMeshes){
+            processMesh(m, nextScene, tmpVertices, indices, startIdx);
             startIdx += m->mNumVertices;
         }
         for (int i = 0; i < vertices.size(); i++){
             vertices[i].nextNormal = tmpVertices[i].normal;
             vertices[i].nextPosition = tmpVertices[i].position;
         }
+        std::cout << vertices[0].position.x << ' ' << vertices[0].nextPosition.x << std::endl;
         processTextures(modelDir, scene, textures, texCache);
     }
 

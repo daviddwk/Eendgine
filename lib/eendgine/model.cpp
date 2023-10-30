@@ -77,7 +77,6 @@ namespace Eendgine {
         
         unsigned int tmpSize = _vertices.size();
         unsigned int tmpIdxSize = _indices.size();
-        std::cout << tmpSize << ' ' << tmpIdxSize << std::endl;
 
         glGenVertexArrays(1, &_VAO);
         glBindVertexArray(_VAO);

@@ -2,8 +2,7 @@
 #include "shader.hpp"
 #include "texture.hpp"
 #include "vertex.hpp"
-#include "camera2D.hpp"
-#include "camera3D.hpp"
+#include "camera.hpp"
 #include <glm/glm.hpp>
 #include <vector>
 

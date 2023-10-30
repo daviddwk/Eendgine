@@ -1,7 +1,7 @@
 #pragma once
 #include "textureCache.hpp"
 #include "model.hpp"
-#include "camera3D.hpp"
+#include "camera.hpp"
 #include "shader.hpp"
 #include <glm/glm.hpp>
 #include <vector>

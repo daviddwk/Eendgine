@@ -1,7 +1,7 @@
 #pragma once
 #include "vertex.hpp"
 #include "textureCache.hpp"
-#include "camera3D.hpp"
+#include "camera.hpp"
 #include "shader.hpp"
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
