@@ -13,8 +13,10 @@ namespace Eendgine {
         std::string modelDir = modelPath.substr(0, modelPath.find_last_of('/'));
         std::vector<aiMesh*> aiMeshes;
         processNode(scene->mRootNode, scene, aiMeshes);
+        unsigned int startIdx = 0;
         for (aiMesh *m : aiMeshes){
-            processMesh(m, scene, vertices, indices);
+            processMesh(m, scene, vertices, indices, startIdx);
+            startIdx += m->mNumVertices;
         }
         processTextures(modelDir, scene, textures, texCache);
     }
@@ -49,7 +51,7 @@ namespace Eendgine {
         }
     }
     
-    void processMesh(aiMesh *mesh, const aiScene *scene, std::vector<Vertex> &vertices, std::vector<unsigned int> &indices) {
+    void processMesh(aiMesh *mesh, const aiScene *scene, std::vector<Vertex> &vertices, std::vector<unsigned int> &indices, unsigned int startIdx) {
         for (unsigned int i = 0; i < mesh->mNumVertices; i++) {
             Vertex vertex;
             vertex.position = glm::vec3(
@@ -81,7 +83,8 @@ namespace Eendgine {
         for (unsigned int i = 0; i < mesh->mNumFaces; i++) {
             aiFace face = mesh->mFaces[i];
             for (unsigned int j = 0; j < face.mNumIndices; j++) {
-                indices.push_back(face.mIndices[j]);
+                unsigned int currIdx = face.mIndices[j];
+                indices.push_back(face.mIndices[j] + startIdx);
             }
         }
     }
