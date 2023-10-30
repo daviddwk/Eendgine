@@ -1,5 +1,5 @@
 #pragma once
-#include "mesh.hpp"
+#include "vertex.hpp"
 #include "textureCache.hpp"
 #include "camera3D.hpp"
 #include "shader.hpp"
@@ -61,15 +61,12 @@ namespace Eendgine {
             glm::vec2 _rotation;
             float _inpolScale = 0.0f;
             unsigned int _textureIdx = 0;
-
+            
+            unsigned int _VAO, _EBO, _VBO;
+            std::vector<InpolVertex> _vertices;
+            std::vector<unsigned int> _indices;
             std::vector<Texture> _textures;
-            std::vector<InpolMesh> _meshes;
-            //std::vector<InpolMesh> _nextMeshes;
             std::string _directory;
-
-            void loadModel(std::string modelPath, std::string nextModelPath);
-            void processNode(aiNode *node, aiNode *nextNode, const aiScene *scene, const aiScene *nextScene);
-            InpolMesh processMesh(aiMesh *mesh, aiMesh *nextMesh, const aiScene *scene);
             
             std::vector<Texture> loadMaterialTextures(aiMaterial *mat, aiTextureType type);
     };
