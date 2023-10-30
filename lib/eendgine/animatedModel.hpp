@@ -1,6 +1,6 @@
 #pragma once
 #include "textureCache.hpp"
-#include "inpolModel.hpp"
+#include "model.hpp"
 #include "camera3D.hpp"
 #include "shader.hpp"
 #include <glm/glm.hpp>

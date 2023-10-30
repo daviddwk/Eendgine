@@ -32,7 +32,7 @@ int main(){
     
     Eend::ShaderProgram myShader("shaders/shader.vert", "shaders/shader.frag");
     Eend::ShaderProgram myShader3D("shaders/shader3D.vert", "shaders/shader3D.frag");
-    Eend::ShaderProgram myLerpShader("shaders/shaderInpol.vert", "shaders/shaderInpol.frag");
+    Eend::ShaderProgram myInpolShader("shaders/shaderInpol.vert", "shaders/shaderInpol.frag");
 
     Eend::Camera3D my3DCamera(1000.0f / 1000.0f,
             glm::vec3(20.0f, 15.0f, 20.0f), glm::vec3(0.0f, 0.0f, 0.0f));
@@ -63,16 +63,18 @@ int main(){
     myTriangle0.setVerts(glm::vec3(-5,0,-5), glm::vec3(-5,0,5), glm::vec3(5,0,5));
     myTriangle1.setVerts(glm::vec3(-5,0,-5), glm::vec3(5,0,-5), glm::vec3(5,0,5));
     
-    /*
+    
     std::vector<std::string> walkAnim;
     for (int i = 16; i <= 55; i++) {
         walkAnim.emplace_back("resources/ost_walk/ost" + std::to_string(i) + ".obj");
     }
     myModel.setScale(1.0f, 1.0f, 1.0f);
     myModel.setPosition(0.0f, 0.0f, 0.0f);
-    myAnimatedModel.setRot(180.0f, 180.0f);
-    */
 
+    Eend::AnimatedModel myAnimatedModel(walkAnim, myTextureCache);
+    myAnimatedModel.setPosition(0.0f, 0.0f, 0.0f);
+    myAnimatedModel.setScale(0.8f, 0.8f, 0.8f);
+    myAnimatedModel.setAnim(0.0f);
     
     float fv = 0.0f;
 
@@ -83,7 +85,9 @@ int main(){
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         
         myModel.draw(myShader3D, my3DCamera);
+        myAnimatedModel.draw(myInpolShader, my3DCamera);
         my3DSprite.draw(myShader3D, my3DCamera);
+        myAnimatedModel.setAnim(myAnimatedModel.getAnim() + 0.01);
 
         glClear(GL_DEPTH_BUFFER_BIT);
 
@@ -124,7 +128,6 @@ int main(){
             mySphere.setPosition(mp.x, mp.y, mp.z);
         }
         glm::vec3 spherePos = mySphere.getPosition();
-        std::cout << spherePos.x << ' ' << spherePos.y << ' ' << spherePos.z << std::endl;
         
 
         Eend::Window::pollEvents();

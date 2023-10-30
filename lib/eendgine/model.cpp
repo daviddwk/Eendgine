@@ -1,6 +1,7 @@
 #include "model.hpp"
 #include "fatalError.hpp"
 #include "shader.hpp"
+#include "loadModel.hpp"
 #include <glad/glad.h>
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -41,43 +42,100 @@ namespace Eendgine {
             m.draw();
         }
     }
+    InpolModel::InpolModel(std::string modelPath, std::string nextModelPath, TextureCache &texCache): _texCache(texCache) 
+    {
+        _inpolScale = 0.0f;
+        _position = glm::vec3(0.0f);
+        _scale = glm::vec3(1.0f);
+        _rotation = glm::vec2(0.0f);
+        _textureIdx = 0;
+        loadModel(modelPath, nextModelPath);
+    }
 
-    void loadModel(std::string modelPath, std::vector<Mesh> &meshes, std::vector<Texture> &textures, TextureCache &texCache) {
-        Assimp::Importer import;
-        const aiScene *scene = import.ReadFile(modelPath, 
-                aiProcess_Triangulate | aiProcess_GenNormals);
+    void InpolModel::draw(ShaderProgram &shader, Camera3D &camera){
+        shader.use();
+
+        // using RGB(1,0,1) for transparent
+        // parts of the texture using shaders
+        glActiveTexture(GL_TEXTURE0);
+        std::string texName = "texture_diffuse";
+        glUniform1i(glGetUniformLocation(shader.programId, texName.c_str()), 0);
+        glBindTexture(GL_TEXTURE_2D, _textures[_textureIdx].id);
+        
+        glm::mat4 transform = glm::mat4(1.0f);
+        transform = glm::translate(transform, _position);
+        transform = glm::rotate(transform, glm::radians(-_rotation.x), glm::vec3( 0.0f, 1.0f, 0.0f));
+        transform = glm::rotate(transform, glm::radians(-_rotation.y), glm::vec3(-1.0f, 0.0f, 0.0f));
+        transform = glm::scale(transform, _scale);
+
+        unsigned int projectionLoc = glGetUniformLocation(shader.programId, "projection");
+        unsigned int viewLoc = glGetUniformLocation(shader.programId, "view");
+        unsigned int transformLoc = glGetUniformLocation(shader.programId, "transform");
+        unsigned int inpolLoc = glGetUniformLocation(shader.programId, "inpol");
+        glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, &camera.projectionMat[0][0]);
+        glUniformMatrix4fv(viewLoc, 1, GL_FALSE, &camera.viewMat[0][0]);
+        glUniformMatrix4fv(transformLoc, 1, GL_FALSE, &transform[0][0]);
+        glUniform1f(inpolLoc, _inpolScale);
+
+        for (auto &m : _meshes) {
+            m.draw();
+        }
+    }
+
+    void InpolModel::loadModel(std::string modelPath, std::string nextModelPath) {
+        Assimp::Importer importer;
+        Assimp::Importer nextImport;
+        const aiScene *scene = importer.ReadFile(modelPath, aiProcess_Triangulate | aiProcess_GenNormals);
+        const aiScene *nextScene = nextImport.ReadFile(nextModelPath, aiProcess_Triangulate | aiProcess_GenNormals);
         if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode){
             fatalError("failed to load model");
             return;
+        } else if (!nextScene || nextScene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !nextScene->mRootNode) {
+            fatalError("failed to load model");
         }
-        std::string modelDir = modelPath.substr(0, modelPath.find_last_of('/'));
-        std::vector<aiMesh*> aiMeshes;
-        processNode(scene->mRootNode, scene, aiMeshes);
-        for (aiMesh *m : aiMeshes){
-            meshes.push_back(processMesh(m, scene));
-        }
-        processTextures(modelDir, scene, textures, texCache);
+        // for now assume that both are in the same directory
+        _directory = modelPath.substr(0, modelPath.find_last_of('/'));
+        processNode(scene->mRootNode, nextScene->mRootNode, scene, nextScene);
     }
 
-    void processNode(aiNode *node, const aiScene *scene, std::vector<aiMesh*> &aiMeshes) {
+    void InpolModel::processNode(aiNode *node, aiNode *nextNode, const aiScene *scene, const aiScene *nextScene) {
+        // add error checking to make sure mNumMeshes is the same
+        // among other things
+        if (node->mNumMeshes != nextNode->mNumMeshes) {
+            fatalError("model NumMeshes mismatch");
+        }
         for (unsigned int i = 0; i < node->mNumMeshes; i++) {
-            aiMeshes.push_back(scene->mMeshes[node->mMeshes[i]]);
+            aiMesh *mesh = scene->mMeshes[node->mMeshes[i]];
+            aiMesh *nextMesh = nextScene->mMeshes[nextNode->mMeshes[i]]; 
+            _meshes.push_back(processMesh(mesh, nextMesh, scene));
+        }
+        if (node->mNumChildren != nextNode->mNumChildren) {
+            fatalError("model NumChildren mismatch");
         }
         for(unsigned int i = 0; i < node->mNumChildren; i++) {
-            processNode(node->mChildren[i], scene, aiMeshes);
+            processNode(node->mChildren[i], nextNode->mChildren[i], scene, nextScene);
         }
     }
     
-    Mesh processMesh(aiMesh *mesh, const aiScene *scene) {
-        std::vector<Vertex> vertices;
+    InpolMesh InpolModel::processMesh(aiMesh *mesh, aiMesh *nextMesh, const aiScene *scene) {
+        std::vector<InpolVertex> vertices;
         std::vector<unsigned int> indices;
-
+        
+        if (mesh->mNumVertices != nextMesh->mNumVertices) {
+            fatalError("mesh NumVertices mismatch");
+        } else if (mesh->HasNormals() != nextMesh->HasNormals()) {
+            fatalError("mesh HasNormals mismatch");
+        }
         for (unsigned int i = 0; i < mesh->mNumVertices; i++) {
-            Vertex vertex;
+            InpolVertex vertex;
             vertex.position = glm::vec3(
                     mesh->mVertices[i].x,
                     mesh->mVertices[i].y,
                     mesh->mVertices[i].z);
+            vertex.nextPosition = glm::vec3(
+                    nextMesh->mVertices[i].x,
+                    nextMesh->mVertices[i].y,
+                    nextMesh->mVertices[i].z);
             if (mesh->mColors[0]) {
                 vertex.color = glm::vec4(
                         mesh->mColors[0][i].r,
@@ -97,26 +155,49 @@ namespace Eendgine {
                         mesh->mNormals[i].x,
                         mesh->mNormals[i].y,
                         mesh->mNormals[i].z);        
+                vertex.nextNormal = glm::vec3(
+                        nextMesh->mNormals[i].x,
+                        nextMesh->mNormals[i].y,
+                        nextMesh->mNormals[i].z);        
             }
             vertices.push_back(vertex);
         }
+        
+        if (mesh->mNumFaces != nextMesh->mNumFaces) {
+            fatalError("mesh NumFaces mismatch");
+        }
         for (unsigned int i = 0; i < mesh->mNumFaces; i++) {
             aiFace face = mesh->mFaces[i];
+            if (face.mNumIndices != nextMesh->mFaces[i].mNumIndices) {
+                fatalError("mesh NumFaces mismatch");
+            }
             for (unsigned int j = 0; j < face.mNumIndices; j++) {
                 indices.push_back(face.mIndices[j]);
             }
         }
-        return Mesh(vertices, indices);
-    }
-    void processTextures(std::string texDir, const aiScene *scene, std::vector<Texture> &textures, TextureCache &texCache){
+        
         for (unsigned int i = 0; i < scene->mNumMaterials; i++){
             aiMaterial *material  = scene->mMaterials[i];
-            for (unsigned int i = 0; i < material->GetTextureCount(aiTextureType_DIFFUSE); i++) {
-                aiString str;
-                material->GetTexture(aiTextureType_DIFFUSE, i, &str);
-                Texture texture = texCache.getTexture(texDir + '/' + (std::string)str.C_Str());
-                textures.push_back(texture);
-            }
+            std::vector<Texture> diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE);
+            _textures.insert(_textures.end(), diffuseMaps.begin(), diffuseMaps.end());
+            
+            // add other map types here whenever
+            //
+            //std::vector<Texture> opacityMaps = loadMaterialTextures(material, aiTextureType_OPACITY, "opacity");
+            //textures.insert(textures.end(), opacityMaps.begin(), opacityMaps.end());
         }
+        return InpolMesh(vertices, indices, _textures);
     }
+
+    std::vector<Texture> InpolModel::loadMaterialTextures(aiMaterial *mat, aiTextureType type){
+        std::vector<Texture> textures;
+        for (unsigned int i = 0; i < mat->GetTextureCount(type); i++) {
+            aiString str;
+            mat->GetTexture(type, i, &str);
+            Texture texture = _texCache.getTexture(_directory + '/' + (std::string)str.C_Str());
+            textures.push_back(texture);
+        }
+        return textures;
+    }
+
 }
