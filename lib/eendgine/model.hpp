@@ -11,6 +11,11 @@
 #include <vector>
 
 namespace Eendgine {
+    void loadModel(std::string modelPath, std::vector<Mesh> &meshes, std::vector<Texture> &textures, TextureCache &texCache);
+    void processNode(aiNode *node, const aiScene *scene, std::vector<aiMesh*> &aiMeshes);
+    Mesh processMesh(aiMesh *mesh, const aiScene *scene);
+    void processTextures(std::string texDir, const aiScene *scene, std::vector<Texture> &textures, TextureCache &texCache);
+
     class Model {
         public:
             Model(std::string path, TextureCache &texCache);
@@ -33,12 +38,8 @@ namespace Eendgine {
 
             std::vector<Texture> _textures;
             std::vector<Mesh> _meshes;
-            std::string _directory;
 
-            void loadModel(std::string path);
-            void processNode(aiNode *node, const aiScene *scene);
-            Mesh processMesh(aiMesh *mesh, const aiScene *scene);
             
-            std::vector<Texture> loadMaterialTextures(aiMaterial *mat, aiTextureType type);
     };
+
 }

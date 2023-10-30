@@ -34,7 +34,7 @@ namespace Eendgine {
     }
 
     glm::vec3 closestTriPoint(glm::vec3 p, CollisionTriangle t) {
-        // thanks to Real-Time CollisionDetection by Christer Ericson
+        // thanks to Real-Time Collision Detection by Christer Ericson
         glm::vec3 a = t.verts[0];
         glm::vec3 b = t.verts[1];
         glm::vec3 c = t.verts[2];

@@ -5,7 +5,7 @@
 
 namespace Eendgine {
 
-    Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures) {
+    Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices) {
         _vertices = vertices;
         _indices = indices;
         setup();

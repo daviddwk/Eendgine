@@ -11,7 +11,7 @@ namespace Eendgine {
         _scale = glm::vec3(1.0f);
         _rotation = glm::vec2(1.0f);
         _textureIdx = 0;
-        loadModel(modelPath);
+        loadModel(modelPath, _meshes, _textures, _texCache);
     }
 
     void Model::draw(ShaderProgram &shader, Camera3D &camera){
@@ -42,30 +42,33 @@ namespace Eendgine {
         }
     }
 
-    void Model::loadModel(std::string path) {
+    void loadModel(std::string modelPath, std::vector<Mesh> &meshes, std::vector<Texture> &textures, TextureCache &texCache) {
         Assimp::Importer import;
-        const aiScene *scene = import.ReadFile(path, 
+        const aiScene *scene = import.ReadFile(modelPath, 
                 aiProcess_Triangulate | aiProcess_GenNormals);
         if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode){
             fatalError("failed to load model");
             return;
         }
-        _directory = path.substr(0, path.find_last_of('/'));
-        processNode(scene->mRootNode, scene);
-
+        std::string modelDir = modelPath.substr(0, modelPath.find_last_of('/'));
+        std::vector<aiMesh*> aiMeshes;
+        processNode(scene->mRootNode, scene, aiMeshes);
+        for (aiMesh *m : aiMeshes){
+            meshes.push_back(processMesh(m, scene));
+        }
+        processTextures(modelDir, scene, textures, texCache);
     }
 
-    void Model::processNode(aiNode *node, const aiScene *scene) {
+    void processNode(aiNode *node, const aiScene *scene, std::vector<aiMesh*> &aiMeshes) {
         for (unsigned int i = 0; i < node->mNumMeshes; i++) {
-            aiMesh *mesh = scene->mMeshes[node->mMeshes[i]];
-            _meshes.push_back(processMesh(mesh, scene));
+            aiMeshes.push_back(scene->mMeshes[node->mMeshes[i]]);
         }
         for(unsigned int i = 0; i < node->mNumChildren; i++) {
-            processNode(node->mChildren[i], scene);
+            processNode(node->mChildren[i], scene, aiMeshes);
         }
     }
     
-    Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene) {
+    Mesh processMesh(aiMesh *mesh, const aiScene *scene) {
         std::vector<Vertex> vertices;
         std::vector<unsigned int> indices;
 
@@ -97,36 +100,23 @@ namespace Eendgine {
             }
             vertices.push_back(vertex);
         }
-       
         for (unsigned int i = 0; i < mesh->mNumFaces; i++) {
             aiFace face = mesh->mFaces[i];
             for (unsigned int j = 0; j < face.mNumIndices; j++) {
                 indices.push_back(face.mIndices[j]);
             }
         }
-        
+        return Mesh(vertices, indices);
+    }
+    void processTextures(std::string texDir, const aiScene *scene, std::vector<Texture> &textures, TextureCache &texCache){
         for (unsigned int i = 0; i < scene->mNumMaterials; i++){
             aiMaterial *material  = scene->mMaterials[i];
-            std::vector<Texture> diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE);
-            _textures.insert(_textures.end(), diffuseMaps.begin(), diffuseMaps.end());
-            
-            // add other map types here whenever
-            //
-            //std::vector<Texture> opacityMaps = loadMaterialTextures(material, aiTextureType_OPACITY, "opacity");
-            //textures.insert(textures.end(), opacityMaps.begin(), opacityMaps.end());
+            for (unsigned int i = 0; i < material->GetTextureCount(aiTextureType_DIFFUSE); i++) {
+                aiString str;
+                material->GetTexture(aiTextureType_DIFFUSE, i, &str);
+                Texture texture = texCache.getTexture(texDir + '/' + (std::string)str.C_Str());
+                textures.push_back(texture);
+            }
         }
-        return Mesh(vertices, indices, _textures);
     }
-
-    std::vector<Texture> Model::loadMaterialTextures(aiMaterial *mat, aiTextureType type){
-        std::vector<Texture> textures;
-        for (unsigned int i = 0; i < mat->GetTextureCount(type); i++) {
-            aiString str;
-            mat->GetTexture(type, i, &str);
-            Texture texture = _texCache.getTexture(_directory + '/' + (std::string)str.C_Str());
-            textures.push_back(texture);
-        }
-        return textures;
-    }
-
 }

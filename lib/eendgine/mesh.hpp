@@ -9,7 +9,7 @@ namespace Eendgine {
 
     class Mesh {
         public:
-            Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures);
+            Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices);
             void draw();
         private:
             void setup();

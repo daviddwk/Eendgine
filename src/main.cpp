@@ -35,7 +35,7 @@ int main(){
     Eend::ShaderProgram myLerpShader("shaders/shaderInpol.vert", "shaders/shaderInpol.frag");
 
     Eend::Camera3D my3DCamera(1000.0f / 1000.0f,
-            glm::vec3(15.0f, 10.0f, 15.0f), glm::vec3(0.0f, 0.0f, 0.0f));
+            glm::vec3(20.0f, 15.0f, 20.0f), glm::vec3(0.0f, 0.0f, 0.0f));
     
     Eend::Camera2D myCamera(1000, 1000);
     myCamera.update();
@@ -49,7 +49,7 @@ int main(){
     my3DSprite.setSize(10.0f, 10.0f);
 
     glm::vec3 mp = glm::vec3(0.0f, 3.0f, 0.0f);
-    Eend::Model myModel("resources/cube/cube.obj", myTextureCache);
+    Eend::Model myModel("resources/ost/ost.obj", myTextureCache);
     myModel.setScale(1.0f, 1.0f, 1.0f);
     myModel.setPosition(mp.x, mp.y, mp.z);
     Eend::CollisionSphere mySphere(mp.x, mp.y, mp.z , 0.5f);
