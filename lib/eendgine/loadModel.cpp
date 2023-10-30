@@ -2,7 +2,9 @@
 #include "fatalError.hpp"
 
 namespace Eendgine {
-    void loadModel(std::string modelPath, std::vector<Vertex> &vertices, std::vector<unsigned int> &indices, std::vector<Texture> &textures, TextureCache &texCache) {
+    void loadModel(std::string modelPath, std::vector<Vertex> &vertices,
+            std::vector<unsigned int> &indices, 
+            std::vector<Texture> &textures, TextureCache &texCache) {
         Assimp::Importer importer;
         const aiScene *scene = importer.ReadFile(modelPath, 
                 aiProcess_Triangulate | aiProcess_GenNormals);
@@ -76,7 +78,9 @@ namespace Eendgine {
         }
     }
     
-    void processMesh(aiMesh *mesh, const aiScene *scene, std::vector<Vertex> &vertices, std::vector<unsigned int> &indices, unsigned int startIdx) {
+    void processMesh(aiMesh *mesh, const aiScene *scene, 
+            std::vector<Vertex> &vertices, std::vector<unsigned int> &indices, 
+            unsigned int startIdx) {
         for (unsigned int i = 0; i < mesh->mNumVertices; i++) {
             Vertex vertex;
             vertex.position = glm::vec3(
@@ -114,7 +118,8 @@ namespace Eendgine {
         }
     }
 
-    void processTextures(std::string texDir, const aiScene *scene, std::vector<Texture> &textures, TextureCache &texCache){
+    void processTextures(std::string texDir, const aiScene *scene, 
+            std::vector<Texture> &textures, TextureCache &texCache){
         for (unsigned int i = 0; i < scene->mNumMaterials; i++){
             aiMaterial *material  = scene->mMaterials[i];
             for (unsigned int i = 0; i < material->GetTextureCount(aiTextureType_DIFFUSE); i++) {

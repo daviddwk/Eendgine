@@ -1,8 +1,7 @@
 #pragma once
 #include <string>
 
-namespace Eendgine
-{
+namespace Eendgine {
     struct Texture {
         uint id = 0;
         int width = 0;
