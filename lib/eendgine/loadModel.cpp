@@ -2,7 +2,7 @@
 #include "fatalError.hpp"
 
 namespace Eendgine {
-    void loadModel(std::string modelPath, std::vector<Mesh> &meshes, std::vector<Texture> &textures, TextureCache &texCache) {
+    void loadModel(std::string modelPath, std::vector<Vertex> &vertices, std::vector<unsigned int> &indices, std::vector<Texture> &textures, TextureCache &texCache) {
         Assimp::Importer importer;
         const aiScene *scene = importer.ReadFile(modelPath, 
                 aiProcess_Triangulate | aiProcess_GenNormals);
@@ -14,7 +14,7 @@ namespace Eendgine {
         std::vector<aiMesh*> aiMeshes;
         processNode(scene->mRootNode, scene, aiMeshes);
         for (aiMesh *m : aiMeshes){
-            meshes.push_back(processMesh(m, scene));
+            processMesh(m, scene, vertices, indices);
         }
         processTextures(modelDir, scene, textures, texCache);
     }
@@ -49,10 +49,7 @@ namespace Eendgine {
         }
     }
     
-    Mesh processMesh(aiMesh *mesh, const aiScene *scene) {
-        std::vector<Vertex> vertices;
-        std::vector<unsigned int> indices;
-
+    void processMesh(aiMesh *mesh, const aiScene *scene, std::vector<Vertex> &vertices, std::vector<unsigned int> &indices) {
         for (unsigned int i = 0; i < mesh->mNumVertices; i++) {
             Vertex vertex;
             vertex.position = glm::vec3(
@@ -87,7 +84,6 @@ namespace Eendgine {
                 indices.push_back(face.mIndices[j]);
             }
         }
-        return Mesh(vertices, indices);
     }
 
     void processTextures(std::string texDir, const aiScene *scene, std::vector<Texture> &textures, TextureCache &texCache){

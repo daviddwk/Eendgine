@@ -8,8 +8,8 @@
 #include <vector>
 
 namespace Eendgine {
-    void loadModel(std::string modelPath, std::vector<Mesh> &meshes, std::vector<Texture> &textures, TextureCache &texCache);
+    void loadModel(std::string modelPath, std::vector<Vertex> &vertices, std::vector<unsigned int> &indices, std::vector<Texture> &textures, TextureCache &texCache);
     void processNode(aiNode *node, const aiScene *scene, std::vector<aiMesh*> &aiMeshes);
-    Mesh processMesh(aiMesh *mesh, const aiScene *scene);
+    void processMesh(aiMesh *mesh, const aiScene *scene, std::vector<Vertex> &vertices, std::vector<unsigned int> &indices);
     void processTextures(std::string texDir, const aiScene *scene, std::vector<Texture> &textures, TextureCache &texCache);
 }

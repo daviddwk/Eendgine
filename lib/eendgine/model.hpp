@@ -30,9 +30,11 @@ namespace Eendgine {
             glm::vec3 _scale;
             glm::vec2 _rotation;
             unsigned int _textureIdx = 0;
-
+            
+            unsigned int _VAO, _EBO, _VBO;
+            std::vector<Vertex> _vertices;
+            std::vector<unsigned int> _indices;
             std::vector<Texture> _textures;
-            std::vector<Mesh> _meshes; 
     };
 
     class InpolModel {
