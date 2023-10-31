@@ -63,6 +63,7 @@ int main(){
     
     std::vector<Eend::CollisionTriangle> collisionOst;
     loadCollisionModel("resources/ost/ost.obj", collisionOst);
+    std::cout << collisionOst.size() << std::endl;
 
     std::vector<std::string> walkAnim;
     for (int i = 16; i <= 55; i++) {

@@ -90,7 +90,6 @@ namespace Eendgine {
             vertices[i].nextNormal = tmpVertices[i].normal;
             vertices[i].nextPosition = tmpVertices[i].position;
         }
-        std::cout << vertices[0].position.x << ' ' << vertices[0].nextPosition.x << std::endl;
         processTextures(modelDir, scene, textures, texCache);
     }
 
