@@ -61,7 +61,9 @@ int main(){
     myTriangle0.setVerts(glm::vec3(-5,0,-5), glm::vec3(-5,0,5), glm::vec3(5,0,5));
     myTriangle1.setVerts(glm::vec3(-5,0,-5), glm::vec3(5,0,-5), glm::vec3(5,0,5));
     
-    
+    std::vector<Eend::CollisionTriangle> collisionOst;
+    loadCollisionModel("resources/ost/ost.obj", collisionOst);
+
     std::vector<std::string> walkAnim;
     for (int i = 16; i <= 55; i++) {
         walkAnim.emplace_back("resources/ost_walk/ost" + std::to_string(i) + ".obj");

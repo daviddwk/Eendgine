@@ -11,6 +11,8 @@ namespace Eendgine {
     void loadModel(std::string modelPath, 
             std::vector<Vertex> &vertices, std::vector<unsigned int> &indices, 
             std::vector<Texture> &textures, TextureCache &texCache);
+    void loadModel(std::string modelPath, 
+            std::vector<Vertex> &vertices, std::vector<unsigned int> &indices);
     void loadModel(std::string modelPath, std::string nextModelPath, 
             std::vector<InpolVertex> &vertices, std::vector<unsigned int> &indices, 
             std::vector<Texture> &textures, TextureCache &texCache);

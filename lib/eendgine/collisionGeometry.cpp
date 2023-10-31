@@ -1,4 +1,7 @@
 #include "collisionGeometry.hpp"
+#include "vertex.hpp"
+#include "loadModel.hpp"
+#include "fatalError.hpp"
 #include <cmath>
 #include <iostream>
 
@@ -80,6 +83,21 @@ namespace Eendgine {
         float v = vb / (va + vb + vc);
         float w = 1.0f - u - v; // = vc / (va + vb + vc)
         return u * a + v * b + w * c;
+    }
+
+    void loadCollisionModel(std::string modelPath, std::vector<CollisionTriangle> collisionModel) {
+        std::vector <Vertex> vertices;
+        std::vector <unsigned int> indices;
+        loadModel(modelPath, vertices, indices);
+        if (indices.size() % 3 != 0) {
+            fatalError("collisionModel indices not divisible by 0");
+        }
+        for (int i = 0; i < collisionModel.size(); i += 3){
+            collisionModel.push_back(CollisionTriangle(
+                        vertices[indices[i]].position,
+                        vertices[indices[i + 1]].position,
+                        vertices[indices[i + 2]].position));
+        }
     }
 
 }

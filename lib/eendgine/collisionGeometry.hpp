@@ -1,6 +1,8 @@
 #pragma once
 #include <glm/glm.hpp>
 #include <cmath>
+#include <string>
+#include <vector>
 
 namespace Eendgine {
     class CollisionSphere {
@@ -42,11 +44,16 @@ namespace Eendgine {
     class CollisionTriangle {
         public:
             CollisionTriangle(){ for (int i = 0; i < 3; i++) verts[i] = glm::vec3(0.0f); };
-            
+            CollisionTriangle(glm::vec3 v0, glm::vec3 v1, glm::vec3 v2){ 
+                verts[0] = v0;
+                verts[1] = v1;
+                verts[2] = v2;
+            };
             void setVerts(glm::vec3 v0, glm::vec3 v1, glm::vec3 v2){ 
-                    verts[0] = v0;
-                    verts[1] = v1;
-                    verts[2] = v2; };
+                verts[0] = v0;
+                verts[1] = v1;
+                verts[2] = v2;
+            };
             glm::vec3 verts[3];
     };
     
@@ -55,4 +62,6 @@ namespace Eendgine {
     bool colliding(CollisionSphere s1, CollisionSphere s2, glm::vec3 *penetration);
     bool colliding(CollisionSphere s, CollisionPlane p, glm::vec3 *penetration);
     bool colliding(CollisionSphere s, CollisionTriangle t, glm::vec3 *penetration);
+
+    void loadCollisionModel(std::string modelPath, std::vector<CollisionTriangle> collisionModel);
 }

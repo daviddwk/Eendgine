@@ -5,6 +5,7 @@
 #include <iostream>
 
 namespace Eendgine {
+ 
     void loadModel(std::string modelPath, std::vector<Vertex> &vertices,
             std::vector<unsigned int> &indices, 
             std::vector<Texture> &textures, TextureCache &texCache) {
@@ -24,6 +25,24 @@ namespace Eendgine {
             startIdx += m->mNumVertices;
         }
         processTextures(modelDir, scene, textures, texCache);
+    }
+    
+    void loadModel(std::string modelPath, std::vector<Vertex> &vertices, std::vector<unsigned int> &indices) {
+        Assimp::Importer importer;
+        const aiScene *scene = importer.ReadFile(modelPath, 
+                aiProcess_Triangulate | aiProcess_GenNormals);
+        if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode){
+            fatalError("failed to load model");
+            return;
+        }
+        std::string modelDir = modelPath.substr(0, modelPath.find_last_of('/'));
+        std::vector<aiMesh*> aiMeshes;
+        processNode(scene->mRootNode, scene, aiMeshes);
+        unsigned int startIdx = 0;
+        for (aiMesh *m : aiMeshes){
+            processMesh(m, scene, vertices, indices, startIdx);
+            startIdx += m->mNumVertices;
+        }
     }
 
     void loadModel(std::string modelPath, std::string nextModelPath, 
