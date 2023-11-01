@@ -43,25 +43,45 @@ namespace Eendgine {
 
     class CollisionTriangle {
         public:
-            CollisionTriangle(){ for (int i = 0; i < 3; i++) verts[i] = glm::vec3(0.0f); };
-            CollisionTriangle(glm::vec3 v0, glm::vec3 v1, glm::vec3 v2){ 
-                verts[0] = v0;
-                verts[1] = v1;
-                verts[2] = v2;
+            CollisionTriangle(){ 
+                setVerts(glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(0.0f)); 
             };
-            void setVerts(glm::vec3 v0, glm::vec3 v1, glm::vec3 v2){ 
-                verts[0] = v0;
-                verts[1] = v1;
-                verts[2] = v2;
+            CollisionTriangle(glm::vec3 v0, glm::vec3 v1, glm::vec3 v2) { 
+                setVerts(v0, v1, v2);
             };
-            glm::vec3 verts[3];
+            void setVerts(glm::vec3 v0, glm::vec3 v1, glm::vec3 v2) { 
+                _verts[0] = v0;
+                _verts[1] = v1;
+                _verts[2] = v2;
+            };
+            std::tuple<glm::vec3, glm::vec3, glm::vec3> getVerts() {
+                return {_verts[0], _verts[1], _verts[2]};
+            };
+        private:
+            glm::vec3 _verts[3];
+    };
+
+    class CollisionModel {
+        public:
+            CollisionModel(std::string modelPath);
+            void setPosition(glm::vec3 position) { _position = position; };
+            void setScale(glm::vec3 scale) { _scale = scale; };
+            glm::vec3 getPosition() { return _position; }; 
+            glm::vec3 getScale() { return _scale; }; 
+            std::vector<CollisionTriangle>& getTris() { return _collisionTris; };
+        private:
+            std::vector<CollisionTriangle> _collisionTris;
+            glm::vec3 _position = glm::vec3(0.0f);
+            glm::vec3 _scale = glm::vec3(1.0f);
     };
     
-    glm::vec3 closestTriPoint(glm::vec3 p, CollisionTriangle t);
+    glm::vec3 closestTriPoint(glm::vec3 p, CollisionTriangle t, glm::vec3 position, glm::vec3 scale);
 
     bool colliding(CollisionSphere s1, CollisionSphere s2, glm::vec3 *penetration);
     bool colliding(CollisionSphere s, CollisionPlane p, glm::vec3 *penetration);
-    bool colliding(CollisionSphere s, CollisionTriangle t, glm::vec3 *penetration);
+    bool colliding(CollisionSphere s, CollisionTriangle &t, glm::vec3 *penetration, 
+            glm::vec3 position = glm::vec3(0.0f), glm::vec3 scale = glm::vec3(1.0f));
+    bool colliding(CollisionSphere s, CollisionModel &m, glm::vec3 *penetration);
 
     void loadCollisionModel(std::string modelPath, std::vector<CollisionTriangle> &collisionModel);
 }

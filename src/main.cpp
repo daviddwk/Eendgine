@@ -61,9 +61,14 @@ int main(){
     myTriangle0.setVerts(glm::vec3(-5,0,-5), glm::vec3(-5,0,5), glm::vec3(5,0,5));
     myTriangle1.setVerts(glm::vec3(-5,0,-5), glm::vec3(5,0,-5), glm::vec3(5,0,5));
     
-    std::vector<Eend::CollisionTriangle> collisionOst;
-    loadCollisionModel("resources/ost/ost.obj", collisionOst);
-    std::cout << collisionOst.size() << std::endl;
+    Eend::CollisionModel collisionCube("resources/cube/cube.obj");
+    collisionCube.setPosition(glm::vec3(0.0f, -5.0f, 0.0f));
+    collisionCube.setPosition(glm::vec3(25.0f, 1.0f, 25.0f));
+
+    Eend::Model myCube("resources/cube/cube.obj", myTextureCache);
+    myCube.setPosition(0.0f, -5.0f, 0.0f);
+    myCube.setScale(25.0f, 1.0f, 25.0f);
+
 
     std::vector<std::string> walkAnim;
     for (int i = 16; i <= 55; i++) {
@@ -85,6 +90,7 @@ int main(){
         glClearColor(0.1f, 0.2f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         
+        myCube.draw(myShader3D, my3DCamera);
         myModel.draw(myShader3D, my3DCamera);
         myAnimatedModel.draw(myInpolShader, my3DCamera);
         my3DSprite.draw(myShader3D, my3DCamera);
@@ -116,13 +122,7 @@ int main(){
         mySphere.setPosition(mp.x, mp.y, mp.z);
 
         glm::vec3 p;
-        if (Eend::colliding(mySphere, myTriangle0, &p)) {
-            mp.y += std::sqrt(2 * (p.y * p.y));
-            fv = 0.0f;
-            myModel.setPosition(mp.x, mp.y, mp.z);
-            mySphere.setPosition(mp.x, mp.y, mp.z);
-        }
-        if (Eend::colliding(mySphere, myTriangle1, &p)) {
+        if (Eend::colliding(mySphere, collisionCube, &p)) {
             mp.y += std::sqrt(2 * (p.y * p.y));
             fv = 0.0f;
             myModel.setPosition(mp.x, mp.y, mp.z);

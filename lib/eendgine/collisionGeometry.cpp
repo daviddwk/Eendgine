@@ -4,6 +4,7 @@
 #include "fatalError.hpp"
 #include <cmath>
 #include <iostream>
+#include <tuple>
 
 namespace Eendgine {
     bool colliding(CollisionSphere s1, CollisionSphere s2, glm::vec3 *penetration) {
@@ -26,8 +27,8 @@ namespace Eendgine {
         return depth > 0.0f;
     }
 
-    bool colliding(CollisionSphere s, CollisionTriangle t, glm::vec3 *penetration) {
-        glm::vec3 closestPoint = closestTriPoint(s.getPosition(), t);
+    bool colliding(CollisionSphere s, CollisionTriangle &t, glm::vec3 *penetration, glm::vec3 position, glm::vec3 scale) {
+        glm::vec3 closestPoint = closestTriPoint(s.getPosition(), t, position, scale);
         glm::vec3 distance = closestPoint - s.getPosition();
         float depth = s.getRadius() - glm::length(distance);
         if (penetration != nullptr) {
@@ -36,11 +37,28 @@ namespace Eendgine {
         return depth > 0.0f;
     }
 
-    glm::vec3 closestTriPoint(glm::vec3 p, CollisionTriangle t) {
+    bool colliding(CollisionSphere s, CollisionModel &m, glm::vec3 *penetration) {
+        bool collision = false;
+        auto triangles = m.getTris();
+        glm::vec3 modelPos = m.getPosition();
+        glm::vec3 modelScale = m.getScale();
+        glm::vec3 tmpPen = glm::vec3(0.0f);
+        *penetration = tmpPen;
+        for ( int i = 0; i < triangles.size(); i++ ) {
+            if (colliding(s, triangles[i], &tmpPen, modelScale, modelPos)) {
+                *penetration += tmpPen;
+                collision = true;
+            }
+        } 
+        return collision;
+    }
+
+    glm::vec3 closestTriPoint(glm::vec3 p, CollisionTriangle t, glm::vec3 position, glm::vec3 scale) {
         // thanks to Real-Time Collision Detection by Christer Ericson
-        glm::vec3 a = t.verts[0];
-        glm::vec3 b = t.verts[1];
-        glm::vec3 c = t.verts[2];
+        auto verts = t.getVerts();
+        glm::vec3 a = (std::get<0>(verts) * scale) + position;
+        glm::vec3 b = (std::get<1>(verts) * scale) + position;
+        glm::vec3 c = (std::get<2>(verts) * scale) + position;
         glm::vec3 ab = b - a;
         glm::vec3 ac = c - a;
         glm::vec3 bc = c - b;
@@ -85,7 +103,7 @@ namespace Eendgine {
         return u * a + v * b + w * c;
     }
 
-    void loadCollisionModel(std::string modelPath, std::vector<CollisionTriangle> &collisionModel) {
+    CollisionModel::CollisionModel(std::string modelPath) {
         std::vector <Vertex> vertices;
         std::vector <unsigned int> indices;
         loadModel(modelPath, vertices, indices);
@@ -93,7 +111,7 @@ namespace Eendgine {
             fatalError("collisionModel indices not divisible by 0");
         }
         for (int i = 0; i < indices.size(); i += 3){
-            collisionModel.emplace_back(
+            _collisionTris.emplace_back(
                         vertices[indices[i]].position,
                         vertices[indices[i + 1]].position,
                         vertices[indices[i + 2]].position);
