@@ -89,7 +89,7 @@ namespace Eendgine {
         trans = glm::rotate(trans, glm::radians(-_rotation), glm::vec3(0.0f, 0.0f, 1.0f));
         trans = glm::scale(trans, _size);
 
-        unsigned int transformLoc = glGetUniformLocation(shader.programId, "transform");
+        unsigned int transformLoc = glGetUniformLocation(shader.getProgramID(), "transform");
         glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
 
         glBindVertexArray(_VAO);
@@ -105,7 +105,7 @@ namespace Eendgine {
         
         glm::mat4 transform = glm::mat4(1.0f);
         transform = glm::translate(transform, _position);
-        glm::mat3 rot = glm::inverse(glm::mat3(camera.viewMat));
+        glm::mat3 rot = glm::inverse(glm::mat3(camera.getViewMat()));
         // there must be a cleaner way to do this
         transform = {
             {rot[0][0], rot[0][1], rot[0][2], transform[0][3]},
@@ -115,12 +115,12 @@ namespace Eendgine {
         };
         transform = glm::scale(transform, _size);
 
-        unsigned int projectionLoc = glGetUniformLocation(shader.programId, "projection");
-        unsigned int viewLoc = glGetUniformLocation(shader.programId, "view");
-        unsigned int transformLoc = glGetUniformLocation(shader.programId, "transform");
-        glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, &camera.projectionMat[0][0]);
+        unsigned int projectionLoc = glGetUniformLocation(shader.getProgramID(), "projection");
+        unsigned int viewLoc = glGetUniformLocation(shader.getProgramID(), "view");
+        unsigned int transformLoc = glGetUniformLocation(shader.getProgramID(), "transform");
+        glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, &camera.getProjectionMat()[0][0]);
         
-        glUniformMatrix4fv(viewLoc, 1, GL_FALSE, &camera.viewMat[0][0]);
+        glUniformMatrix4fv(viewLoc, 1, GL_FALSE, &camera.getViewMat()[0][0]);
         glUniformMatrix4fv(transformLoc, 1, GL_FALSE, &transform[0][0]);
 
         glBindVertexArray(_VAO);

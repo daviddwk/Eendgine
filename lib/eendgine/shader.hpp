@@ -9,10 +9,12 @@ namespace Eendgine {
             ShaderProgram(std::string vertexShaderPath, std::string fragmentShaderPath);
             void use();
 
-            unsigned int programId = 0;
-            unsigned int vertexShaderId = 0;
-            unsigned int fragmentShaderId = 0;
+            unsigned int getProgramID(){ return _programID; };
+
         private:
             void compileShader(unsigned int id, std::string shaderPath);
+            unsigned int _programID;
+            unsigned int _vertexShaderID;
+            unsigned int _fragmentShaderID;
     };
 }

@@ -3,24 +3,28 @@
 
 namespace Eendgine {
 
-    ShaderProgram::ShaderProgram(std::string vertexShaderPath, std::string fragmentShaderPath) {
+    ShaderProgram::ShaderProgram(std::string vertexShaderPath, std::string fragmentShaderPath) : 
+            _programID(0),
+            _vertexShaderID(0),
+            _fragmentShaderID(0)
+    {
         
-        vertexShaderId = glCreateShader(GL_VERTEX_SHADER);
-        fragmentShaderId = glCreateShader(GL_FRAGMENT_SHADER);
+        _vertexShaderID = glCreateShader(GL_VERTEX_SHADER);
+        _fragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);
         
-        compileShader(vertexShaderId, vertexShaderPath);
-        compileShader(fragmentShaderId, fragmentShaderPath);
+        compileShader(_vertexShaderID, vertexShaderPath);
+        compileShader(_fragmentShaderID, fragmentShaderPath);
 
-        programId = glCreateProgram();
+        _programID = glCreateProgram();
         
-        glAttachShader(programId, vertexShaderId);
-        glAttachShader(programId, fragmentShaderId);
+        glAttachShader(_programID, _vertexShaderID);
+        glAttachShader(_programID, _fragmentShaderID);
         
-        glLinkProgram(programId);
+        glLinkProgram(_programID);
         
         
-        glDeleteShader(vertexShaderId);
-        glDeleteShader(fragmentShaderId);
+        glDeleteShader(_vertexShaderID);
+        glDeleteShader(_fragmentShaderID);
 
     }
 
@@ -60,7 +64,7 @@ namespace Eendgine {
     }
 
     void ShaderProgram::use() {
-        glUseProgram(programId);
+        glUseProgram(_programID);
     }
     
 }

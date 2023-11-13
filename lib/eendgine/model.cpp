@@ -45,7 +45,7 @@ namespace Eendgine {
         // parts of the texture using shaders
         glActiveTexture(GL_TEXTURE0);
         std::string texName = "texture_diffuse";
-        glUniform1i(glGetUniformLocation(shader.programId, texName.c_str()), 0);
+        glUniform1i(glGetUniformLocation(shader.getProgramID(), texName.c_str()), 0);
         glBindTexture(GL_TEXTURE_2D, _textures[_textureIdx].id);
         
         glm::mat4 transform = glm::mat4(1.0f);
@@ -54,11 +54,11 @@ namespace Eendgine {
         transform = glm::rotate(transform, glm::radians(-_rotation.y), glm::vec3(-1.0f, 0.0f, 0.0f));
         transform = glm::scale(transform, _scale);
 
-        unsigned int projectionLoc = glGetUniformLocation(shader.programId, "projection");
-        unsigned int viewLoc = glGetUniformLocation(shader.programId, "view");
-        unsigned int transformLoc = glGetUniformLocation(shader.programId, "transform");
-        glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, &camera.projectionMat[0][0]);
-        glUniformMatrix4fv(viewLoc, 1, GL_FALSE, &camera.viewMat[0][0]);
+        unsigned int projectionLoc = glGetUniformLocation(shader.getProgramID(), "projection");
+        unsigned int viewLoc = glGetUniformLocation(shader.getProgramID(), "view");
+        unsigned int transformLoc = glGetUniformLocation(shader.getProgramID(), "transform");
+        glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, &camera.getProjectionMat()[0][0]);
+        glUniformMatrix4fv(viewLoc, 1, GL_FALSE, &camera.getViewMat()[0][0]);
         glUniformMatrix4fv(transformLoc, 1, GL_FALSE, &transform[0][0]);
         
         glBindVertexArray(_VAO);
@@ -114,7 +114,7 @@ namespace Eendgine {
         // parts of the texture using shaders
         glActiveTexture(GL_TEXTURE0);
         std::string texName = "texture_diffuse";
-        glUniform1i(glGetUniformLocation(shader.programId, texName.c_str()), 0);
+        glUniform1i(glGetUniformLocation(shader.getProgramID(), texName.c_str()), 0);
         glBindTexture(GL_TEXTURE_2D, _textures[_textureIdx].id);
         
         glm::mat4 transform = glm::mat4(1.0f);
@@ -123,12 +123,12 @@ namespace Eendgine {
         transform = glm::rotate(transform, glm::radians(-_rotation.y), glm::vec3(-1.0f, 0.0f, 0.0f));
         transform = glm::scale(transform, _scale);
 
-        unsigned int projectionLoc = glGetUniformLocation(shader.programId, "projection");
-        unsigned int viewLoc = glGetUniformLocation(shader.programId, "view");
-        unsigned int transformLoc = glGetUniformLocation(shader.programId, "transform");
-        unsigned int inpolLoc = glGetUniformLocation(shader.programId, "inpol");
-        glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, &camera.projectionMat[0][0]);
-        glUniformMatrix4fv(viewLoc, 1, GL_FALSE, &camera.viewMat[0][0]);
+        unsigned int projectionLoc = glGetUniformLocation(shader.getProgramID(), "projection");
+        unsigned int viewLoc = glGetUniformLocation(shader.getProgramID(), "view");
+        unsigned int transformLoc = glGetUniformLocation(shader.getProgramID(), "transform");
+        unsigned int inpolLoc = glGetUniformLocation(shader.getProgramID(), "inpol");
+        glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, &camera.getProjectionMat()[0][0]);
+        glUniformMatrix4fv(viewLoc, 1, GL_FALSE, &camera.getViewMat()[0][0]);
         glUniformMatrix4fv(transformLoc, 1, GL_FALSE, &transform[0][0]);
         glUniform1f(inpolLoc, _inpolScale);
 

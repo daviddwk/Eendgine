@@ -7,6 +7,21 @@
 #include <tuple>
 
 namespace Eendgine {
+    CollisionSphere::CollisionSphere(float x, float y, float z, float r) :
+            _position(glm::vec3(x, y, z)),
+            _radius(std::abs(r))
+    {
+    }
+    CollisionPlane::CollisionPlane(glm::vec3 position, glm::vec3 normal) :
+            _position(position),
+            _normal(normal)
+    { 
+    }
+    CollisionTriangle::CollisionTriangle(glm::vec3 v0, glm::vec3 v1, glm::vec3 v2) :
+            _verts({v0, v1, v2})
+    {
+    }
+    
     bool colliding(CollisionSphere s1, CollisionSphere s2, glm::vec3 *penetration) {
         glm::vec3 distance = s2.getPosition() - s1.getPosition();
         float depth = (s1.getRadius() + s2.getRadius()) - glm::length(distance);
@@ -56,12 +71,12 @@ namespace Eendgine {
     glm::vec3 closestTriPoint(glm::vec3 p, CollisionTriangle t, glm::vec3 position, glm::vec3 scale) {
         // thanks to Real-Time Collision Detection by Christer Ericson
         auto verts = t.getVerts();
-        glm::vec3 a = (std::get<0>(verts) * scale) + position;
-        glm::vec3 b = (std::get<1>(verts) * scale) + position;
-        glm::vec3 c = (std::get<2>(verts) * scale) + position;
-        glm::vec3 ab = b - a;
-        glm::vec3 ac = c - a;
-        glm::vec3 bc = c - b;
+        glm::vec3 a = (verts[0] * scale) + position;
+        glm::vec3 b = (verts[1] * scale) + position;
+        glm::vec3 c = (verts[2] * scale) + position;
+        glm::vec3 ab = verts[1] - verts[0];
+        glm::vec3 ac = verts[2] - verts[0];
+        glm::vec3 bc = verts[2] - verts[1];
         // Compute parametric position s for projection P’ of P on AB,
         // P’ = A + s*AB, s = snom/(snom+sdenom)
         float snom = glm::dot(p - a, ab), sdenom = glm::dot(p - b, a - b);

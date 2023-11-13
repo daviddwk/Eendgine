@@ -3,14 +3,12 @@
 #include <cmath>
 #include <string>
 #include <vector>
+#include <array>
 
 namespace Eendgine {
     class CollisionSphere {
         public:
-            CollisionSphere(float x, float y, float z, float r) { 
-                    _position = glm::vec3(x, y, z);
-                    _radius = std::abs(r); };
-
+            CollisionSphere(float x, float y, float z, float r);
             void setPosition(float x, float y, float z) { _position = glm::vec3(x, y, z); };
             void setRadius(float r) { _radius = std::abs(r); };
 
@@ -25,10 +23,7 @@ namespace Eendgine {
 
     class CollisionPlane {
         public:
-            CollisionPlane(){ 
-                    _position = glm::vec3(0.0f);
-                    _normal = glm::vec3(0.0f, 0.1f, 0.0f);
-            };
+            CollisionPlane(glm::vec3 position, glm::vec3 normal);
 
             void setPosition(float x, float y, float z) { _position = glm::vec3(x, y, z); };
             void setNormal(float x, float y, float z) { _normal = glm::vec3(x, y, z); };
@@ -43,22 +38,12 @@ namespace Eendgine {
 
     class CollisionTriangle {
         public:
-            CollisionTriangle(){ 
-                setVerts(glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(0.0f)); 
-            };
-            CollisionTriangle(glm::vec3 v0, glm::vec3 v1, glm::vec3 v2) { 
-                setVerts(v0, v1, v2);
-            };
-            void setVerts(glm::vec3 v0, glm::vec3 v1, glm::vec3 v2) { 
-                _verts[0] = v0;
-                _verts[1] = v1;
-                _verts[2] = v2;
-            };
-            std::tuple<glm::vec3, glm::vec3, glm::vec3> getVerts() {
-                return {_verts[0], _verts[1], _verts[2]};
-            };
+            CollisionTriangle(glm::vec3 v0, glm::vec3 v1, glm::vec3 v2);
+            void setVerts(glm::vec3 v0, glm::vec3 v1, glm::vec3 v2) { _verts = {v0, v1, v2}; };
+            std::array<glm::vec3, 3> getVerts() { return _verts; };
+
         private:
-            glm::vec3 _verts[3];
+            std::array<glm::vec3, 3> _verts;
     };
 
     class CollisionModel {

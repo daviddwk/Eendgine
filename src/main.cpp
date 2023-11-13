@@ -36,7 +36,6 @@ int main(){
             glm::vec3(20.0f, 15.0f, 20.0f), glm::vec3(0.0f, 0.0f, 0.0f));
     
     Eend::Camera2D myCamera(1000, 1000);
-    myCamera.update();
     
     Eend::Sprite mySprite(myTextureCache.getTexture("resources/ost/diffuse.png"));
     mySprite.setPosition(300.0f, 300.0f);
@@ -51,15 +50,6 @@ int main(){
     myModel.setScale(1.0f, 1.0f, 1.0f);
     myModel.setPosition(mp.x, mp.y, mp.z);
     Eend::CollisionSphere mySphere(mp.x, mp.y, mp.z , 0.5f);
-    Eend::CollisionPlane myPlane;
-    glm::vec3 planeNormal(50.f, 100.0f, 100.0f);
-    planeNormal = glm::normalize(planeNormal);
-    myPlane.setNormal(planeNormal.x, planeNormal.y, planeNormal.z);
-    myPlane.setPosition(0.0f, 0.0f, 0.0f);
-    Eend::CollisionTriangle myTriangle0;
-    Eend::CollisionTriangle myTriangle1;
-    myTriangle0.setVerts(glm::vec3(-5,0,-5), glm::vec3(-5,0,5), glm::vec3(5,0,5));
-    myTriangle1.setVerts(glm::vec3(-5,0,-5), glm::vec3(5,0,-5), glm::vec3(5,0,5));
     
     Eend::CollisionModel collisionCube("resources/cube/cube.obj");
     collisionCube.setPosition(glm::vec3(0.0f, -5.0f, 0.0f));
