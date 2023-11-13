@@ -2,8 +2,9 @@
 #include <cmath>
 
 namespace Eendgine {
-    AnimatedModel::AnimatedModel(std::vector<std::string> modelPaths, TextureCache texCache) {
-        _animScale = 0.0f;
+    AnimatedModel::AnimatedModel(std::vector<std::string> modelPaths, TextureCache texCache) :
+        _animScale(0.0f)
+    {
         for (int i = 0; i < modelPaths.size(); i++) {
             int next = i + 1;
             if (i == modelPaths.size() - 1){

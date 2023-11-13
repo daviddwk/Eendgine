@@ -4,15 +4,6 @@
 
 namespace Eendgine
 {
-
-    TextureCache::TextureCache(){
-
-    }
-
-    TextureCache::~TextureCache(){
-
-    }
-
     Texture TextureCache::getTexture(std::string texturePath) {
         auto mapItr = _textureMap.find(texturePath);
         if (mapItr == _textureMap.end()) {
@@ -21,5 +12,4 @@ namespace Eendgine
         }
         return mapItr->second;
     }
-
 }

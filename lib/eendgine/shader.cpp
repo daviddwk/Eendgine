@@ -29,7 +29,6 @@ namespace Eendgine {
     }
 
     void ShaderProgram::compileShader(unsigned int shaderId, std::string shaderPath) {
-
 		std::ifstream shaderFile(shaderPath);
         if (shaderFile.fail()) {
             perror(shaderPath.c_str());

@@ -29,11 +29,11 @@ namespace Eendgine {
 
         private:
             void setup(std::vector<Texture> textures);
-            glm::vec3 _position = glm::vec3(0.0f);
-            glm::vec3 _size = glm::vec3(1.0f);
-            float _rotation = 0.0f;
-            unsigned int _VAO = 0;
+            glm::vec3 _position;
+            glm::vec3 _size;
+            float _rotation;
+            unsigned int _VAO;
+            unsigned int _textureIdx;
             std::vector<Texture> _textures;
-            unsigned int _textureIdx = 0;
     };
 }

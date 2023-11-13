@@ -6,13 +6,25 @@
 
 namespace Eendgine {
     
-    Sprite::Sprite(Texture texture) {
+    Sprite::Sprite(Texture texture) :
+            _position(glm::vec3(0.0f)),
+            _size(glm::vec3(1.0f)),
+            _rotation(0.0f),
+            _VAO(0),
+            _textureIdx(0)
+    {
         std::vector<Texture> textures;
         textures.push_back(texture);
         setup(textures);
     }
 
-    Sprite::Sprite(std::vector<Texture> textures) {
+    Sprite::Sprite(std::vector<Texture> textures) :
+            _position(glm::vec3(0.0f)),
+            _size(glm::vec3(1.0f)),
+            _rotation(0.0f),
+            _VAO(0),
+            _textureIdx(0)
+    {
         setup(textures);
     }
     

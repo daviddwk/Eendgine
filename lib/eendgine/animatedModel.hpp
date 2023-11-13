@@ -35,6 +35,6 @@ namespace Eendgine {
             float getAnim() { return _animScale; }
         private:
             std::vector<InpolModel> _inpolModels;      
-            float _animScale = 0.0f;
+            float _animScale;
     };
 }
