@@ -58,10 +58,14 @@ namespace Eendgine {
         glm::vec3 modelPos = m.getPosition();
         glm::vec3 modelScale = m.getScale();
         glm::vec3 tmpPen = glm::vec3(0.0f);
-        *penetration = tmpPen;
+        if (penetration != nullptr) {
+            *penetration = tmpPen;
+        }
         for ( int i = 0; i < triangles.size(); i++ ) {
             if (colliding(s, triangles[i], &tmpPen, modelScale, modelPos)) {
-                *penetration += tmpPen;
+                if (penetration != nullptr) {
+                    *penetration += tmpPen;
+                }
                 collision = true;
             }
         } 
