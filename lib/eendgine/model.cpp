@@ -6,12 +6,14 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 namespace Eendgine {
-    Model::Model(std::string modelPath, TextureCache &texCache): _texCache(texCache) 
-    { 
-        _position = glm::vec3(0.0f);
-        _scale = glm::vec3(1.0f);
-        _rotation = glm::vec2(1.0f);
-        _textureIdx = 0;
+    Model::Model(std::string modelPath, TextureCache &texCache): 
+            _texCache(texCache),
+            _position(glm::vec3(0.0f)),
+            _scale(glm::vec3(1.0f)),
+            _rotation(glm::vec2(1.0f)),
+            _textureIdx(0),
+            _VAO(0), _VBO(0), _EBO(0)
+    {
         loadModel(modelPath, _vertices, _indices, _textures, _texCache);
 
         glGenVertexArrays(1, &_VAO);
@@ -66,15 +68,16 @@ namespace Eendgine {
         glActiveTexture(GL_TEXTURE0);
 
     }
-    InpolModel::InpolModel(std::string modelPath, std::string nextModelPath, TextureCache &texCache): _texCache(texCache) 
+    InpolModel::InpolModel(const std::string modelPath, const std::string nextModelPath, TextureCache &texCache): 
+            _texCache(texCache),
+            _position(glm::vec3(0.0f)),
+            _scale(glm::vec3(1.0f)),
+            _rotation(glm::vec2(1.0f)),
+            _textureIdx(0),
+            _VAO(0), _VBO(0), _EBO(0),
+            _inpolScale(0.0f)
     {
-        _inpolScale = 0.0f;
-        _position = glm::vec3(0.0f);
-        _scale = glm::vec3(1.0f);
-        _rotation = glm::vec2(0.0f);
-        _textureIdx = 0;
         loadModel(modelPath, nextModelPath, _vertices, _indices, _textures, _texCache);
-        
         unsigned int tmpSize = _vertices.size();
         unsigned int tmpIdxSize = _indices.size();
 
