@@ -46,7 +46,7 @@ int main(){
     my3DSprite.setSize(10.0f, 10.0f);
 
     glm::vec3 mp = glm::vec3(0.0f, 3.0f, 0.0f);
-    Eend::Model myModel("resources/ost/ost.obj", myTextureCache);
+    Eend::StaticModel myModel("resources/ost/ost.obj", myTextureCache);
     myModel.setScale(1.0f, 1.0f, 1.0f);
     myModel.setPosition(mp.x, mp.y, mp.z);
     Eend::CollisionSphere mySphere(mp.x, mp.y, mp.z , 0.5f);
@@ -55,7 +55,7 @@ int main(){
     collisionCube.setPosition(glm::vec3(0.0f, -5.0f, 0.0f));
     collisionCube.setPosition(glm::vec3(25.0f, 1.0f, 25.0f));
 
-    Eend::Model myCube("resources/cube/cube.obj", myTextureCache);
+    Eend::StaticModel myCube("resources/cube/cube.obj", myTextureCache);
     myCube.setPosition(0.0f, -5.0f, 0.0f);
     myCube.setScale(25.0f, 1.0f, 25.0f);
 

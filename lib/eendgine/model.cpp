@@ -1,18 +1,27 @@
 #include "model.hpp"
-#include "fatalError.hpp"
 #include "shader.hpp"
 #include "loadModel.hpp"
 #include <glad/glad.h>
 #include <glm/gtc/matrix_transform.hpp>
 
 namespace Eendgine {
-    Model::Model(std::string modelPath, TextureCache &texCache): 
-            _texCache(texCache),
+    Model::Model(): 
             _position(glm::vec3(0.0f)),
             _scale(glm::vec3(1.0f)),
-            _rotation(glm::vec2(1.0f)),
+            _rotation(glm::vec2(1.0f))
+    {
+
+    }
+
+    void Model::draw(ShaderProgram &shader, Camera3D &camera) {
+
+    }
+
+    StaticModel::StaticModel(std::string modelPath, TextureCache &texCache): 
+            Model(),
+            _texCache(texCache),
             _textureIdx(0),
-            _VAO(0), _VBO(0), _EBO(0)
+            _VAO(0), _VBO(0), _EBO(0)       
     {
         loadModel(modelPath, _vertices, _indices, _textures, _texCache);
 
@@ -38,9 +47,8 @@ namespace Eendgine {
         glEnableVertexAttribArray(3);
     }
 
-    void Model::draw(ShaderProgram &shader, Camera3D &camera){
+    void StaticModel::draw(ShaderProgram &shader, Camera3D &camera){
         shader.use();
-
         // using RGB(1,0,1) for transparent
         // parts of the texture using shaders
         glActiveTexture(GL_TEXTURE0);
@@ -68,11 +76,10 @@ namespace Eendgine {
         glActiveTexture(GL_TEXTURE0);
 
     }
+
     InpolModel::InpolModel(const std::string modelPath, const std::string nextModelPath, TextureCache &texCache): 
+            Model(),
             _texCache(texCache),
-            _position(glm::vec3(0.0f)),
-            _scale(glm::vec3(1.0f)),
-            _rotation(glm::vec2(1.0f)),
             _textureIdx(0),
             _VAO(0), _VBO(0), _EBO(0),
             _inpolScale(0.0f)
