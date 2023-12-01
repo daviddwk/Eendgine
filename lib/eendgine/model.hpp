@@ -48,28 +48,27 @@ namespace Eendgine {
             
     };
 
-    class InpolModel : public Model {
+    class AnimatedModel : public Model {
         public:
-            InpolModel(const std::string modelPath, const std::string nextModelPath, TextureCache &texCache);
+            AnimatedModel(std::vector<std::string> modelPaths, TextureCache &texCache);
+            AnimatedModel(const std::string modelPath, const std::string nextModelPath, TextureCache &texCache);
             void draw(ShaderProgram &shader, Camera3D &camera);
             
             void setTextureIdx(unsigned int idx) { _textureIdx = (idx < _textures.size() ? idx : 0); };
-            void setInpol(float scale) { _inpolScale = scale;
-                    if (_inpolScale > 1.0f) { _inpolScale = 1.0f; }
-                    if (_inpolScale < 0.0f) { _inpolScale = 0.0f; }};
+            void setAnim(float scale) { _animScale = scale - (int) scale; };
 
             unsigned int getTextureIdx() { return _textureIdx; };
-            float getInpolScale() { return _inpolScale; };
+            float getAnim() { return _animScale; };
 
         private:
-            float _inpolScale;
+            float _animScale;
 
             TextureCache &_texCache;
             unsigned int _textureIdx;
             std::vector<Texture> _textures;
 
-            unsigned int _VAO, _EBO, _VBO;
-            std::vector<InpolVertex> _vertices;
-            std::vector<unsigned int> _indices;
+            std::vector<unsigned int> _VAOs, _EBOs, _VBOs;
+            std::vector<std::vector<InpolVertex>> _vertices;
+            std::vector<std::vector<unsigned int>> _indices;
     };
 }

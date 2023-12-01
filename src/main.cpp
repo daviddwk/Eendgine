@@ -6,7 +6,6 @@
 #include <eendgine/frameLimiter.hpp>
 #include <eendgine/inputManager.hpp>
 #include <eendgine/model.hpp>
-#include <eendgine/animatedModel.hpp>
 #include <eendgine/collisionGeometry.hpp>
 
 #include <stb/stb_image.h>
