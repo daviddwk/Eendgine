@@ -52,7 +52,7 @@ int main(){
     
     Eend::CollisionModel collisionCube("resources/cube/cube.obj");
     collisionCube.setPosition(glm::vec3(0.0f, -5.0f, 0.0f));
-    collisionCube.setPosition(glm::vec3(25.0f, 1.0f, 25.0f));
+    collisionCube.setPosition(glm::vec3(100.0f, 1.0f, 100.0f));
 
     Eend::StaticModel myCube("resources/cube/cube.obj", myTextureCache);
     myCube.setPosition(0.0f, -5.0f, 0.0f);
@@ -92,20 +92,25 @@ int main(){
         mySprite.draw(myShader, myCamera);
         
         float dt = Eend::FrameLimiter::deltaTime;
-        float speed = 100.0f;
+        float speed = 0.001f;
         // move based on input and gravity
+        camPosX += Eend::InputManager::deltaMouseX / 100.0f;
         fv -= 0.001;
         if (Eendgine::InputManager::upPress) {
-            mp.x -= 0.02;
+            mp.x -= (speed * cos(camPosX)) / dt;
+            mp.z -= (speed * sin(camPosX)) / dt;
         }
         if (Eendgine::InputManager::downPress) {
-            mp.x += 0.02;
+            mp.x += (speed * cos(camPosX)) / dt;
+            mp.z += (speed * sin(camPosX)) / dt;
         }
         if (Eendgine::InputManager::leftPress) {
-            mp.z += 0.02;
+            mp.x -= (speed * sin(camPosX)) / dt;
+            mp.z += (speed * cos(camPosX)) / dt;
         }
         if (Eendgine::InputManager::rightPress) {
-            mp.z -= 0.02;
+            mp.x -= (speed * sin(camPosX)) / dt;
+            mp.z += (speed * cos(camPosX)) / dt;
         }
         
         mp.y += fv;
@@ -123,11 +128,10 @@ int main(){
 
         // adjust camera to follow
         float camDis = 30;
-        camPosX += Eend::InputManager::deltaMouseX / 100.0f;
         my3DCamera.setTarget(mp.x, mp.y, mp.z);
         my3DCamera.setPosition
             (mp.x + (camDis * cos(camPosX)), 
-             mp.y + camDis, 
+             mp.y + (camDis), 
              mp.z + (camDis * sin(camPosX)));
         myAnimatedModel.setPosition(
                 (float)Eend::InputManager::deltaMouseX / dt / 1000,
