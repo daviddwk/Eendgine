@@ -11,6 +11,9 @@ namespace Eendgine {
             inline static bool upPress = false;
             inline static bool downPress = false;
             inline static bool spacePress = false; 
+            inline static bool shouldClose = false;
+            inline static int deltaMouseX = 0;
+            inline static int deltaMouseY = 0;
         private:
     };
 }

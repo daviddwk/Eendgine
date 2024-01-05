@@ -30,15 +30,6 @@ namespace Eendgine {
 
     }
 
-    void Window::pollEvents() {
-        SDL_Event event;
-        while (SDL_PollEvent(&event)) {
-            if (event.type == SDL_QUIT) {
-                shouldClose = true;
-            }
-        }
-    }
-
     void Window::swapBuffers() {
         SDL_GL_SwapWindow(_window);
     }
