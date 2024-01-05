@@ -72,13 +72,15 @@ int main(){
     myAnimatedModel.setAnim(0.0f);
     
     float fv = 0.0f;
+    float camPosX = 0;
 
-    while(!Eend::Window::shouldClose){
+    while(!Eend::InputManager::shouldClose){
         Eend::FrameLimiter::startInterval(); 
 
         glClearColor(0.1f, 0.2f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         
+        // drawing 3D
         myCube.draw(myShader3D, my3DCamera);
         myModel.draw(myShader3D, my3DCamera);
         myAnimatedModel.draw(myInpolShader, my3DCamera);
@@ -86,12 +88,12 @@ int main(){
         myAnimatedModel.setAnim(myAnimatedModel.getAnim() + 0.01);
 
         glClear(GL_DEPTH_BUFFER_BIT);
-
+        // drawing HUD
         mySprite.draw(myShader, myCamera);
         
         float dt = Eend::FrameLimiter::deltaTime;
         float speed = 100.0f;
-        
+        // move based on input and gravity
         fv -= 0.001;
         if (Eendgine::InputManager::upPress) {
             mp.x -= 0.02;
@@ -109,7 +111,7 @@ int main(){
         mp.y += fv;
         myModel.setPosition(mp.x, mp.y, mp.z);
         mySphere.setPosition(mp.x, mp.y, mp.z);
-
+        // adjust for collisions
         glm::vec3 p;
         if (Eend::colliding(mySphere, collisionCube, &p)) {
             mp.y += std::sqrt(2 * (p.y * p.y));
@@ -118,9 +120,21 @@ int main(){
             mySphere.setPosition(mp.x, mp.y, mp.z);
         }
         glm::vec3 spherePos = mySphere.getPosition();
+
+        // adjust camera to follow
+        float camDis = 30;
+        camPosX += Eend::InputManager::deltaMouseX / 100.0f;
+        my3DCamera.setTarget(mp.x, mp.y, mp.z);
+        my3DCamera.setPosition
+            (mp.x + (camDis * cos(camPosX)), 
+             mp.y + camDis, 
+             mp.z + (camDis * sin(camPosX)));
+        myAnimatedModel.setPosition(
+                (float)Eend::InputManager::deltaMouseX / dt / 1000,
+                (float)Eend::InputManager::deltaMouseY / dt / 1000,
+                0.0f);
         
 
-        Eend::Window::pollEvents();
         Eend::InputManager::processInput();
         Eend::Window::swapBuffers(); 
         Eend::FrameLimiter::stopInterval();
