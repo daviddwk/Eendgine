@@ -13,6 +13,7 @@
 
 #include <iostream>
 #include <vector>
+#include <numbers>
 
 namespace Eend = Eendgine;
 
@@ -96,7 +97,9 @@ int main(){
         // move based on input and gravity
         camPosX += Eend::InputManager::deltaMouseX / 100.0f;
         fv -= 0.001;
+        
         if (Eendgine::InputManager::upPress) {
+            myModel.setRadians(sin(camPosX), 0.0f);
             mp.x -= (speed * cos(camPosX)) / dt;
             mp.z -= (speed * sin(camPosX)) / dt;
         }
@@ -109,8 +112,8 @@ int main(){
             mp.z += (speed * cos(camPosX)) / dt;
         }
         if (Eendgine::InputManager::rightPress) {
-            mp.x -= (speed * sin(camPosX)) / dt;
-            mp.z += (speed * cos(camPosX)) / dt;
+            mp.x += (speed * sin(camPosX)) / dt;
+            mp.z -= (speed * cos(camPosX)) / dt;
         }
         
         mp.y += fv;
