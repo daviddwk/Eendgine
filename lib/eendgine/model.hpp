@@ -18,7 +18,8 @@ namespace Eendgine {
             
             void setPosition(float x, float y, float z) { _position = glm::vec3(x, y, z); };
             void setScale(float x, float y, float z) { _scale = glm::vec3(x, y, z); };
-            void setRot(float x, float y) { _rotation = glm::vec2(x, y); };
+            void setRadians(float x, float y) { _rotation = glm::vec2(x, y); };
+            void setRotation(float x, float y) { _rotation = glm::vec2(glm::radians(x), glm::radians(y)); };
 
             glm::vec3 getPosition() { return _position; };
             glm::vec3 getScale() { return _scale; };
