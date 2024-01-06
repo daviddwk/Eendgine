@@ -99,7 +99,8 @@ int main(){
         fv -= 0.001;
         
         if (Eendgine::InputManager::upPress) {
-            myModel.setRadians(sin(camPosX), 0.0f);
+            // TODO fix adjustment and find out where forward actually is
+            myModel.setRadians(camPosX + (3.1415 / 2), 0.0f);
             mp.x -= (speed * cos(camPosX)) / dt;
             mp.z -= (speed * sin(camPosX)) / dt;
         }

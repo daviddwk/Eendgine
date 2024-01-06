@@ -58,8 +58,8 @@ namespace Eendgine {
         
         glm::mat4 transform = glm::mat4(1.0f);
         transform = glm::translate(transform, _position);
-        transform = glm::rotate(transform, _rotation.x, glm::vec3( 0.0f, 1.0f, 0.0f));
-        transform = glm::rotate(transform, _rotation.y, glm::vec3(-1.0f, 0.0f, 0.0f));
+        transform = glm::rotate(transform, -_rotation.x, glm::vec3( 0.0f, 1.0f, 0.0f));
+        transform = glm::rotate(transform, -_rotation.y, glm::vec3(-1.0f, 0.0f, 0.0f));
         transform = glm::scale(transform, _scale);
 
         unsigned int projectionLoc = glGetUniformLocation(shader.getProgramID(), "projection");
@@ -129,8 +129,8 @@ namespace Eendgine {
         
         glm::mat4 transform = glm::mat4(1.0f);
         transform = glm::translate(transform, _position);
-        transform = glm::rotate(transform, _rotation.x, glm::vec3( 0.0f, 1.0f, 0.0f));
-        transform = glm::rotate(transform, _rotation.y, glm::vec3(-1.0f, 0.0f, 0.0f));
+        transform = glm::rotate(transform, -_rotation.x, glm::vec3( 0.0f, 1.0f, 0.0f));
+        transform = glm::rotate(transform, -_rotation.y, glm::vec3(-1.0f, 0.0f, 0.0f));
         transform = glm::scale(transform, _scale);
 
         unsigned int projectionLoc = glGetUniformLocation(shader.getProgramID(), "projection");
