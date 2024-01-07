@@ -74,6 +74,7 @@ int main(){
     
     float fv = 0.0f;
     float camPosX = 0;
+    float camPosY = 0;
 
     while(!Eend::InputManager::shouldClose){
         Eend::FrameLimiter::startInterval(); 
@@ -96,6 +97,12 @@ int main(){
         float speed = 0.001f;
         // move based on input and gravity
         camPosX += Eend::InputManager::deltaMouseX / 100.0f;
+        camPosY += Eend::InputManager::deltaMouseY / 100.0f;
+        if (camPosY > 3.14 * 0.5) {
+            camPosY = 3.14 * 0.5;
+        } else if (camPosY < -(3.14 * 0.1)) {
+            camPosY = -(3.14 * 0.1);
+        }
         fv -= 0.001;
         
         if (Eendgine::InputManager::upPress) {
@@ -135,7 +142,7 @@ int main(){
         my3DCamera.setTarget(mp.x, mp.y, mp.z);
         my3DCamera.setPosition
             (mp.x + (camDis * cos(camPosX)), 
-             mp.y + (camDis), 
+             mp.y + (camDis * sin(camPosY)), 
              mp.z + (camDis * sin(camPosX)));
         myAnimatedModel.setPosition(
                 (float)Eend::InputManager::deltaMouseX / dt / 1000,
