@@ -98,16 +98,27 @@ int main(){
         // move based on input and gravity
         camPosX += Eend::InputManager::deltaMouseX / 100.0f;
         camPosY += Eend::InputManager::deltaMouseY / 100.0f;
-        if (camPosY > 3.14 * 0.5) {
-            camPosY = 3.14 * 0.5;
-        } else if (camPosY < -(3.14 * 0.1)) {
-            camPosY = -(3.14 * 0.1);
+
+        // so that this number doesn't grow out of control and lose accuracy it loops at 2pi
+        while (camPosX > std::numbers::pi) {
+            camPosX -= 2 * std::numbers::pi;
         }
+        while (camPosX < std::numbers::pi) {
+            camPosX += 2 * std::numbers::pi;
+        }
+
+        // capping the camera height at the top of the sin wave
+        if (camPosY > std::numbers::pi * 0.5) {
+            camPosY = std::numbers::pi * 0.5;
+        } else if (camPosY < -(std::numbers::pi * 0.5)) {
+            camPosY = -(std::numbers::pi * 0.5);
+        }
+
         fv -= 0.001;
         
         if (Eendgine::InputManager::upPress) {
             // TODO fix adjustment and find out where forward actually is
-            myModel.setRadians(camPosX + (3.1415 / 2), 0.0f);
+            myModel.setRadians(camPosX + (std::numbers::pi / 2), 0.0f);
             mp.x -= (speed * cos(camPosX)) / dt;
             mp.z -= (speed * sin(camPosX)) / dt;
         }
