@@ -10,6 +10,7 @@ namespace Eendgine {
             void use();
 
             unsigned int getProgramID(){ return _programID; };
+            void setInt(std::string name, int value);
 
         private:
             void compileShader(unsigned int id, std::string shaderPath);
