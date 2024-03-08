@@ -65,8 +65,4 @@ namespace Eendgine {
     void ShaderProgram::use() {
         glUseProgram(_programID);
     }
-
-    void ShaderProgram::setInt(std::string name, int value){
-        glUniform1i(glGetUniformLocation(_programID, name.c_str()), value);
-    }
 }
