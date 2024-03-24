@@ -8,6 +8,7 @@
 #include <eendgine/model.hpp>
 #include <eendgine/collisionGeometry.hpp>
 #include <eendgine/screen.hpp>
+#include <eendgine/renderBatch.hpp>
 
 #include <stb/stb_image.h>
 //#include "player.hpp"
@@ -39,6 +40,7 @@ int main(){
             glm::vec3(20.0f, 15.0f, 20.0f), glm::vec3(0.0f, 0.0f, 0.0f));
     
     Eend::Camera2D myCamera(screenWidth, screenHeight);
+
     
     Eend::Sprite mySprite(myTextureCache.getTexture("resources/ost/diffuse.png"));
     mySprite.setPosition(300.0f, 300.0f);
@@ -49,6 +51,7 @@ int main(){
     my3DSprite.setSize(10.0f, 10.0f);
 
     glm::vec3 mp = glm::vec3(0.0f, 3.0f, 0.0f);
+
     Eend::StaticModel myModel("resources/ost/ost.obj", myTextureCache);
     myModel.setScale(1.0f, 1.0f, 1.0f);
     myModel.setPosition(mp.x, mp.y, mp.z);
@@ -74,6 +77,10 @@ int main(){
     myAnimatedModel.setPosition(0.0f, 0.0f, 0.0f);
     myAnimatedModel.setScale(0.8f, 0.8f, 0.8f);
     myAnimatedModel.setAnim(0.0f);
+
+    std::vector<Eend::Model*> modelBatch;
+    modelBatch.push_back(&myModel);
+    modelBatch.push_back(&myCube);
     
     float fv = 0.0f;
     float camPosX = 0;
@@ -88,9 +95,10 @@ int main(){
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         
         // drawing 3D
-        myCube.draw(myShader3D, my3DCamera);
-        myModel.draw(myShader3D, my3DCamera);
-        myAnimatedModel.draw(myInpolShader, my3DCamera);
+        //myCube.draw(myShader3D, my3DCamera, true);
+        //myModel.draw(myShader3D, my3DCamera, true);
+        renderModelBatch(&modelBatch, myShader3D, my3DCamera);
+        myAnimatedModel.draw(myInpolShader, my3DCamera, true);
         my3DSprite.draw(myShader3D, my3DCamera);
         myAnimatedModel.setAnim(myAnimatedModel.getAnim() + 0.01);
 
