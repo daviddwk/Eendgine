@@ -19,7 +19,7 @@
 namespace Eend = Eendgine;
 
 const unsigned int screenHeight = 1024;
-const unsigned int screenWidth = 1024; 
+const unsigned int screenWidth = 2048; 
 
 int main(){
     Eend::Window::init(screenWidth, screenHeight, "Quack"); 
@@ -35,10 +35,10 @@ int main(){
     Eend::ShaderProgram myInpolShader("shaders/shaderInpol.vert", "shaders/shaderInpol.frag");
     Eend::ShaderProgram screenShader("shaders/shaderScreen.vert", "shaders/shaderScreen.frag");
 
-    Eend::Camera3D my3DCamera(1000.0f / 1000.0f,
+    Eend::Camera3D my3DCamera((float)screenWidth / (float)screenHeight,
             glm::vec3(20.0f, 15.0f, 20.0f), glm::vec3(0.0f, 0.0f, 0.0f));
     
-    Eend::Camera2D myCamera(1000, 1000);
+    Eend::Camera2D myCamera(screenWidth, screenHeight);
     
     Eend::Sprite mySprite(myTextureCache.getTexture("resources/ost/diffuse.png"));
     mySprite.setPosition(300.0f, 300.0f);

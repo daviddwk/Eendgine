@@ -54,7 +54,13 @@ namespace Eendgine {
         shader.use();
         glBindVertexArray(_VAO);
         unsigned int smallTexId = 0;
+        glUniform1i(glGetUniformLocation(shader.getProgramID(), "screenTexture"), 0);
         glBindTexture(GL_TEXTURE_2D, _textureColorBuffer);
+
+        unsigned int heightLoc = glGetUniformLocation(shader.getProgramID(), "height");
+        unsigned int widthLoc = glGetUniformLocation(shader.getProgramID(), "width");
+        glUniform1i(heightLoc, _height);
+        glUniform1i(widthLoc, _width);
         glDrawArrays(GL_TRIANGLES, 0, 6);
     }
 }
