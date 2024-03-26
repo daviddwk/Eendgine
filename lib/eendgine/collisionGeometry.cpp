@@ -76,20 +76,15 @@ namespace Eendgine {
             has_neg = (d1 < 0) || (d2 < 0) || (d3 < 0);
             has_pos = (d1 > 0) || (d2 > 0) || (d3 > 0);
 
-            float snapDistance = 0.1;
+            float snapDistance = 0.2;
             if (!(has_neg && has_pos)) {
                 //glm::vec3 triNorm = triNormal(triVerts[0], triVerts[1], triVerts[2]);
                 *height = pointHeightOnTri(triVerts[0], triVerts[1], triVerts[2], spherePos.x, spherePos.z);
-                if (fabs(*height - spherePos.y) <= snapDistance){
+                if (fabs(spherePos.y - *height) <= snapDistance
+                        || (spherePos.y - *height < 0 && spherePos.y - *height > -(snapDistance + s.getRadius()))){
+                    *height += snapDistance;
                     return true;
                 }
-                /*
-                std::cout << "start" << std::endl;
-                for (int i = 0; i < 3; i++) {
-                    std::cout << triVerts[i].x << ' ' << triVerts[i].y << ' ' << triVerts[i].z << std::endl;
-                }
-                std::cout << spherePos.x << ' ' << spherePos.y << ' ' << spherePos.z << std::endl;
-                */
             }
         }
         return false;

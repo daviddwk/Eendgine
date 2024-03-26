@@ -55,7 +55,7 @@ int main(){
     Eend::StaticModel myModel("resources/ost/ost.obj", myTextureCache);
     myModel.setScale(1.0f, 1.0f, 1.0f);
     myModel.setPosition(mp.x, mp.y + 4, mp.z);
-    Eend::CollisionSphere mySphere(mp.x, mp.y, mp.z , 2.0f);
+    Eend::CollisionSphere mySphere(mp.x, mp.y, mp.z , 5.0f);
     
 
     Eend::StaticModel myLand("resources/lpland/lpland.obj", myTextureCache);
@@ -115,7 +115,7 @@ int main(){
         mySprite.draw(myShader, myCamera);
         
         float dt = Eend::FrameLimiter::deltaTime;
-        float speed = 0.001f;
+        float speed = 20.000f;
         // move based on input and gravity
         camPosX += Eend::InputManager::deltaMouseX / 100.0f;
         camPosY += Eend::InputManager::deltaMouseY / 100.0f;
@@ -134,36 +134,47 @@ int main(){
         } else if (camPosY < -(std::numbers::pi * 0.5)) {
             camPosY = -(std::numbers::pi * 0.5);
         }
-
-        fv -= 0.001;
+        
+        if (fv > -50.0f) {
+            fv -= 1.0f;
+        }
         
         if (Eendgine::InputManager::upPress) {
             // TODO fix adjustment and find out where forward actually is
             myModel.setRadians(camPosX + (std::numbers::pi / 2), 0.0f);
-            mp.x -= (speed * cos(camPosX)) / dt;
-            mp.z -= (speed * sin(camPosX)) / dt;
+            mp.x -= (speed * cos(camPosX)) * dt;
+            mp.z -= (speed * sin(camPosX)) * dt;
         }
         if (Eendgine::InputManager::downPress) {
-            mp.x += (speed * cos(camPosX)) / dt;
-            mp.z += (speed * sin(camPosX)) / dt;
+            mp.x += (speed * cos(camPosX)) * dt;
+            mp.z += (speed * sin(camPosX)) * dt;
         }
         if (Eendgine::InputManager::leftPress) {
-            mp.x -= (speed * sin(camPosX)) / dt;
-            mp.z += (speed * cos(camPosX)) / dt;
+            mp.x -= (speed * sin(camPosX)) * dt;
+            mp.z += (speed * cos(camPosX)) * dt;
         }
         if (Eendgine::InputManager::rightPress) {
-            mp.x += (speed * sin(camPosX)) / dt;
-            mp.z -= (speed * cos(camPosX)) / dt;
+            mp.x += (speed * sin(camPosX)) * dt;
+            mp.z -= (speed * cos(camPosX)) * dt;
+        }
+        if (Eendgine::InputManager::spacePress) {
+            fv = 25;
+            std::cout << "space" << std::endl;
         }
         
-        mp.y += fv;
+        mp.y += fv * dt;
         // adjust for collisions
-        float height = 0;
-        if (Eend::snapToTri(mySphere, myColLand, &height)) {
-            mp.y = height;
-        }
+        //
         myModel.setPosition(mp.x, mp.y + 4, mp.z);
         mySphere.setPosition(mp.x, mp.y, mp.z);
+
+        float height = 0;
+        if (Eend::snapToTri(mySphere, myColLand, &height)) {
+            fv = 0;
+            mp.y = height;
+            myModel.setPosition(mp.x, mp.y + 4, mp.z);
+            mySphere.setPosition(mp.x, mp.y, mp.z);
+        }
         glm::vec3 spherePos = mySphere.getPosition();
 
         // adjust camera to follow
@@ -174,8 +185,8 @@ int main(){
              mp.y + (camDis * sin(camPosY)), 
              mp.z + (camDis * sin(camPosX)));
         myAnimatedModel.setPosition(
-                (float)Eend::InputManager::deltaMouseX / dt / 1000,
-                (float)Eend::InputManager::deltaMouseY / dt / 1000,
+                (float)Eend::InputManager::deltaMouseX * dt / 1000,
+                (float)Eend::InputManager::deltaMouseY * dt / 1000,
                 0.0f);
 
         Eend::Screen::render(screenShader);
