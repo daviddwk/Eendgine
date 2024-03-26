@@ -50,17 +50,24 @@ int main(){
     my3DSprite.setPosition(20.0f, 0.0f, 0.0f);
     my3DSprite.setSize(10.0f, 10.0f);
 
-    glm::vec3 mp = glm::vec3(0.0f, 3.0f, 0.0f);
+    glm::vec3 mp = glm::vec3(0.0f, 20.0f, 0.0f);
 
     Eend::StaticModel myModel("resources/ost/ost.obj", myTextureCache);
     myModel.setScale(1.0f, 1.0f, 1.0f);
     myModel.setPosition(mp.x, mp.y, mp.z);
-    Eend::CollisionSphere mySphere(mp.x, mp.y, mp.z , 0.5f);
+    Eend::CollisionSphere mySphere(mp.x, mp.y, mp.z , 2.0f);
     
-    Eend::CollisionModel collisionCube("resources/cube/cube.obj");
-    collisionCube.setPosition(glm::vec3(0.0f, -5.0f, 0.0f));
-    collisionCube.setPosition(glm::vec3(100.0f, 1.0f, 100.0f));
 
+    Eend::StaticModel myLand("resources/land/land.obj", myTextureCache);
+    myLand.setScale(1.0f, 1.0f, 1.0f);
+    myLand.setPosition(0.0f, 0.0f, 0.0f);
+    Eend::CollisionModel myColLand("resources/land/land.obj");
+    myColLand.setScale(glm::vec3(1.0f, 1.0f, 1.0f));
+    myColLand.setPosition(glm::vec3(0.0f, 0.0f, 0.0f));
+
+    Eend::CollisionModel collisionCube("resources/cube/cube.obj");
+    collisionCube.setPosition(glm::vec3(0.0f, 1.0f, 0.0f));
+    collisionCube.setScale(glm::vec3(1.0f));
     Eend::StaticModel myCube("resources/cube/cube.obj", myTextureCache);
     myCube.setPosition(0.0f, -5.0f, 0.0f);
     myCube.setScale(25.0f, 1.0f, 25.0f);
@@ -81,6 +88,7 @@ int main(){
     std::vector<Eend::Model*> modelBatch;
     modelBatch.push_back(&myModel);
     modelBatch.push_back(&myCube);
+    modelBatch.push_back(&myLand);
     
     float fv = 0.0f;
     float camPosX = 0;
@@ -149,15 +157,23 @@ int main(){
         }
         
         mp.y += fv;
-        myModel.setPosition(mp.x, mp.y, mp.z);
+        myModel.setPosition(mp.x, mp.y + 10.0f, mp.z);
         mySphere.setPosition(mp.x, mp.y, mp.z);
         // adjust for collisions
-        glm::vec3 p;
-        if (Eend::colliding(mySphere, collisionCube, &p)) {
-            mp.y += std::sqrt(2 * (p.y * p.y));
-            fv = 0.0f;
-            myModel.setPosition(mp.x, mp.y, mp.z);
+        std::vector<glm::vec3> p;
+        if (Eend::colliding(mySphere, myColLand, &p)) {
+            int closest = 0;
+            int distance = glm::length(p[0]);
+            for (int i = 0; i < p.size(); i++) {
+                if (glm::length(p[i]) < distance) {
+                    closest = i;
+                    distance = glm::length(p[i]);
+                }
+            }
+            mp.y += std::sqrt(2*(p[closest].y * p[closest].y));
+            myModel.setPosition(mp.x, mp.y + 10.0f, mp.z);
             mySphere.setPosition(mp.x, mp.y, mp.z);
+            p.clear();
         }
         glm::vec3 spherePos = mySphere.getPosition();
 

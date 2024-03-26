@@ -6,6 +6,8 @@
 #include <iostream>
 #include <tuple>
 
+float sign (glm::vec3 p1, glm::vec3 p2, glm::vec3 p3);
+
 namespace Eendgine {
     CollisionSphere::CollisionSphere(float x, float y, float z, float r) :
             _position(glm::vec3(x, y, z)),
@@ -52,20 +54,50 @@ namespace Eendgine {
         return depth > 0.0f;
     }
 
-    bool colliding(CollisionSphere s, CollisionModel &m, glm::vec3 *penetration) {
+    bool onTri(CollisionSphere s, CollisionTriangle &t, glm::vec3 position, glm::vec3 scale) {
+        float d1, d2, d3;
+        bool has_neg, has_pos;
+        
+        glm::vec3 spherePos = s.getPosition();
+        std::array<glm::vec3, 3> triVerts = t.getVerts();
+        for (int i = 0; i < triVerts.size(); i++) {
+            triVerts[i] *= scale;
+            triVerts[i] += position;
+        }
+
+        d1 = sign(spherePos, triVerts[1], triVerts[2]);
+        d2 = sign(spherePos, triVerts[2], triVerts[3]);
+        d3 = sign(spherePos, triVerts[3], triVerts[1]);
+
+        has_neg = (d1 < 0) || (d2 < 0) || (d3 < 0);
+        has_pos = (d1 > 0) || (d2 > 0) || (d3 > 0);
+
+        return !(has_neg && has_pos);
+    }
+
+    float heightTri(CollisionSphere s, CollisionTriangle &t, glm::vec3 position, glm::vec3 scale) {
+        float dis[3];
+        float disTotal;
+        std::array<glm::vec3, 3> triVerts = t.getVerts();
+        for (int i = 0; i < triVerts.size(); i++) {
+            triVerts[i] *= scale;
+            triVerts[i] += position;
+            dis[i] = glm::length(triVerts[i] - s.getPosition());
+            disTotal += dis[i];
+        }
+        
+    }
+
+    bool colliding(CollisionSphere s, CollisionModel &m, std::vector<glm::vec3> *penetration) {
         bool collision = false;
         auto triangles = m.getTris();
         glm::vec3 modelPos = m.getPosition();
         glm::vec3 modelScale = m.getScale();
         glm::vec3 tmpPen = glm::vec3(0.0f);
-        if (penetration != nullptr) {
-            *penetration = tmpPen;
-        }
         for ( int i = 0; i < triangles.size(); i++ ) {
             if (colliding(s, triangles[i], &tmpPen, modelScale, modelPos)) {
-                if (penetration != nullptr) {
-                    *penetration += tmpPen;
-                }
+                penetration->push_back(tmpPen);
+                std::cout << tmpPen.x << ' ' << tmpPen.y << ' ' << tmpPen.z << std::endl;
                 collision = true;
             }
         } 
@@ -136,4 +168,10 @@ namespace Eendgine {
                         vertices[indices[i + 2]].position);
         }
     }
+
 }
+
+float sign (glm::vec3 p1, glm::vec3 p2, glm::vec3 p3) {
+    return (p1.x - p3.x) * (p2.y - p3.y) - (p2.x - p3.x) * (p1.y - p3.y);
+}
+
