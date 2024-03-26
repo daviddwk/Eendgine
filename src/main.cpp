@@ -19,8 +19,8 @@
 
 namespace Eend = Eendgine;
 
-const unsigned int screenHeight = 1024;
-const unsigned int screenWidth = 2048; 
+const unsigned int screenHeight = 512;
+const unsigned int screenWidth = 1024; 
 
 int main(){
     Eend::Window::init(screenWidth, screenHeight, "Quack"); 
@@ -157,21 +157,14 @@ int main(){
         }
         
         mp.y += fv;
-        myModel.setPosition(mp.x, mp.y + 10.0f, mp.z);
+        myModel.setPosition(mp.x, mp.y + 4, mp.z);
         mySphere.setPosition(mp.x, mp.y, mp.z);
         // adjust for collisions
         std::vector<glm::vec3> p;
-        if (Eend::colliding(mySphere, myColLand, &p)) {
-            int closest = 0;
-            int distance = glm::length(p[0]);
-            for (int i = 0; i < p.size(); i++) {
-                if (glm::length(p[i]) < distance) {
-                    closest = i;
-                    distance = glm::length(p[i]);
-                }
-            }
-            mp.y += std::sqrt(2*(p[closest].y * p[closest].y));
-            myModel.setPosition(mp.x, mp.y + 10.0f, mp.z);
+        float height = 0;
+        if (Eend::snapToTri(mySphere, myColLand, &height)) {
+            mp.y = height;
+            myModel.setPosition(mp.x, mp.y + 4, mp.z);
             mySphere.setPosition(mp.x, mp.y, mp.z);
             p.clear();
         }

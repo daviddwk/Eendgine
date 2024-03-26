@@ -67,6 +67,8 @@ namespace Eendgine {
     bool colliding(CollisionSphere s, CollisionTriangle &t, glm::vec3 *penetration, 
             glm::vec3 position = glm::vec3(0.0f), glm::vec3 scale = glm::vec3(1.0f));
     bool colliding(CollisionSphere s, CollisionModel &m, std::vector<glm::vec3>* penetrations);
+    
+    bool snapToTri(CollisionSphere s, CollisionModel &m, float *height);
 
     void loadCollisionModel(std::string modelPath, std::vector<CollisionTriangle> &collisionModel);
 }

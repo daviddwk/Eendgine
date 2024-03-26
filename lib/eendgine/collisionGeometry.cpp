@@ -54,27 +54,48 @@ namespace Eendgine {
         return depth > 0.0f;
     }
 
-    bool onTri(CollisionSphere s, CollisionTriangle &t, glm::vec3 position, glm::vec3 scale) {
+    bool snapToTri(CollisionSphere s, CollisionModel &m, float *height) {
         float d1, d2, d3;
         bool has_neg, has_pos;
         
         glm::vec3 spherePos = s.getPosition();
-        std::array<glm::vec3, 3> triVerts = t.getVerts();
-        for (int i = 0; i < triVerts.size(); i++) {
-            triVerts[i] *= scale;
-            triVerts[i] += position;
+        auto tris = m.getTris();
+        int tmp_num = 0;
+        for (int i = 0; i < tris.size(); i++){
+            std::array<glm::vec3, 3> triVerts = tris[i].getVerts();
+            for (int j = 0; j < triVerts.size(); j++) {
+                triVerts[j] *= m.getScale();
+                triVerts[j] += m.getPosition();
+            }
+
+            d1 = sign(spherePos, triVerts[0], triVerts[1]);
+            d2 = sign(spherePos, triVerts[1], triVerts[2]);
+            d3 = sign(spherePos, triVerts[2], triVerts[0]);
+
+            has_neg = (d1 < 0) || (d2 < 0) || (d3 < 0);
+            has_pos = (d1 > 0) || (d2 > 0) || (d3 > 0);
+            if (!(has_neg && has_pos)) {
+                *height = triVerts[0].y;
+                *height += triVerts[1].y;
+                *height += triVerts[2].y;
+                *height /= 3;
+
+                tmp_num++;
+                /*
+                std::cout << "start" << std::endl;
+                for (int i = 0; i < 3; i++) {
+                    std::cout << triVerts[i].x << ' ' << triVerts[i].y << ' ' << triVerts[i].z << std::endl;
+                }
+                std::cout << spherePos.x << ' ' << spherePos.y << ' ' << spherePos.z << std::endl;
+                */
+            }
         }
-
-        d1 = sign(spherePos, triVerts[1], triVerts[2]);
-        d2 = sign(spherePos, triVerts[2], triVerts[3]);
-        d3 = sign(spherePos, triVerts[3], triVerts[1]);
-
-        has_neg = (d1 < 0) || (d2 < 0) || (d3 < 0);
-        has_pos = (d1 > 0) || (d2 > 0) || (d3 > 0);
-
-        return !(has_neg && has_pos);
+        if (tmp_num) {
+            return true;
+        }
+        return false;
     }
-
+    /*
     float heightTri(CollisionSphere s, CollisionTriangle &t, glm::vec3 position, glm::vec3 scale) {
         float dis[3];
         float disTotal;
@@ -87,7 +108,7 @@ namespace Eendgine {
         }
         
     }
-
+    */
     bool colliding(CollisionSphere s, CollisionModel &m, std::vector<glm::vec3> *penetration) {
         bool collision = false;
         auto triangles = m.getTris();
@@ -97,7 +118,6 @@ namespace Eendgine {
         for ( int i = 0; i < triangles.size(); i++ ) {
             if (colliding(s, triangles[i], &tmpPen, modelScale, modelPos)) {
                 penetration->push_back(tmpPen);
-                std::cout << tmpPen.x << ' ' << tmpPen.y << ' ' << tmpPen.z << std::endl;
                 collision = true;
             }
         } 
@@ -172,6 +192,6 @@ namespace Eendgine {
 }
 
 float sign (glm::vec3 p1, glm::vec3 p2, glm::vec3 p3) {
-    return (p1.x - p3.x) * (p2.y - p3.y) - (p2.x - p3.x) * (p1.y - p3.y);
+    return ((p1.x - p3.x) * (p2.z - p3.z)) - ((p2.x - p3.x) * (p1.z - p3.z));
 }
 
