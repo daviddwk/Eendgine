@@ -7,6 +7,8 @@
 #include <tuple>
 
 float sign (glm::vec3 p1, glm::vec3 p2, glm::vec3 p3);
+glm::vec3 triNormal(glm::vec3 p1, glm::vec3 p2, glm::vec3 p3);
+float pointHeightOnTri(glm::vec3 p1, glm::vec3 p2, glm::vec3 p3, float x, float z);
 
 namespace Eendgine {
     CollisionSphere::CollisionSphere(float x, float y, float z, float r) :
@@ -60,10 +62,9 @@ namespace Eendgine {
         
         glm::vec3 spherePos = s.getPosition();
         auto tris = m.getTris();
-        int tmp_num = 0;
         for (int i = 0; i < tris.size(); i++){
             std::array<glm::vec3, 3> triVerts = tris[i].getVerts();
-            for (int j = 0; j < triVerts.size(); j++) {
+            for (int j = 0; j < 3; j++) {
                 triVerts[j] *= m.getScale();
                 triVerts[j] += m.getPosition();
             }
@@ -74,13 +75,14 @@ namespace Eendgine {
 
             has_neg = (d1 < 0) || (d2 < 0) || (d3 < 0);
             has_pos = (d1 > 0) || (d2 > 0) || (d3 > 0);
-            if (!(has_neg && has_pos)) {
-                *height = triVerts[0].y;
-                *height += triVerts[1].y;
-                *height += triVerts[2].y;
-                *height /= 3;
 
-                tmp_num++;
+            float snapDistance = 0.1;
+            if (!(has_neg && has_pos)) {
+                //glm::vec3 triNorm = triNormal(triVerts[0], triVerts[1], triVerts[2]);
+                *height = pointHeightOnTri(triVerts[0], triVerts[1], triVerts[2], spherePos.x, spherePos.z);
+                if (fabs(*height - spherePos.y) <= snapDistance){
+                    return true;
+                }
                 /*
                 std::cout << "start" << std::endl;
                 for (int i = 0; i < 3; i++) {
@@ -89,9 +91,6 @@ namespace Eendgine {
                 std::cout << spherePos.x << ' ' << spherePos.y << ' ' << spherePos.z << std::endl;
                 */
             }
-        }
-        if (tmp_num) {
-            return true;
         }
         return false;
     }
@@ -194,4 +193,27 @@ namespace Eendgine {
 float sign (glm::vec3 p1, glm::vec3 p2, glm::vec3 p3) {
     return ((p1.x - p3.x) * (p2.z - p3.z)) - ((p2.x - p3.x) * (p1.z - p3.z));
 }
+float pointHeightOnTri(glm::vec3 p1, glm::vec3 p2, glm::vec3 p3, float x, float z){
+    // undefined behavior if plane is parallel
+    // WHAT? https://math.stackexchange.com/questions/1154340/how-to-find-the-height-of-a-2d-coordinate-on-a-3d-triangle
+    float a = -(p3.z*p2.y-p1.z*p2.y-p3.z*p1.y+
+            p1.y*p2.z+p3.y*p1.z-p2.z*p3.y);    
+    float b = (p1.z*p3.x+p2.z*p1.x+p3.z*p2.x-
+            p2.z*p3.x-p1.z*p2.x-p3.z*p1.x);    
+    float c = (p2.y*p3.x+p1.y*p2.x+p3.y*p1.x-
+            p1.y*p3.x-p2.y*p1.x-p2.x*p3.y);
+    float d = -a*p1.x-b*p1.y-c*p1.z;
+    return -(a*x+c*z+d)/b;  
 
+}
+
+glm::vec3 triNormal(glm::vec3 p1, glm::vec3 p2, glm::vec3 p3) {
+    // https://www.khronos.org/opengl/wiki/Calculating_a_Surface_Normal
+    glm::vec3 a = p2 - p1;
+    glm::vec3 b = p3 - p1;
+
+    return glm::vec3(
+            a.y * b.z - a.z * b.y,
+            a.z * b.x - a.x * b.z,
+            a.x * b.y - a.y * b.x);
+}
