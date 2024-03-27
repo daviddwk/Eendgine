@@ -53,14 +53,14 @@ int main(){
     glm::vec3 mp = glm::vec3(0.0f, 50.0f, 0.0f);
 
     Eend::StaticModel myModel("resources/ost/ost.obj", myTextureCache);
-    myModel.setScale(1.0f, 1.0f, 1.0f);
-    myModel.setPosition(mp.x, mp.y + 4, mp.z);
-    Eend::CollisionSphere mySphere(mp.x, mp.y, mp.z , 5.0f);
+    myModel.setScale(glm::vec3(1.0f, 1.0f, 1.0f));
+    myModel.setPosition(glm::vec3(mp.x, mp.y + 4, mp.z));
+    Eend::CollisionCylinder myCylinder(glm::vec3(mp.x, mp.y, mp.z), 5.0f);
     
 
     Eend::StaticModel myLand("resources/lpland/lpland.obj", myTextureCache);
-    myLand.setScale(1.0f, 1.0f, 1.0f);
-    myLand.setPosition(0.0f, 0.0f, 0.0f);
+    myLand.setScale(glm::vec3(1.0f, 1.0f, 1.0f));
+    myLand.setPosition(glm::vec3(0.0f, 0.0f, 0.0f));
     Eend::CollisionModel myColLand("resources/lpland/lpland.obj");
     myColLand.setScale(glm::vec3(1.0f, 1.0f, 1.0f));
     myColLand.setPosition(glm::vec3(0.0f, 0.0f, 0.0f));
@@ -69,20 +69,20 @@ int main(){
     collisionCube.setPosition(glm::vec3(0.0f, 1.0f, 0.0f));
     collisionCube.setScale(glm::vec3(1.0f));
     Eend::StaticModel myCube("resources/cube/cube.obj", myTextureCache);
-    myCube.setPosition(0.0f, -5.0f, 0.0f);
-    myCube.setScale(25.0f, 1.0f, 25.0f);
+    myCube.setPosition(glm::vec3(0.0f, -5.0f, 0.0f));
+    myCube.setScale(glm::vec3(25.0f, 1.0f, 25.0f));
 
 
     std::vector<std::string> walkAnim;
     for (int i = 16; i <= 55; i++) {
         walkAnim.emplace_back("resources/ost_walk/ost" + std::to_string(i) + ".obj");
     }
-    myModel.setScale(1.0f, 1.0f, 1.0f);
-    myModel.setPosition(0.0f, 0.0f, 0.0f);
+    myModel.setScale(glm::vec3(1.0f, 1.0f, 1.0f));
+    myModel.setPosition(glm::vec3(0.0f, 0.0f, 0.0f));
 
     Eend::AnimatedModel myAnimatedModel(walkAnim, myTextureCache);
-    myAnimatedModel.setPosition(0.0f, 0.0f, 0.0f);
-    myAnimatedModel.setScale(0.8f, 0.8f, 0.8f);
+    myAnimatedModel.setPosition(glm::vec3(0.0f, 0.0f, 0.0f));
+    myAnimatedModel.setScale(glm::vec3(0.8f, 0.8f, 0.8f));
     myAnimatedModel.setAnim(0.0f);
 
     std::vector<Eend::Model*> modelBatch;
@@ -165,17 +165,17 @@ int main(){
         mp.y += fv * dt;
         // adjust for collisions
         //
-        myModel.setPosition(mp.x, mp.y + 4, mp.z);
-        mySphere.setPosition(mp.x, mp.y, mp.z);
+        myModel.setPosition(glm::vec3(mp.x, mp.y + 4, mp.z));
+        myCylinder.setPosition(glm::vec3(mp.x, mp.y, mp.z));
 
         float height = 0;
-        if (Eend::snapToTri(mySphere, myColLand, &height)) {
+        if (Eend::snapCylinderToFloor(myCylinder, myColLand, &height)) {
             fv = 0;
             mp.y = height;
-            myModel.setPosition(mp.x, mp.y + 4, mp.z);
-            mySphere.setPosition(mp.x, mp.y, mp.z);
+            myModel.setPosition(glm::vec3(mp.x, mp.y + 4, mp.z));
+            myCylinder.setPosition(glm::vec3(mp.x, mp.y, mp.z));
         }
-        glm::vec3 spherePos = mySphere.getPosition();
+        glm::vec3 spherePos = myCylinder.getPosition();
 
         // adjust camera to follow
         float camDis = 30;
@@ -184,10 +184,10 @@ int main(){
             (mp.x + (camDis * cos(camPosX)), 
              mp.y + (camDis * sin(camPosY)), 
              mp.z + (camDis * sin(camPosX)));
-        myAnimatedModel.setPosition(
+        myAnimatedModel.setPosition(glm::vec3(
                 (float)Eend::InputManager::deltaMouseX * dt / 1000,
                 (float)Eend::InputManager::deltaMouseY * dt / 1000,
-                0.0f);
+                0.0f));
 
         Eend::Screen::render(screenShader);
         Eend::InputManager::processInput();

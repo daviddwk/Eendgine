@@ -11,9 +11,9 @@ glm::vec3 triNormal(glm::vec3 p1, glm::vec3 p2, glm::vec3 p3);
 float pointHeightOnTri(glm::vec3 p1, glm::vec3 p2, glm::vec3 p3, float x, float z);
 
 namespace Eendgine {
-    CollisionSphere::CollisionSphere(float x, float y, float z, float r) :
-            _position(glm::vec3(x, y, z)),
-            _radius(std::abs(r))
+    CollisionSphere::CollisionSphere(glm::vec3 position, float radius) :
+            _position(position),
+            _radius(std::abs(radius))
     {
     }
     CollisionPlane::CollisionPlane(glm::vec3 position, glm::vec3 normal) :
@@ -23,6 +23,11 @@ namespace Eendgine {
     }
     CollisionTriangle::CollisionTriangle(glm::vec3 v0, glm::vec3 v1, glm::vec3 v2) :
             _verts({v0, v1, v2})
+    {
+    }
+    CollisionCylinder::CollisionCylinder(glm::vec3 position, float height) :
+            _position(position),
+            _height(height)
     {
     }
     
@@ -56,11 +61,11 @@ namespace Eendgine {
         return depth > 0.0f;
     }
 
-    bool snapToTri(CollisionSphere s, CollisionModel &m, float *height) {
+    bool snapCylinderToFloor(CollisionCylinder c, CollisionModel &m, float *height) {
         float d1, d2, d3;
         bool has_neg, has_pos;
         
-        glm::vec3 spherePos = s.getPosition();
+        glm::vec3 CylinderPos = c.getPosition();
         auto tris = m.getTris();
         for (int i = 0; i < tris.size(); i++){
             std::array<glm::vec3, 3> triVerts = tris[i].getVerts();
@@ -69,19 +74,19 @@ namespace Eendgine {
                 triVerts[j] += m.getPosition();
             }
 
-            d1 = sign(spherePos, triVerts[0], triVerts[1]);
-            d2 = sign(spherePos, triVerts[1], triVerts[2]);
-            d3 = sign(spherePos, triVerts[2], triVerts[0]);
+            d1 = sign(CylinderPos, triVerts[0], triVerts[1]);
+            d2 = sign(CylinderPos, triVerts[1], triVerts[2]);
+            d3 = sign(CylinderPos, triVerts[2], triVerts[0]);
 
             has_neg = (d1 < 0) || (d2 < 0) || (d3 < 0);
             has_pos = (d1 > 0) || (d2 > 0) || (d3 > 0);
 
             float snapDistance = 0.2;
             if (!(has_neg && has_pos)) {
-                //glm::vec3 triNorm = triNormal(triVerts[0], triVerts[1], triVerts[2]);
-                *height = pointHeightOnTri(triVerts[0], triVerts[1], triVerts[2], spherePos.x, spherePos.z);
-                if (fabs(spherePos.y - *height) <= snapDistance
-                        || (spherePos.y - *height < 0 && spherePos.y - *height > -(snapDistance + s.getRadius()))){
+                *height = pointHeightOnTri(triVerts[0], triVerts[1], triVerts[2], CylinderPos.x, CylinderPos.z);
+                // if slightly above floor OR clipping into floor
+                if (fabs(CylinderPos.y - *height) <= snapDistance
+                        || (CylinderPos.y - *height < 0 && CylinderPos.y - *height > -c.getHeight())){
                     *height += snapDistance;
                     return true;
                 }
@@ -89,20 +94,7 @@ namespace Eendgine {
         }
         return false;
     }
-    /*
-    float heightTri(CollisionSphere s, CollisionTriangle &t, glm::vec3 position, glm::vec3 scale) {
-        float dis[3];
-        float disTotal;
-        std::array<glm::vec3, 3> triVerts = t.getVerts();
-        for (int i = 0; i < triVerts.size(); i++) {
-            triVerts[i] *= scale;
-            triVerts[i] += position;
-            dis[i] = glm::length(triVerts[i] - s.getPosition());
-            disTotal += dis[i];
-        }
-        
-    }
-    */
+
     bool colliding(CollisionSphere s, CollisionModel &m, std::vector<glm::vec3> *penetration) {
         bool collision = false;
         auto triangles = m.getTris();
