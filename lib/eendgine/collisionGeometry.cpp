@@ -6,10 +6,14 @@
 #include <iostream>
 #include <tuple>
 
+float sign (glm::vec3 p1, glm::vec3 p2, glm::vec3 p3);
+glm::vec3 triNormal(glm::vec3 p1, glm::vec3 p2, glm::vec3 p3);
+float pointHeightOnTri(glm::vec3 p1, glm::vec3 p2, glm::vec3 p3, float x, float z);
+
 namespace Eendgine {
-    CollisionSphere::CollisionSphere(float x, float y, float z, float r) :
-            _position(glm::vec3(x, y, z)),
-            _radius(std::abs(r))
+    CollisionSphere::CollisionSphere(glm::vec3 position, float radius) :
+            _position(position),
+            _radius(std::abs(radius))
     {
     }
     CollisionPlane::CollisionPlane(glm::vec3 position, glm::vec3 normal) :
@@ -19,6 +23,11 @@ namespace Eendgine {
     }
     CollisionTriangle::CollisionTriangle(glm::vec3 v0, glm::vec3 v1, glm::vec3 v2) :
             _verts({v0, v1, v2})
+    {
+    }
+    CollisionCylinder::CollisionCylinder(glm::vec3 position, float height) :
+            _position(position),
+            _height(height)
     {
     }
     
@@ -52,20 +61,49 @@ namespace Eendgine {
         return depth > 0.0f;
     }
 
-    bool colliding(CollisionSphere s, CollisionModel &m, glm::vec3 *penetration) {
+    bool snapCylinderToFloor(CollisionCylinder c, CollisionModel &m, float *height) {
+        float d1, d2, d3;
+        bool has_neg, has_pos;
+        
+        glm::vec3 CylinderPos = c.getPosition();
+        auto tris = m.getTris();
+        for (int i = 0; i < tris.size(); i++){
+            std::array<glm::vec3, 3> triVerts = tris[i].getVerts();
+            for (int j = 0; j < 3; j++) {
+                triVerts[j] *= m.getScale();
+                triVerts[j] += m.getPosition();
+            }
+
+            d1 = sign(CylinderPos, triVerts[0], triVerts[1]);
+            d2 = sign(CylinderPos, triVerts[1], triVerts[2]);
+            d3 = sign(CylinderPos, triVerts[2], triVerts[0]);
+
+            has_neg = (d1 < 0) || (d2 < 0) || (d3 < 0);
+            has_pos = (d1 > 0) || (d2 > 0) || (d3 > 0);
+
+            float snapDistance = 0.2;
+            if (!(has_neg && has_pos)) {
+                *height = pointHeightOnTri(triVerts[0], triVerts[1], triVerts[2], CylinderPos.x, CylinderPos.z);
+                // if slightly above floor OR clipping into floor
+                if (fabs(CylinderPos.y - *height) <= snapDistance
+                        || (CylinderPos.y - *height < 0 && CylinderPos.y - *height > -c.getHeight())){
+                    *height += snapDistance;
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    bool colliding(CollisionSphere s, CollisionModel &m, std::vector<glm::vec3> *penetration) {
         bool collision = false;
         auto triangles = m.getTris();
         glm::vec3 modelPos = m.getPosition();
         glm::vec3 modelScale = m.getScale();
         glm::vec3 tmpPen = glm::vec3(0.0f);
-        if (penetration != nullptr) {
-            *penetration = tmpPen;
-        }
         for ( int i = 0; i < triangles.size(); i++ ) {
             if (colliding(s, triangles[i], &tmpPen, modelScale, modelPos)) {
-                if (penetration != nullptr) {
-                    *penetration += tmpPen;
-                }
+                penetration->push_back(tmpPen);
                 collision = true;
             }
         } 
@@ -136,4 +174,33 @@ namespace Eendgine {
                         vertices[indices[i + 2]].position);
         }
     }
+
+}
+
+float sign (glm::vec3 p1, glm::vec3 p2, glm::vec3 p3) {
+    return ((p1.x - p3.x) * (p2.z - p3.z)) - ((p2.x - p3.x) * (p1.z - p3.z));
+}
+float pointHeightOnTri(glm::vec3 p1, glm::vec3 p2, glm::vec3 p3, float x, float z){
+    // undefined behavior if plane is parallel
+    // WHAT? https://math.stackexchange.com/questions/1154340/how-to-find-the-height-of-a-2d-coordinate-on-a-3d-triangle
+    float a = -(p3.z*p2.y-p1.z*p2.y-p3.z*p1.y+
+            p1.y*p2.z+p3.y*p1.z-p2.z*p3.y);    
+    float b = (p1.z*p3.x+p2.z*p1.x+p3.z*p2.x-
+            p2.z*p3.x-p1.z*p2.x-p3.z*p1.x);    
+    float c = (p2.y*p3.x+p1.y*p2.x+p3.y*p1.x-
+            p1.y*p3.x-p2.y*p1.x-p2.x*p3.y);
+    float d = -a*p1.x-b*p1.y-c*p1.z;
+    return -(a*x+c*z+d)/b;  
+
+}
+
+glm::vec3 triNormal(glm::vec3 p1, glm::vec3 p2, glm::vec3 p3) {
+    // https://www.khronos.org/opengl/wiki/Calculating_a_Surface_Normal
+    glm::vec3 a = p2 - p1;
+    glm::vec3 b = p3 - p1;
+
+    return glm::vec3(
+            a.y * b.z - a.z * b.y,
+            a.z * b.x - a.x * b.z,
+            a.x * b.y - a.y * b.x);
 }

@@ -7,14 +7,14 @@ namespace Eendgine {
                 {
                     return a->getTexture() > b->getTexture();
                 });
+        glActiveTexture(GL_TEXTURE0);
+        std::string texName = "texture_diffuse";
+        glUniform1i(glGetUniformLocation(shader.getProgramID(), texName.c_str()), 0);
         unsigned int lastTexture = 0;
         unsigned int thisTexture = 0; 
         for (int i = 0; i < models->size(); i++) {
             thisTexture = (*models)[i]->getTexture(); 
             if (i == 0 || lastTexture != thisTexture) {
-                glActiveTexture(GL_TEXTURE0);
-                std::string texName = "texture_diffuse";
-                glUniform1i(glGetUniformLocation(shader.getProgramID(), texName.c_str()), 0);
                 glBindTexture(GL_TEXTURE_2D, thisTexture);
             }
             lastTexture = thisTexture;

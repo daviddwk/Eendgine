@@ -16,8 +16,8 @@ namespace Eendgine {
             Model();
             virtual void draw(ShaderProgram &shader, Camera3D &camera, bool bindTexture);
             
-            void setPosition(float x, float y, float z) { _position = glm::vec3(x, y, z); };
-            void setScale(float x, float y, float z) { _scale = glm::vec3(x, y, z); };
+            void setPosition(glm::vec3 position) { _position = position; };
+            void setScale(glm::vec3 scale) { _scale = scale; };
             void setRadians(float x, float y) { _rotation = glm::vec2(x, y); };
             void setRotation(float x, float y) { _rotation = glm::vec2(glm::radians(x), glm::radians(y)); };
 

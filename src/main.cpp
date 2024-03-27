@@ -19,8 +19,8 @@
 
 namespace Eend = Eendgine;
 
-const unsigned int screenHeight = 1024;
-const unsigned int screenWidth = 2048; 
+const unsigned int screenHeight = 512;
+const unsigned int screenWidth = 1024; 
 
 int main(){
     Eend::Window::init(screenWidth, screenHeight, "Quack"); 
@@ -50,37 +50,45 @@ int main(){
     my3DSprite.setPosition(20.0f, 0.0f, 0.0f);
     my3DSprite.setSize(10.0f, 10.0f);
 
-    glm::vec3 mp = glm::vec3(0.0f, 3.0f, 0.0f);
+    glm::vec3 mp = glm::vec3(0.0f, 50.0f, 0.0f);
 
     Eend::StaticModel myModel("resources/ost/ost.obj", myTextureCache);
-    myModel.setScale(1.0f, 1.0f, 1.0f);
-    myModel.setPosition(mp.x, mp.y, mp.z);
-    Eend::CollisionSphere mySphere(mp.x, mp.y, mp.z , 0.5f);
+    myModel.setScale(glm::vec3(1.0f, 1.0f, 1.0f));
+    myModel.setPosition(glm::vec3(mp.x, mp.y + 4, mp.z));
+    Eend::CollisionCylinder myCylinder(glm::vec3(mp.x, mp.y, mp.z), 5.0f);
     
-    Eend::CollisionModel collisionCube("resources/cube/cube.obj");
-    collisionCube.setPosition(glm::vec3(0.0f, -5.0f, 0.0f));
-    collisionCube.setPosition(glm::vec3(100.0f, 1.0f, 100.0f));
 
+    Eend::StaticModel myLand("resources/lpland/lpland.obj", myTextureCache);
+    myLand.setScale(glm::vec3(1.0f, 1.0f, 1.0f));
+    myLand.setPosition(glm::vec3(0.0f, 0.0f, 0.0f));
+    Eend::CollisionModel myColLand("resources/lpland/lpland.obj");
+    myColLand.setScale(glm::vec3(1.0f, 1.0f, 1.0f));
+    myColLand.setPosition(glm::vec3(0.0f, 0.0f, 0.0f));
+
+    Eend::CollisionModel collisionCube("resources/cube/cube.obj");
+    collisionCube.setPosition(glm::vec3(0.0f, 1.0f, 0.0f));
+    collisionCube.setScale(glm::vec3(1.0f));
     Eend::StaticModel myCube("resources/cube/cube.obj", myTextureCache);
-    myCube.setPosition(0.0f, -5.0f, 0.0f);
-    myCube.setScale(25.0f, 1.0f, 25.0f);
+    myCube.setPosition(glm::vec3(0.0f, -5.0f, 0.0f));
+    myCube.setScale(glm::vec3(25.0f, 1.0f, 25.0f));
 
 
     std::vector<std::string> walkAnim;
     for (int i = 16; i <= 55; i++) {
         walkAnim.emplace_back("resources/ost_walk/ost" + std::to_string(i) + ".obj");
     }
-    myModel.setScale(1.0f, 1.0f, 1.0f);
-    myModel.setPosition(0.0f, 0.0f, 0.0f);
+    myModel.setScale(glm::vec3(1.0f, 1.0f, 1.0f));
+    myModel.setPosition(glm::vec3(0.0f, 0.0f, 0.0f));
 
     Eend::AnimatedModel myAnimatedModel(walkAnim, myTextureCache);
-    myAnimatedModel.setPosition(0.0f, 0.0f, 0.0f);
-    myAnimatedModel.setScale(0.8f, 0.8f, 0.8f);
+    myAnimatedModel.setPosition(glm::vec3(0.0f, 0.0f, 0.0f));
+    myAnimatedModel.setScale(glm::vec3(0.8f, 0.8f, 0.8f));
     myAnimatedModel.setAnim(0.0f);
 
     std::vector<Eend::Model*> modelBatch;
     modelBatch.push_back(&myModel);
     modelBatch.push_back(&myCube);
+    modelBatch.push_back(&myLand);
     
     float fv = 0.0f;
     float camPosX = 0;
@@ -107,7 +115,7 @@ int main(){
         mySprite.draw(myShader, myCamera);
         
         float dt = Eend::FrameLimiter::deltaTime;
-        float speed = 0.001f;
+        float speed = 20.000f;
         // move based on input and gravity
         camPosX += Eend::InputManager::deltaMouseX / 100.0f;
         camPosY += Eend::InputManager::deltaMouseY / 100.0f;
@@ -126,52 +134,60 @@ int main(){
         } else if (camPosY < -(std::numbers::pi * 0.5)) {
             camPosY = -(std::numbers::pi * 0.5);
         }
-
-        fv -= 0.001;
+        
+        if (fv > -50.0f) {
+            fv -= 1.0f;
+        }
         
         if (Eendgine::InputManager::upPress) {
             // TODO fix adjustment and find out where forward actually is
             myModel.setRadians(camPosX + (std::numbers::pi / 2), 0.0f);
-            mp.x -= (speed * cos(camPosX)) / dt;
-            mp.z -= (speed * sin(camPosX)) / dt;
+            mp.x -= (speed * cos(camPosX)) * dt;
+            mp.z -= (speed * sin(camPosX)) * dt;
         }
         if (Eendgine::InputManager::downPress) {
-            mp.x += (speed * cos(camPosX)) / dt;
-            mp.z += (speed * sin(camPosX)) / dt;
+            mp.x += (speed * cos(camPosX)) * dt;
+            mp.z += (speed * sin(camPosX)) * dt;
         }
         if (Eendgine::InputManager::leftPress) {
-            mp.x -= (speed * sin(camPosX)) / dt;
-            mp.z += (speed * cos(camPosX)) / dt;
+            mp.x -= (speed * sin(camPosX)) * dt;
+            mp.z += (speed * cos(camPosX)) * dt;
         }
         if (Eendgine::InputManager::rightPress) {
-            mp.x += (speed * sin(camPosX)) / dt;
-            mp.z -= (speed * cos(camPosX)) / dt;
+            mp.x += (speed * sin(camPosX)) * dt;
+            mp.z -= (speed * cos(camPosX)) * dt;
+        }
+        if (Eendgine::InputManager::spacePress) {
+            fv = 25;
+            std::cout << "space" << std::endl;
         }
         
-        mp.y += fv;
-        myModel.setPosition(mp.x, mp.y, mp.z);
-        mySphere.setPosition(mp.x, mp.y, mp.z);
+        mp.y += fv * dt;
         // adjust for collisions
-        glm::vec3 p;
-        if (Eend::colliding(mySphere, collisionCube, &p)) {
-            mp.y += std::sqrt(2 * (p.y * p.y));
-            fv = 0.0f;
-            myModel.setPosition(mp.x, mp.y, mp.z);
-            mySphere.setPosition(mp.x, mp.y, mp.z);
+        //
+        myModel.setPosition(glm::vec3(mp.x, mp.y + 4, mp.z));
+        myCylinder.setPosition(glm::vec3(mp.x, mp.y, mp.z));
+
+        float height = 0;
+        if (Eend::snapCylinderToFloor(myCylinder, myColLand, &height)) {
+            fv = 0;
+            mp.y = height;
+            myModel.setPosition(glm::vec3(mp.x, mp.y + 4, mp.z));
+            myCylinder.setPosition(glm::vec3(mp.x, mp.y, mp.z));
         }
-        glm::vec3 spherePos = mySphere.getPosition();
+        glm::vec3 spherePos = myCylinder.getPosition();
 
         // adjust camera to follow
         float camDis = 30;
-        my3DCamera.setTarget(mp.x, mp.y, mp.z);
+        my3DCamera.setTarget(mp.x, mp.y + 4, mp.z);
         my3DCamera.setPosition
             (mp.x + (camDis * cos(camPosX)), 
              mp.y + (camDis * sin(camPosY)), 
              mp.z + (camDis * sin(camPosX)));
-        myAnimatedModel.setPosition(
-                (float)Eend::InputManager::deltaMouseX / dt / 1000,
-                (float)Eend::InputManager::deltaMouseY / dt / 1000,
-                0.0f);
+        myAnimatedModel.setPosition(glm::vec3(
+                (float)Eend::InputManager::deltaMouseX * dt / 1000,
+                (float)Eend::InputManager::deltaMouseY * dt / 1000,
+                0.0f));
 
         Eend::Screen::render(screenShader);
         Eend::InputManager::processInput();
