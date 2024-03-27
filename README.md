@@ -1,5 +1,7 @@
 # Eendgine
 
+![duckpic](README.png)
+
 ```
  ____________________________________ 
 / Welcome to Eendgine! A work in     \
