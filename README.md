@@ -7,6 +7,14 @@
 / Welcome to Eendgine! A work in     \
 |  progress 3D engine made in C++    |
 |  using OpenGL.                     |
+| Features include:                  |
+|  * 3D & 2D elements                |
+|  * load in animations from objs    |
+|  * Interpolation for animations    |
+|  * Always facing sprites           |
+|  * Collision code                  |
+|  * Post processing shaders         |
+|                                    |
 | Special thanks to the following    |
 |  for enabling me:                  |
 |   * github.com/Barnold1953         |
