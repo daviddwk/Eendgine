@@ -60,19 +60,14 @@ namespace Eendgine {
         }
         return depth > 0.0f;
     }
-
-    bool snapCylinderToFloor(CollisionCylinder c, CollisionModel &m, float *height) {
+    bool snapCylinderToFloor(CollisionCylinder &c, CollisionModel &m, float *height) {
         float d1, d2, d3;
         bool has_neg, has_pos;
         
         glm::vec3 CylinderPos = c.getPosition();
         auto tris = m.getTris();
-        for (int i = 0; i < tris.size(); i++){
+        for (int i = 0; i < tris.size(); i++) {
             std::array<glm::vec3, 3> triVerts = tris[i].getVerts();
-            for (int j = 0; j < 3; j++) {
-                triVerts[j] *= m.getScale();
-                triVerts[j] += m.getPosition();
-            }
 
             d1 = sign(CylinderPos, triVerts[0], triVerts[1]);
             d2 = sign(CylinderPos, triVerts[1], triVerts[2]);
@@ -94,7 +89,18 @@ namespace Eendgine {
         }
         return false;
     }
-
+    /*
+    bool pushCylinderFromWall(CollisionCylinder &c, CollisionModel &m, float) {
+        glm::vec3 CylinderPos = c.getPosition();
+        for (int i = 0; i < tris.size(); i++) {
+            std::array<glm::vec3, 3> triVerts = tris[i].getVerts();
+            for (int j = 0; j < 3; j++) {
+                triVerts[j]
+            }
+        }
+    }
+    */
+    ///// PROBABLY NOT GOING TO INCLUED
     bool colliding(CollisionSphere s, CollisionModel &m, std::vector<glm::vec3> *penetration) {
         bool collision = false;
         auto triangles = m.getTris();

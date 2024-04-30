@@ -52,12 +52,15 @@ namespace Eendgine {
 
             void setPosition(glm::vec3 position) { _position = position; };
             void setHeight(float height) { _height = height; };
+            void setRaduis(float radius) { _radius = radius; };
 
             glm::vec3 getPosition() { return _position; };
             float getHeight() { return _height; };
+            float getRadius(float radius) { return _radius; };
         private:
             glm::vec3 _position;
             float _height;
+            float _radius;
     };
 
     class CollisionModel {
@@ -67,7 +70,17 @@ namespace Eendgine {
             void setScale(glm::vec3 scale) { _scale = scale; };
             glm::vec3 getPosition() { return _position; }; 
             glm::vec3 getScale() { return _scale; }; 
-            std::vector<CollisionTriangle>& getTris() { return _collisionTris; };
+            std::vector<CollisionTriangle> getTris() {
+                std::vector<CollisionTriangle> tris = _collisionTris;
+                for (auto t = tris.begin(); t != tris.end(); t++) {
+                    std::array<glm::vec3, 3> verts = t->getVerts();
+                    for (auto v = verts.begin(); v != verts.end(); v++) {
+                        *v *= _scale;
+                        *v += _position;
+                    }
+                }
+                return tris;
+            };
         private:
             std::vector<CollisionTriangle> _collisionTris;
             glm::vec3 _position = glm::vec3(0.0f);
@@ -82,7 +95,7 @@ namespace Eendgine {
             glm::vec3 position = glm::vec3(0.0f), glm::vec3 scale = glm::vec3(1.0f));
     bool colliding(CollisionSphere s, CollisionModel &m, std::vector<glm::vec3>* penetrations);
     
-    bool snapCylinderToFloor(CollisionCylinder s, CollisionModel &m, float *height);
+    bool snapCylinderToFloor(CollisionCylinder &c, CollisionModel &m, float *height);
 
     void loadCollisionModel(std::string modelPath, std::vector<CollisionTriangle> &collisionModel);
 }
