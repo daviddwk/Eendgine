@@ -21,8 +21,9 @@ namespace Eendgine {
             _normal(normal)
     { 
     }
-    CollisionTriangle::CollisionTriangle(glm::vec3 v0, glm::vec3 v1, glm::vec3 v2) :
-            _verts({v0, v1, v2})
+    CollisionTriangle::CollisionTriangle(std::array<glm::vec3, 3> vertPositions,  std::array<glm::vec3, 3> vertNormals) :
+            _verts(vertPositions),
+            _normals(vertNormals)
     {
     }
     CollisionCylinder::CollisionCylinder(glm::vec3 position, float height) :
@@ -169,18 +170,27 @@ namespace Eendgine {
     CollisionModel::CollisionModel(std::string modelPath) {
         std::vector <Vertex> vertices;
         std::vector <unsigned int> indices;
+        std::cout << "start" << std::endl;
         loadModel(modelPath, vertices, indices);
+        std::cout << std::endl << "stop" << std::endl;
         if (indices.size() % 3 != 0) {
             fatalError("collisionModel indices not divisible by 0");
         }
         for (int i = 0; i < indices.size(); i += 3){
+            // TODO check for normals
             _collisionTris.emplace_back(
-                        vertices[indices[i]].position,
-                        vertices[indices[i + 1]].position,
-                        vertices[indices[i + 2]].position);
+                        std::array<glm::vec3, 3>{
+                            vertices[indices[i]].position,
+                            vertices[indices[i + 1]].position,
+                            vertices[indices[i + 2]].position
+                        },
+                        std::array<glm::vec3, 3>{
+                            vertices[indices[i]].normal,
+                            vertices[indices[i + 1]].normal,
+                            vertices[indices[i + 2]].normal,
+                        });
         }
     }
-
 }
 
 float sign (glm::vec3 p1, glm::vec3 p2, glm::vec3 p3) {

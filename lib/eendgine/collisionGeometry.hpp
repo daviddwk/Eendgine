@@ -38,12 +38,14 @@ namespace Eendgine {
 
     class CollisionTriangle {
         public:
-            CollisionTriangle(glm::vec3 v0, glm::vec3 v1, glm::vec3 v2);
+            CollisionTriangle(std::array<glm::vec3, 3> vertPositions,  std::array<glm::vec3, 3> vertNormals);
             void setVerts(glm::vec3 v0, glm::vec3 v1, glm::vec3 v2) { _verts = {v0, v1, v2}; };
             std::array<glm::vec3, 3> getVerts() { return _verts; };
+            std::array<glm::vec3, 3> getNormals() { return _normals; }; 
 
         private:
             std::array<glm::vec3, 3> _verts;
+            std::array<glm::vec3, 3> _normals;
     };
 
     class CollisionCylinder {
@@ -96,6 +98,4 @@ namespace Eendgine {
     bool colliding(CollisionSphere s, CollisionModel &m, std::vector<glm::vec3>* penetrations);
     
     bool snapCylinderToFloor(CollisionCylinder &c, CollisionModel &m, float *height);
-
-    void loadCollisionModel(std::string modelPath, std::vector<CollisionTriangle> &collisionModel);
 }
