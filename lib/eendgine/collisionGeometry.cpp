@@ -22,9 +22,11 @@ namespace Eendgine {
     { 
     }
     CollisionTriangle::CollisionTriangle(std::array<glm::vec3, 3> vertPositions,  std::array<glm::vec3, 3> vertNormals) :
-            _verts(vertPositions),
-            _normals(vertNormals)
+            _verts(vertPositions)
     {
+        // getting face normal from vertex normals by getting average (I think the math is fine)
+        // https://math.stackexchange.com/questions/250165/converting-vertex-normals-to-face-normals
+        _normal = glm::normalize(vertNormals[0] + vertNormals[1] + vertNormals[2]);
     }
     CollisionCylinder::CollisionCylinder(glm::vec3 position, float height) :
             _position(position),
@@ -93,7 +95,10 @@ namespace Eendgine {
     /*
     bool pushCylinderFromWall(CollisionCylinder &c, CollisionModel &m, float) {
         glm::vec3 CylinderPos = c.getPosition();
-        for (int i = 0; i < tris.size(); i++) {
+        auto tris = m.getTris();
+        for (auto t = tris.begin(); t != tris.end(); t++) {
+            t->getNormals();
+            t->getVerts();
             std::array<glm::vec3, 3> triVerts = tris[i].getVerts();
             for (int j = 0; j < 3; j++) {
                 triVerts[j]

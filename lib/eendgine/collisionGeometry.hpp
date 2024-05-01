@@ -41,11 +41,11 @@ namespace Eendgine {
             CollisionTriangle(std::array<glm::vec3, 3> vertPositions,  std::array<glm::vec3, 3> vertNormals);
             void setVerts(glm::vec3 v0, glm::vec3 v1, glm::vec3 v2) { _verts = {v0, v1, v2}; };
             std::array<glm::vec3, 3> getVerts() { return _verts; };
-            std::array<glm::vec3, 3> getNormals() { return _normals; }; 
+            glm::vec3 getNormal() { return _normal; }; 
 
         private:
             std::array<glm::vec3, 3> _verts;
-            std::array<glm::vec3, 3> _normals;
+            glm::vec3 _normal;
     };
 
     class CollisionCylinder {
