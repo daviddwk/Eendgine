@@ -170,9 +170,7 @@ namespace Eendgine {
     CollisionModel::CollisionModel(std::string modelPath) {
         std::vector <Vertex> vertices;
         std::vector <unsigned int> indices;
-        std::cout << "start" << std::endl;
         loadModel(modelPath, vertices, indices);
-        std::cout << std::endl << "stop" << std::endl;
         if (indices.size() % 3 != 0) {
             fatalError("collisionModel indices not divisible by 0");
         }
