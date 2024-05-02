@@ -67,24 +67,24 @@ namespace Eendgine {
         float d1, d2, d3;
         bool has_neg, has_pos;
         
-        glm::vec3 CylinderPos = c.getPosition();
+        glm::vec3 cylinderPos = c.getPosition();
         auto tris = m.getTris();
         for (int i = 0; i < tris.size(); i++) {
             std::array<glm::vec3, 3> triVerts = tris[i].getVerts();
 
-            d1 = sign(CylinderPos, triVerts[0], triVerts[1]);
-            d2 = sign(CylinderPos, triVerts[1], triVerts[2]);
-            d3 = sign(CylinderPos, triVerts[2], triVerts[0]);
+            d1 = sign(cylinderPos, triVerts[0], triVerts[1]);
+            d2 = sign(cylinderPos, triVerts[1], triVerts[2]);
+            d3 = sign(cylinderPos, triVerts[2], triVerts[0]);
 
             has_neg = (d1 < 0) || (d2 < 0) || (d3 < 0);
             has_pos = (d1 > 0) || (d2 > 0) || (d3 > 0);
 
             float snapDistance = 0.2;
             if (!(has_neg && has_pos)) {
-                *height = pointHeightOnTri(triVerts[0], triVerts[1], triVerts[2], CylinderPos.x, CylinderPos.z);
+                *height = pointHeightOnTri(triVerts[0], triVerts[1], triVerts[2], cylinderPos.x, cylinderPos.z);
                 // if slightly above floor OR clipping into floor
-                if (fabs(CylinderPos.y - *height) <= snapDistance
-                        || (CylinderPos.y - *height < 0 && CylinderPos.y - *height > -c.getHeight())){
+                if (fabs(cylinderPos.y - *height) <= snapDistance
+                        || (cylinderPos.y - *height < 0 && cylinderPos.y - *height > -c.getHeight())){
                     *height += snapDistance;
                     return true;
                 }
@@ -92,20 +92,47 @@ namespace Eendgine {
         }
         return false;
     }
-    /*
+    
     bool pushCylinderFromWall(CollisionCylinder &c, CollisionModel &m, float) {
-        glm::vec3 CylinderPos = c.getPosition();
+        glm::vec3 cylinderPos = c.getPosition();
         auto tris = m.getTris();
+        bool collision = false;
         for (auto t = tris.begin(); t != tris.end(); t++) {
-            t->getNormals();
-            t->getVerts();
-            std::array<glm::vec3, 3> triVerts = tris[i].getVerts();
-            for (int j = 0; j < 3; j++) {
-                triVerts[j]
+            glm::vec3 triNormal = t->getNormal();
+            std::array<glm::vec3, 3> triVerts = t->getVerts();
+            // vector from cylinder to any point on triangle
+            glm::vec3 toTri = triVerts[0] - cylinderPos;
+            // project vector onto plane of triangle with the tri's normal
+            // https://math.stackexchange.com/questions/3481232/projection-of-vector-v-onto-a-plane-with-normal-vector-n
+            glm::vec3 projection = ((toTri * triNormal) / (toTri * toTri)) * toTri;
+            // if in triangular prisim (triangle with depth of radius)
+            // move to the face which the normal vector points toward
+            if (vertOnTri(cylinderPos, t->getVerts()) && glm::length(projection) < c.getRadius()) {
+                m.setPosition(m.getPosition() + (triNormal * (c.getRadius() - glm::length(projection))));
+                collision = true;
             }
         }
+        return collision;
     }
-    */
+
+    bool vertOnTri(glm::vec3 vert, std::array<glm::vec3, 3> tri) {
+        glm::vec3 u = tri[1] - tri[0];
+        glm::vec3 v = tri[2] - tri[0];
+        glm::vec3 w = vert - tri[0];
+        float uu = glm::dot(u, u);
+        float uv = glm::dot(u, v);
+        float vv = glm::dot(v, v);
+        float wu = glm::dot(w, u);
+        float wv = glm::dot(w, v);
+        float denominator = uv * uv - uu * vv;
+
+        // Calculate barycentric coordinates
+        float s = (uv * wv - vv * wu) / denominator;
+        float t = (uv * wu - uu * wv) / denominator;
+
+        return (s >= 0) && (t >= 0) && (s + t <= 1);
+    }
+    
     ///// PROBABLY NOT GOING TO INCLUED
     bool colliding(CollisionSphere s, CollisionModel &m, std::vector<glm::vec3> *penetration) {
         bool collision = false;

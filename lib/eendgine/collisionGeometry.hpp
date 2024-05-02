@@ -58,7 +58,7 @@ namespace Eendgine {
 
             glm::vec3 getPosition() { return _position; };
             float getHeight() { return _height; };
-            float getRadius(float radius) { return _radius; };
+            float getRadius() { return _radius; };
         private:
             glm::vec3 _position;
             float _height;
@@ -90,6 +90,7 @@ namespace Eendgine {
     };
     
     glm::vec3 closestTriPoint(glm::vec3 p, CollisionTriangle t, glm::vec3 position, glm::vec3 scale);
+    bool vertOnTri(glm::vec3 vert, std::array<glm::vec3, 3> tri);
 
     bool colliding(CollisionSphere s1, CollisionSphere s2, glm::vec3 *penetration);
     bool colliding(CollisionSphere s, CollisionPlane p, glm::vec3 *penetration);

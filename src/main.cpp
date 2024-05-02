@@ -170,13 +170,11 @@ int main(){
 
         float height = 0;
         if (Eend::snapCylinderToFloor(myCylinder, myColLand, &height)) {
-            fv = 0;
+             fv = 0;
             mp.y = height;
             myModel.setPosition(glm::vec3(mp.x, mp.y + 4, mp.z));
             myCylinder.setPosition(glm::vec3(mp.x, mp.y, mp.z));
         }
-        glm::vec3 spherePos = myCylinder.getPosition();
-
         // adjust camera to follow
         float camDis = 30;
         my3DCamera.setTarget(mp.x, mp.y + 4, mp.z);
