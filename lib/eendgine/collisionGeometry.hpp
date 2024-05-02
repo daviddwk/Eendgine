@@ -89,14 +89,10 @@ namespace Eendgine {
             glm::vec3 _scale = glm::vec3(1.0f);
     };
     
-    glm::vec3 closestTriPoint(glm::vec3 p, CollisionTriangle t, glm::vec3 position, glm::vec3 scale);
-    bool vertOnTri(glm::vec3 vert, std::array<glm::vec3, 3> tri);
 
     bool colliding(CollisionSphere s1, CollisionSphere s2, glm::vec3 *penetration);
     bool colliding(CollisionSphere s, CollisionPlane p, glm::vec3 *penetration);
-    bool colliding(CollisionSphere s, CollisionTriangle &t, glm::vec3 *penetration, 
-            glm::vec3 position = glm::vec3(0.0f), glm::vec3 scale = glm::vec3(1.0f));
-    bool colliding(CollisionSphere s, CollisionModel &m, std::vector<glm::vec3>* penetrations);
     
     bool snapCylinderToFloor(CollisionCylinder &c, CollisionModel &m, float *height);
+    bool pushCylinderFromWall(CollisionCylinder &c, CollisionModel &m, glm::vec3 *offset);
 }

@@ -9,6 +9,7 @@
 float sign (glm::vec3 p1, glm::vec3 p2, glm::vec3 p3);
 glm::vec3 triNormal(glm::vec3 p1, glm::vec3 p2, glm::vec3 p3);
 float pointHeightOnTri(glm::vec3 p1, glm::vec3 p2, glm::vec3 p3, float x, float z);
+bool vertOnTri(glm::vec3 vert, std::array<glm::vec3, 3> tri);
 
 namespace Eendgine {
     CollisionSphere::CollisionSphere(glm::vec3 position, float radius) :
@@ -33,6 +34,28 @@ namespace Eendgine {
             _height(height)
     {
     }
+    CollisionModel::CollisionModel(std::string modelPath) {
+        std::vector <Vertex> vertices;
+        std::vector <unsigned int> indices;
+        loadModel(modelPath, vertices, indices);
+        if (indices.size() % 3 != 0) {
+            fatalError("collisionModel indices not divisible by 0");
+        }
+        for (int i = 0; i < indices.size(); i += 3){
+            // TODO check for normals
+            _collisionTris.emplace_back(
+                        std::array<glm::vec3, 3>{
+                            vertices[indices[i]].position,
+                            vertices[indices[i + 1]].position,
+                            vertices[indices[i + 2]].position
+                        },
+                        std::array<glm::vec3, 3>{
+                            vertices[indices[i]].normal,
+                            vertices[indices[i + 1]].normal,
+                            vertices[indices[i + 2]].normal,
+                        });
+        }
+    }
     
     bool colliding(CollisionSphere s1, CollisionSphere s2, glm::vec3 *penetration) {
         glm::vec3 distance = s2.getPosition() - s1.getPosition();
@@ -53,24 +76,14 @@ namespace Eendgine {
         }
         return depth > 0.0f;
     }
-
-    bool colliding(CollisionSphere s, CollisionTriangle &t, glm::vec3 *penetration, glm::vec3 position, glm::vec3 scale) {
-        glm::vec3 closestPoint = closestTriPoint(s.getPosition(), t, position, scale);
-        glm::vec3 distance = closestPoint - s.getPosition();
-        float depth = s.getRadius() - glm::length(distance);
-        if (penetration != nullptr) {
-            *penetration = depth * glm::normalize(distance);
-        }
-        return depth > 0.0f;
-    }
     bool snapCylinderToFloor(CollisionCylinder &c, CollisionModel &m, float *height) {
         float d1, d2, d3;
         bool has_neg, has_pos;
         
         glm::vec3 cylinderPos = c.getPosition();
         auto tris = m.getTris();
-        for (int i = 0; i < tris.size(); i++) {
-            std::array<glm::vec3, 3> triVerts = tris[i].getVerts();
+        for (auto& t : tris) {
+            std::array<glm::vec3, 3> triVerts = t.getVerts();
 
             d1 = sign(cylinderPos, triVerts[0], triVerts[1]);
             d2 = sign(cylinderPos, triVerts[1], triVerts[2]);
@@ -93,13 +106,14 @@ namespace Eendgine {
         return false;
     }
     
-    bool pushCylinderFromWall(CollisionCylinder &c, CollisionModel &m, float) {
+    bool pushCylinderFromWall(CollisionCylinder &c, CollisionModel &m, glm::vec3 *offset) {
         glm::vec3 cylinderPos = c.getPosition();
         auto tris = m.getTris();
         bool collision = false;
-        for (auto t = tris.begin(); t != tris.end(); t++) {
-            glm::vec3 triNormal = t->getNormal();
-            std::array<glm::vec3, 3> triVerts = t->getVerts();
+        *offset = glm::vec3(0);
+        for (auto& t : tris) {
+            glm::vec3 triNormal = t.getNormal();
+            std::array<glm::vec3, 3> triVerts = t.getVerts();
             // vector from cylinder to any point on triangle
             glm::vec3 toTri = triVerts[0] - cylinderPos;
             // project vector onto plane of triangle with the tri's normal
@@ -107,33 +121,27 @@ namespace Eendgine {
             glm::vec3 projection = ((toTri * triNormal) / (toTri * toTri)) * toTri;
             // if in triangular prisim (triangle with depth of radius)
             // move to the face which the normal vector points toward
-            if (vertOnTri(cylinderPos, t->getVerts()) && glm::length(projection) < c.getRadius()) {
-                m.setPosition(m.getPosition() + (triNormal * (c.getRadius() - glm::length(projection))));
+            if (vertOnTri(cylinderPos, t.getVerts()) && glm::length(projection) < c.getRadius()) {
+                *offset += (triNormal * (c.getRadius() - glm::length(projection)));
                 collision = true;
             }
         }
+        c.setPosition(cylinderPos + (glm::normalize(*offset) * c.getRadius()));
         return collision;
     }
-
-    bool vertOnTri(glm::vec3 vert, std::array<glm::vec3, 3> tri) {
-        glm::vec3 u = tri[1] - tri[0];
-        glm::vec3 v = tri[2] - tri[0];
-        glm::vec3 w = vert - tri[0];
-        float uu = glm::dot(u, u);
-        float uv = glm::dot(u, v);
-        float vv = glm::dot(v, v);
-        float wu = glm::dot(w, u);
-        float wv = glm::dot(w, v);
-        float denominator = uv * uv - uu * vv;
-
-        // Calculate barycentric coordinates
-        float s = (uv * wv - vv * wu) / denominator;
-        float t = (uv * wu - uu * wv) / denominator;
-
-        return (s >= 0) && (t >= 0) && (s + t <= 1);
+    /*
+    bool colliding(CollisionSphere s, CollisionTriangle &t, glm::vec3 *penetration, glm::vec3 position, glm::vec3 scale) {
+        glm::vec3 closestPoint = closestTriPoint(s.getPosition(), t, position, scale);
+        glm::vec3 distance = closestPoint - s.getPosition();
+        float depth = s.getRadius() - glm::length(distance);
+        if (penetration != nullptr) {
+            *penetration = depth * glm::normalize(distance);
+        }
+        return depth > 0.0f;
     }
-    
-    ///// PROBABLY NOT GOING TO INCLUED
+    */
+
+    /*
     bool colliding(CollisionSphere s, CollisionModel &m, std::vector<glm::vec3> *penetration) {
         bool collision = false;
         auto triangles = m.getTris();
@@ -148,7 +156,8 @@ namespace Eendgine {
         } 
         return collision;
     }
-
+    */
+    /*
     glm::vec3 closestTriPoint(glm::vec3 p, CollisionTriangle t, glm::vec3 position, glm::vec3 scale) {
         // thanks to Real-Time Collision Detection by Christer Ericson
         auto verts = t.getVerts();
@@ -198,29 +207,7 @@ namespace Eendgine {
         float w = 1.0f - u - v; // = vc / (va + vb + vc)
         return u * a + v * b + w * c;
     }
-
-    CollisionModel::CollisionModel(std::string modelPath) {
-        std::vector <Vertex> vertices;
-        std::vector <unsigned int> indices;
-        loadModel(modelPath, vertices, indices);
-        if (indices.size() % 3 != 0) {
-            fatalError("collisionModel indices not divisible by 0");
-        }
-        for (int i = 0; i < indices.size(); i += 3){
-            // TODO check for normals
-            _collisionTris.emplace_back(
-                        std::array<glm::vec3, 3>{
-                            vertices[indices[i]].position,
-                            vertices[indices[i + 1]].position,
-                            vertices[indices[i + 2]].position
-                        },
-                        std::array<glm::vec3, 3>{
-                            vertices[indices[i]].normal,
-                            vertices[indices[i + 1]].normal,
-                            vertices[indices[i + 2]].normal,
-                        });
-        }
-    }
+    */
 }
 
 float sign (glm::vec3 p1, glm::vec3 p2, glm::vec3 p3) {
@@ -249,4 +236,21 @@ glm::vec3 triNormal(glm::vec3 p1, glm::vec3 p2, glm::vec3 p3) {
             a.y * b.z - a.z * b.y,
             a.z * b.x - a.x * b.z,
             a.x * b.y - a.y * b.x);
+}
+bool vertOnTri(glm::vec3 vert, std::array<glm::vec3, 3> tri) {
+    glm::vec3 u = tri[1] - tri[0];
+    glm::vec3 v = tri[2] - tri[0];
+    glm::vec3 w = vert - tri[0];
+    float uu = glm::dot(u, u);
+    float uv = glm::dot(u, v);
+    float vv = glm::dot(v, v);
+    float wu = glm::dot(w, u);
+    float wv = glm::dot(w, v);
+    float denominator = uv * uv - uu * vv;
+
+    // Calculate barycentric coordinates
+    float s = (uv * wv - vv * wu) / denominator;
+    float t = (uv * wu - uu * wv) / denominator;
+
+    return (s >= 0) && (t >= 0) && (s + t <= 1);
 }

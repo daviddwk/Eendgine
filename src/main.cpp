@@ -55,7 +55,7 @@ int main(){
     Eend::StaticModel myModel("resources/ost/ost.obj", myTextureCache);
     myModel.setScale(glm::vec3(1.0f, 1.0f, 1.0f));
     myModel.setPosition(glm::vec3(mp.x, mp.y + 4, mp.z));
-    Eend::CollisionCylinder myCylinder(glm::vec3(mp.x, mp.y, mp.z), 5.0f);
+    Eend::CollisionCylinder myCylinder(glm::vec3(mp.x, mp.y, mp.z), 1.0f);
     
 
     Eend::StaticModel myLand("resources/lpland/lpland.obj", myTextureCache);
@@ -64,6 +64,13 @@ int main(){
     Eend::CollisionModel myColLand("resources/lpland/lpland.obj");
     myColLand.setScale(glm::vec3(1.0f, 1.0f, 1.0f));
     myColLand.setPosition(glm::vec3(0.0f, 0.0f, 0.0f));
+
+    Eend::StaticModel myWall("resources/wall/wall.obj", myTextureCache);
+    myWall.setScale(glm::vec3(10.0f));
+    myWall.setPosition(glm::vec3(0.0f));
+    Eend::CollisionModel myColWall("resources/wall/wall.obj");
+    myColWall.setScale(glm::vec3(10.0f));
+    myColWall.setPosition(glm::vec3(0.0f));
 
     Eend::CollisionModel collisionCube("resources/cube/cube.obj");
     collisionCube.setPosition(glm::vec3(0.0f, 1.0f, 0.0f));
@@ -89,6 +96,7 @@ int main(){
     modelBatch.push_back(&myModel);
     modelBatch.push_back(&myCube);
     modelBatch.push_back(&myLand);
+    modelBatch.push_back(&myWall);
     
     float fv = 0.0f;
     float camPosX = 0;
@@ -175,6 +183,11 @@ int main(){
             myModel.setPosition(glm::vec3(mp.x, mp.y + 4, mp.z));
             myCylinder.setPosition(glm::vec3(mp.x, mp.y, mp.z));
         }
+        glm::vec3 offset(0.0f);
+        if (Eend::pushCylinderFromWall(myCylinder, myColWall, &offset)) {
+            std::cout << offset.x << ' ' << offset.y << ' ' << offset.z << " wall collision" << std::endl;
+        }
+
         // adjust camera to follow
         float camDis = 30;
         my3DCamera.setTarget(mp.x, mp.y + 4, mp.z);
