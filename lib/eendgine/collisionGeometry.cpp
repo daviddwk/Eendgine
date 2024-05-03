@@ -29,9 +29,10 @@ namespace Eendgine {
         // https://math.stackexchange.com/questions/250165/converting-vertex-normals-to-face-normals
         _normal = glm::normalize(vertNormals[0] + vertNormals[1] + vertNormals[2]);
     }
-    CollisionCylinder::CollisionCylinder(glm::vec3 position, float height) :
+    CollisionCylinder::CollisionCylinder(glm::vec3 position, float height, float radius) :
             _position(position),
-            _height(height)
+            _height(height),
+            _radius(radius)
     {
     }
     CollisionModel::CollisionModel(std::string modelPath) {
@@ -118,15 +119,14 @@ namespace Eendgine {
             glm::vec3 toTri = triVerts[0] - cylinderPos;
             // project vector onto plane of triangle with the tri's normal
             // https://math.stackexchange.com/questions/3481232/projection-of-vector-v-onto-a-plane-with-normal-vector-n
-            glm::vec3 projection = ((toTri * triNormal) / (toTri * toTri)) * toTri;
+            glm::vec3 projection = toTri * triNormal;
             // if in triangular prisim (triangle with depth of radius)
             // move to the face which the normal vector points toward
-            if (vertOnTri(cylinderPos, t.getVerts()) && glm::length(projection) < c.getRadius()) {
-                *offset += (triNormal * (c.getRadius() - glm::length(projection)));
+            if (vertOnTri(projection + cylinderPos, t.getVerts()) && fabs(glm::length(projection)) < c.getRadius()) {
+                *offset += (c.getRadius() - glm::length(projection)) * triNormal;
                 collision = true;
             }
         }
-        c.setPosition(cylinderPos + (glm::normalize(*offset) * c.getRadius()));
         return collision;
     }
     /*
@@ -251,6 +251,5 @@ bool vertOnTri(glm::vec3 vert, std::array<glm::vec3, 3> tri) {
     // Calculate barycentric coordinates
     float s = (uv * wv - vv * wu) / denominator;
     float t = (uv * wu - uu * wv) / denominator;
-
     return (s >= 0) && (t >= 0) && (s + t <= 1);
 }

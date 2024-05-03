@@ -50,7 +50,7 @@ namespace Eendgine {
 
     class CollisionCylinder {
         public:
-            CollisionCylinder(glm::vec3 position, float height);
+            CollisionCylinder(glm::vec3 position, float height, float radius);
 
             void setPosition(glm::vec3 position) { _position = position; };
             void setHeight(float height) { _height = height; };
@@ -74,12 +74,13 @@ namespace Eendgine {
             glm::vec3 getScale() { return _scale; }; 
             std::vector<CollisionTriangle> getTris() {
                 std::vector<CollisionTriangle> tris = _collisionTris;
-                for (auto t = tris.begin(); t != tris.end(); t++) {
-                    std::array<glm::vec3, 3> verts = t->getVerts();
-                    for (auto v = verts.begin(); v != verts.end(); v++) {
-                        *v *= _scale;
-                        *v += _position;
+                for (auto& t : tris) {
+                    std::array<glm::vec3, 3> triVerts = t.getVerts();
+                    for (auto& v : triVerts) {
+                        v *= _scale;
+                        v += _position;
                     }
+                    t.setVerts(triVerts[0], triVerts[1], triVerts[2]);
                 }
                 return tris;
             };
