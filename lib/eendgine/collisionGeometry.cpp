@@ -28,6 +28,14 @@ namespace Eendgine {
         // getting face normal from vertex normals by getting average (I think the math is fine)
         // https://math.stackexchange.com/questions/250165/converting-vertex-normals-to-face-normals
         _normal = glm::normalize(vertNormals[0] + vertNormals[1] + vertNormals[2]);
+        // for collision
+        if (_normal.y > 0.1f) {
+            _surface = surface::floor;
+        } else if (_normal.y < 0.1f) {
+            _surface = surface::ceiling;
+        } else {
+            _surface = surface::wall;
+        }
     }
     CollisionCylinder::CollisionCylinder(glm::vec3 position, float height, float radius) :
             _position(position),
@@ -45,16 +53,16 @@ namespace Eendgine {
         for (int i = 0; i < indices.size(); i += 3){
             // TODO check for normals
             _collisionTris.emplace_back(
-                        std::array<glm::vec3, 3>{
-                            vertices[indices[i]].position,
-                            vertices[indices[i + 1]].position,
-                            vertices[indices[i + 2]].position
-                        },
-                        std::array<glm::vec3, 3>{
-                            vertices[indices[i]].normal,
-                            vertices[indices[i + 1]].normal,
-                            vertices[indices[i + 2]].normal,
-                        });
+                    std::array<glm::vec3, 3>{
+                        vertices[indices[i]].position,
+                        vertices[indices[i + 1]].position,
+                        vertices[indices[i + 2]].position
+                    },
+                    std::array<glm::vec3, 3>{
+                        vertices[indices[i]].normal,
+                        vertices[indices[i + 1]].normal,
+                        vertices[indices[i + 2]].normal,
+                    });
         }
     }
     
@@ -77,6 +85,9 @@ namespace Eendgine {
         }
         return depth > 0.0f;
     }
+
+    
+
     bool snapCylinderToFloor(CollisionCylinder &c, CollisionModel &m, float *height) {
         float d1, d2, d3;
         bool has_neg, has_pos;

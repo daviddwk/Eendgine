@@ -37,15 +37,18 @@ namespace Eendgine {
     };
 
     class CollisionTriangle {
+        enum surface {floor, ceiling, wall};
         public:
             CollisionTriangle(std::array<glm::vec3, 3> vertPositions,  std::array<glm::vec3, 3> vertNormals);
             void setVerts(glm::vec3 v0, glm::vec3 v1, glm::vec3 v2) { _verts = {v0, v1, v2}; };
             std::array<glm::vec3, 3> getVerts() { return _verts; };
             glm::vec3 getNormal() { return _normal; }; 
+            surface getSurface() { return _surface; }
 
         private:
             std::array<glm::vec3, 3> _verts;
             glm::vec3 _normal;
+            surface _surface;
     };
 
     class CollisionCylinder {
