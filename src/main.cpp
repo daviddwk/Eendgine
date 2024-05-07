@@ -72,6 +72,13 @@ int main(){
     myColWall.setScale(glm::vec3(10.0f));
     myColWall.setPosition(glm::vec3(0.0f));
 
+    Eend::StaticModel myCeil("resources/ceiling/ceiling.obj", myTextureCache);
+    myCeil.setScale(glm::vec3(10.0f));
+    myCeil.setPosition(glm::vec3(0.0f, 50.0f, 0.0f));
+    Eend::CollisionModel myColCeil("resources/ceiling/ceiling.obj");
+    myColCeil.setScale(glm::vec3(10.0f));
+    myColCeil.setPosition(glm::vec3(0.0f, 50.0f, 0.0f));
+
     Eend::CollisionModel collisionCube("resources/cube/cube.obj");
     collisionCube.setPosition(glm::vec3(0.0f, 1.0f, 0.0f));
     collisionCube.setScale(glm::vec3(1.0f));
@@ -97,6 +104,7 @@ int main(){
     modelBatch.push_back(&myCube);
     modelBatch.push_back(&myLand);
     modelBatch.push_back(&myWall);
+    modelBatch.push_back(&myCeil);
     
     float fv = 0.0f;
     float camPosX = 0;
@@ -176,8 +184,12 @@ int main(){
         myCylinder.setPosition(glm::vec3(mp.x, mp.y, mp.z));
 
         float height = 0;
+        if (Eend::pushCylinderFromCeiling(myCylinder, myColCeil, &height)) {
+            if (fv > 0) fv = 0;
+            mp.y = height;
+        }
         if (Eend::snapCylinderToFloor(myCylinder, myColLand, &height)) {
-            fv = 0;
+            if (fv < 0) fv = 0;
             mp.y = height;
         }
         glm::vec3 offset(0.0f);

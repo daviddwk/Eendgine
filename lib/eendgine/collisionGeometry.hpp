@@ -98,5 +98,6 @@ namespace Eendgine {
     bool colliding(CollisionSphere s, CollisionPlane p, glm::vec3 *penetration);
     
     bool snapCylinderToFloor(CollisionCylinder &c, CollisionModel &m, float *height);
+    bool pushCylinderFromCeiling(CollisionCylinder &c, CollisionModel &m, float *height);
     bool pushCylinderFromWall(CollisionCylinder &c, CollisionModel &m, glm::vec3 *offset);
 }

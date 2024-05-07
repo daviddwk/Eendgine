@@ -84,9 +84,7 @@ namespace Eendgine {
             *penetration = pen;
         }
         return depth > 0.0f;
-    }
-
-    
+    } 
 
     bool snapCylinderToFloor(CollisionCylinder &c, CollisionModel &m, float *height) {
         float d1, d2, d3;
@@ -103,7 +101,8 @@ namespace Eendgine {
 
             has_neg = (d1 < 0) || (d2 < 0) || (d3 < 0);
             has_pos = (d1 > 0) || (d2 > 0) || (d3 > 0);
-
+            
+            //TODO make not hardcoded like this
             float snapDistance = 0.2;
             if (!(has_neg && has_pos)) {
                 *height = pointHeightOnTri(triVerts[0], triVerts[1], triVerts[2], cylinderPos.x, cylinderPos.z);
@@ -111,6 +110,36 @@ namespace Eendgine {
                 if (fabs(cylinderPos.y - *height) <= snapDistance
                         || (cylinderPos.y - *height < 0 && cylinderPos.y - *height > -c.getHeight())){
                     *height += snapDistance;
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    bool pushCylinderFromCeiling(CollisionCylinder &c, CollisionModel &m, float *height) {
+        float d1, d2, d3;
+        bool has_neg, has_pos;
+        
+        glm::vec3 cylinderPos = c.getPosition() + c.getHeight();
+        auto tris = m.getTris();
+        for (auto& t : tris) {
+            std::array<glm::vec3, 3> triVerts = t.getVerts();
+
+            d1 = sign(cylinderPos, triVerts[0], triVerts[1]);
+            d2 = sign(cylinderPos, triVerts[1], triVerts[2]);
+            d3 = sign(cylinderPos, triVerts[2], triVerts[0]);
+
+            has_neg = (d1 < 0) || (d2 < 0) || (d3 < 0);
+            has_pos = (d1 > 0) || (d2 > 0) || (d3 > 0);
+
+            //TODO make not hardcoded like this
+            float snapDistance = 1.0f;
+            if (!(has_neg && has_pos)) {
+                *height = pointHeightOnTri(triVerts[0], triVerts[1], triVerts[2], cylinderPos.x, cylinderPos.z);
+                // if slightly above floor OR clipping into floor
+                if (fabs(cylinderPos.y - *height) <= snapDistance){
+                    *height -= snapDistance + c.getHeight();
                     return true;
                 }
             }
@@ -140,6 +169,7 @@ namespace Eendgine {
         }
         return collision;
     }
+
     /*
     bool colliding(CollisionSphere s, CollisionTriangle &t, glm::vec3 *penetration, glm::vec3 position, glm::vec3 scale) {
         glm::vec3 closestPoint = closestTriPoint(s.getPosition(), t, position, scale);
