@@ -101,5 +101,5 @@ namespace Eendgine {
     bool pushCylinderFromCeiling(CollisionCylinder &c, CollisionTriangle &t, float &resHeight);
     bool pushCylinderFromWall(CollisionCylinder &c, CollisionTriangle &t, glm::vec3 &resPosition);
     glm::vec3 adjustToCollision(CollisionCylinder &c, std::vector<CollisionModel*> &models,
-            bool &resWall, bool &resCeiling, bool &resFloor);
+                                bool &hitWall, bool &hitCeiling, bool &hitFloor);
 }

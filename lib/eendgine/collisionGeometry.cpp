@@ -23,7 +23,8 @@ namespace Eendgine {
             _normal(normal)
     { 
     }
-    CollisionTriangle::CollisionTriangle(std::array<glm::vec3, 3> vertPositions,  std::array<glm::vec3, 3> vertNormals) :
+    CollisionTriangle::CollisionTriangle(std::array<glm::vec3, 3> vertPositions,  
+                                         std::array<glm::vec3, 3> vertNormals) :
             _verts(vertPositions)
     {
         // getting face normal from vertex normals by getting average (I think the math is fine)
@@ -88,22 +89,11 @@ namespace Eendgine {
     
 
     bool snapCylinderToFloor(CollisionCylinder &c, CollisionTriangle &t, float &resHeight) {
-        float d1, d2, d3;
-        bool has_neg, has_pos;
-        
         glm::vec3 cylinderPos = c.getPosition();
         std::array<glm::vec3, 3> triVerts = t.getVerts();
-
-        d1 = sign(cylinderPos, triVerts[0], triVerts[1]);
-        d2 = sign(cylinderPos, triVerts[1], triVerts[2]);
-        d3 = sign(cylinderPos, triVerts[2], triVerts[0]);
-
-        has_neg = (d1 < 0) || (d2 < 0) || (d3 < 0);
-        has_pos = (d1 > 0) || (d2 > 0) || (d3 > 0);
-        
         //TODO make not hardcoded like this
-        float snapDistance = 1;
-        if (!(has_neg && has_pos)) {
+        float snapDistance = 1.0f;
+        if (vertOnTri(cylinderPos, triVerts)) {
             float triHeight = pointHeightOnTri(triVerts[0], triVerts[1], triVerts[2], cylinderPos.x, cylinderPos.z);
             // if slightly above floor OR clipping into floor
             if (fabs(cylinderPos.y - triHeight) <= snapDistance) {
@@ -115,22 +105,11 @@ namespace Eendgine {
     }
 
     bool pushCylinderFromCeiling(CollisionCylinder &c, CollisionTriangle &t, float &resHeight) {
-        float d1, d2, d3;
-        bool has_neg, has_pos;
-        
         glm::vec3 cylinderPos = c.getPosition() + c.getHeight();
         std::array<glm::vec3, 3> triVerts = t.getVerts();
-
-        d1 = sign(cylinderPos, triVerts[0], triVerts[1]);
-        d2 = sign(cylinderPos, triVerts[1], triVerts[2]);
-        d3 = sign(cylinderPos, triVerts[2], triVerts[0]);
-
-        has_neg = (d1 < 0) || (d2 < 0) || (d3 < 0);
-        has_pos = (d1 > 0) || (d2 > 0) || (d3 > 0);
-
         //TODO make not hardcoded like this
         float snapDistance = 1.0f;
-        if (!(has_neg && has_pos)) {
+        if (vertOnTri(cylinderPos, triVerts)) {
             float triHeight = pointHeightOnTri(triVerts[0], triVerts[1], triVerts[2], cylinderPos.x, cylinderPos.z);
             // if slightly above floor OR clipping into floor
             if (fabs(cylinderPos.y - triHeight) <= snapDistance){
@@ -162,7 +141,8 @@ namespace Eendgine {
     }
 
     glm::vec3 adjustToCollision(CollisionCylinder &c, std::vector<CollisionModel*> &models,
-            bool &resWall, bool &resCeiling, bool &resFloor) {
+                                bool &hitWall, bool &hitCeiling, bool &hitFloor)
+    {
         float cylinderHeight = c.getPosition().y;
         float ceilingHeight = cylinderHeight;
         float floorHeight = cylinderHeight; 

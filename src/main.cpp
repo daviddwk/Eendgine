@@ -25,7 +25,7 @@ const unsigned int screenWidth = 1024;
 int main(){
     Eend::Window::init(screenWidth, screenHeight, "Quack"); 
     Eend::Screen::init(screenWidth, screenHeight);
-    Eend::FrameLimiter::setFPS(60.0f);
+    Eend::FrameLimiter::setFPS(120.0f);
     
     glEnable(GL_DEPTH_TEST);
 
@@ -133,6 +133,8 @@ int main(){
         mySprite.draw(myShader, myCamera);
         
         float dt = Eend::FrameLimiter::deltaTime;
+        if (dt > 1.0f / 60.0f) dt = 1.0f / 60.0f;
+        std::cout << 1.0f / dt << std::endl;
         float speed = 20.000f;
         // move based on input and gravity
         camPosX += Eend::InputManager::deltaMouseX / 100.0f;
