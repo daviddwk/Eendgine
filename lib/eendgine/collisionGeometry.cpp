@@ -7,6 +7,7 @@
 #include <tuple>
 #include <numeric>
 
+
 float sign (glm::vec3 p1, glm::vec3 p2, glm::vec3 p3);
 glm::vec3 triNormal(glm::vec3 p1, glm::vec3 p2, glm::vec3 p3);
 float pointHeightOnTri(glm::vec3 p1, glm::vec3 p2, glm::vec3 p3, float x, float z);
@@ -88,7 +89,7 @@ namespace Eendgine {
     } 
     
 
-    bool snapCylinderToFloor(CollisionCylinder &c, CollisionTriangle &t, float &resHeight) {
+    std::optional<float> snapCylinderToFloor(CollisionCylinder &c, CollisionTriangle &t) {
         glm::vec3 cylinderPos = c.getPosition();
         std::array<glm::vec3, 3> triVerts = t.getVerts();
         //TODO make not hardcoded like this
@@ -97,14 +98,13 @@ namespace Eendgine {
             float triHeight = pointHeightOnTri(triVerts[0], triVerts[1], triVerts[2], cylinderPos.x, cylinderPos.z);
             // if slightly above floor OR clipping into floor
             if (fabs(cylinderPos.y - triHeight) <= snapDistance) {
-                resHeight = triHeight + snapDistance;
-                return true;
+                return { triHeight + snapDistance };
             }
         }
-        return false;
+        return {};
     }
 
-    bool pushCylinderFromCeiling(CollisionCylinder &c, CollisionTriangle &t, float &resHeight) {
+    std::optional<float> pushCylinderFromCeiling(CollisionCylinder &c, CollisionTriangle &t) {
         glm::vec3 cylinderPos = c.getPosition() + c.getHeight();
         std::array<glm::vec3, 3> triVerts = t.getVerts();
         //TODO make not hardcoded like this
@@ -113,14 +113,13 @@ namespace Eendgine {
             float triHeight = pointHeightOnTri(triVerts[0], triVerts[1], triVerts[2], cylinderPos.x, cylinderPos.z);
             // if slightly above floor OR clipping into floor
             if (fabs(cylinderPos.y - triHeight) <= snapDistance){
-                resHeight = triHeight - (snapDistance + c.getHeight());
-                return true;
+                return { triHeight - (snapDistance + c.getHeight()) };
             }
         }
-        return false;
+        return {};
     }
     
-    bool pushCylinderFromWall(CollisionCylinder &c, CollisionTriangle &t, glm::vec3 &resPosition) {
+    std::optional<glm::vec3> pushCylinderFromWall(CollisionCylinder &c, CollisionTriangle &t) {
         glm::vec3 cylinderPos = c.getPosition();
         bool collision = false;
         glm::vec3 triNormal = t.getNormal();
@@ -134,10 +133,9 @@ namespace Eendgine {
         // move to the face which the normal vector points toward
         if (vertOnTri(projection + cylinderPos, t.getVerts()) && fabs(glm::length(projection)) < c.getRadius()) {
             float pushLength = c.getRadius() - glm::length(projection);
-            resPosition = cylinderPos + (pushLength * triNormal);
-            return true;
+            return {cylinderPos + (pushLength * triNormal)};
         }
-        return false;
+        return {};
     }
 
     glm::vec3 adjustToCollision(CollisionCylinder &c, std::vector<CollisionModel*> &models,
@@ -152,25 +150,22 @@ namespace Eendgine {
             for (auto& t : m->getTris()) {
                 switch (t.getSurface()) {
                     case CollisionTriangle::surface::wall:
-                        glm::vec3 tmpWallOffset;
-                        if (pushCylinderFromWall(c, t, tmpWallOffset)) {
-                            wallOffsets.push_back(tmpWallOffset);
+                        if (auto tmpWallOffset = pushCylinderFromWall(c, t)) {
+                            wallOffsets.push_back(*tmpWallOffset);
                         }
                         break;
                     case CollisionTriangle::surface::ceiling:
-                        float tmpCeilingHeight;
-                        if (pushCylinderFromCeiling(c, t, tmpCeilingHeight)) {
-                            if (tmpCeilingHeight < ceilingHeight) {
-                                ceilingHeight = tmpCeilingHeight;
+                        if (auto tmpCeilingHeight = pushCylinderFromCeiling(c, t)) {
+                            if (*tmpCeilingHeight < ceilingHeight) {
+                                ceilingHeight = *tmpCeilingHeight;
                             }
-                        };
+                        }
                         break;
                     case CollisionTriangle::surface::floor:
                         // TODO FIX MAKE RETURN BOOL AND HEIGHT POINTER
-                        float tmpFloorHeight;
-                        if (snapCylinderToFloor(c, t, tmpFloorHeight)) {
-                            if (tmpFloorHeight > floorHeight) {
-                                floorHeight = tmpFloorHeight;
+                        if (auto tmpFloorHeight = snapCylinderToFloor(c, t)) {
+                            if (*tmpFloorHeight > floorHeight) {
+                                floorHeight = *tmpFloorHeight;
                             }
                         };
                         break;

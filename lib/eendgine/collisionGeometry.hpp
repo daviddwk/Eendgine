@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include <array>
+#include <optional>
 
 namespace Eendgine {
     class CollisionSphere {
@@ -97,9 +98,9 @@ namespace Eendgine {
     bool colliding(CollisionSphere s1, CollisionSphere s2, glm::vec3 *penetration);
     bool colliding(CollisionSphere s, CollisionPlane p, glm::vec3 *penetration);
     
-    bool snapCylinderToFloor(CollisionCylinder &c, CollisionTriangle &t, float &resHeight);
-    bool pushCylinderFromCeiling(CollisionCylinder &c, CollisionTriangle &t, float &resHeight);
-    bool pushCylinderFromWall(CollisionCylinder &c, CollisionTriangle &t, glm::vec3 &resPosition);
+    std::optional<float> snapCylinderToFloor(CollisionCylinder &c, CollisionTriangle &t);
+    std::optional<float> pushCylinderFromCeiling(CollisionCylinder &c, CollisionTriangle &t);
+    std::optional<glm::vec3> pushCylinderFromWall(CollisionCylinder &c, CollisionTriangle &t);
     glm::vec3 adjustToCollision(CollisionCylinder &c, std::vector<CollisionModel*> &models,
                                 bool &hitWall, bool &hitCeiling, bool &hitFloor);
 }
