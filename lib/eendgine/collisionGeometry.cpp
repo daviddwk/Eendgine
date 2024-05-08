@@ -5,6 +5,7 @@
 #include <cmath>
 #include <iostream>
 #include <tuple>
+#include <numeric>
 
 float sign (glm::vec3 p1, glm::vec3 p2, glm::vec3 p3);
 glm::vec3 triNormal(glm::vec3 p1, glm::vec3 p2, glm::vec3 p3);
@@ -31,7 +32,7 @@ namespace Eendgine {
         // for collision
         if (_normal.y > 0.1f) {
             _surface = surface::floor;
-        } else if (_normal.y < 0.1f) {
+        } else if (_normal.y < -0.1f) {
             _surface = surface::ceiling;
         } else {
             _surface = surface::wall;
@@ -69,7 +70,6 @@ namespace Eendgine {
     bool colliding(CollisionSphere s1, CollisionSphere s2, glm::vec3 *penetration) {
         glm::vec3 distance = s2.getPosition() - s1.getPosition();
         float depth = (s1.getRadius() + s2.getRadius()) - glm::length(distance);
-        std::cout << "depth"<< depth << std::endl;
         if (penetration != nullptr) {
             *penetration = depth * glm::normalize(distance);
         }
@@ -85,89 +85,125 @@ namespace Eendgine {
         }
         return depth > 0.0f;
     } 
+    
 
-    bool snapCylinderToFloor(CollisionCylinder &c, CollisionModel &m, float *height) {
+    bool snapCylinderToFloor(CollisionCylinder &c, CollisionTriangle &t, float &resHeight) {
         float d1, d2, d3;
         bool has_neg, has_pos;
         
         glm::vec3 cylinderPos = c.getPosition();
-        auto tris = m.getTris();
-        for (auto& t : tris) {
-            std::array<glm::vec3, 3> triVerts = t.getVerts();
+        std::array<glm::vec3, 3> triVerts = t.getVerts();
 
-            d1 = sign(cylinderPos, triVerts[0], triVerts[1]);
-            d2 = sign(cylinderPos, triVerts[1], triVerts[2]);
-            d3 = sign(cylinderPos, triVerts[2], triVerts[0]);
+        d1 = sign(cylinderPos, triVerts[0], triVerts[1]);
+        d2 = sign(cylinderPos, triVerts[1], triVerts[2]);
+        d3 = sign(cylinderPos, triVerts[2], triVerts[0]);
 
-            has_neg = (d1 < 0) || (d2 < 0) || (d3 < 0);
-            has_pos = (d1 > 0) || (d2 > 0) || (d3 > 0);
-            
-            //TODO make not hardcoded like this
-            float snapDistance = 0.2;
-            if (!(has_neg && has_pos)) {
-                *height = pointHeightOnTri(triVerts[0], triVerts[1], triVerts[2], cylinderPos.x, cylinderPos.z);
-                // if slightly above floor OR clipping into floor
-                if (fabs(cylinderPos.y - *height) <= snapDistance
-                        || (cylinderPos.y - *height < 0 && cylinderPos.y - *height > -c.getHeight())){
-                    *height += snapDistance;
-                    return true;
-                }
+        has_neg = (d1 < 0) || (d2 < 0) || (d3 < 0);
+        has_pos = (d1 > 0) || (d2 > 0) || (d3 > 0);
+        
+        //TODO make not hardcoded like this
+        float snapDistance = 1;
+        if (!(has_neg && has_pos)) {
+            float triHeight = pointHeightOnTri(triVerts[0], triVerts[1], triVerts[2], cylinderPos.x, cylinderPos.z);
+            // if slightly above floor OR clipping into floor
+            if (fabs(cylinderPos.y - triHeight) <= snapDistance) {
+                resHeight = triHeight + snapDistance;
+                return true;
             }
         }
         return false;
     }
 
-    bool pushCylinderFromCeiling(CollisionCylinder &c, CollisionModel &m, float *height) {
+    bool pushCylinderFromCeiling(CollisionCylinder &c, CollisionTriangle &t, float &resHeight) {
         float d1, d2, d3;
         bool has_neg, has_pos;
         
         glm::vec3 cylinderPos = c.getPosition() + c.getHeight();
-        auto tris = m.getTris();
-        for (auto& t : tris) {
-            std::array<glm::vec3, 3> triVerts = t.getVerts();
+        std::array<glm::vec3, 3> triVerts = t.getVerts();
 
-            d1 = sign(cylinderPos, triVerts[0], triVerts[1]);
-            d2 = sign(cylinderPos, triVerts[1], triVerts[2]);
-            d3 = sign(cylinderPos, triVerts[2], triVerts[0]);
+        d1 = sign(cylinderPos, triVerts[0], triVerts[1]);
+        d2 = sign(cylinderPos, triVerts[1], triVerts[2]);
+        d3 = sign(cylinderPos, triVerts[2], triVerts[0]);
 
-            has_neg = (d1 < 0) || (d2 < 0) || (d3 < 0);
-            has_pos = (d1 > 0) || (d2 > 0) || (d3 > 0);
+        has_neg = (d1 < 0) || (d2 < 0) || (d3 < 0);
+        has_pos = (d1 > 0) || (d2 > 0) || (d3 > 0);
 
-            //TODO make not hardcoded like this
-            float snapDistance = 1.0f;
-            if (!(has_neg && has_pos)) {
-                *height = pointHeightOnTri(triVerts[0], triVerts[1], triVerts[2], cylinderPos.x, cylinderPos.z);
-                // if slightly above floor OR clipping into floor
-                if (fabs(cylinderPos.y - *height) <= snapDistance){
-                    *height -= snapDistance + c.getHeight();
-                    return true;
-                }
+        //TODO make not hardcoded like this
+        float snapDistance = 1.0f;
+        if (!(has_neg && has_pos)) {
+            float triHeight = pointHeightOnTri(triVerts[0], triVerts[1], triVerts[2], cylinderPos.x, cylinderPos.z);
+            // if slightly above floor OR clipping into floor
+            if (fabs(cylinderPos.y - triHeight) <= snapDistance){
+                resHeight = triHeight - (snapDistance + c.getHeight());
+                return true;
             }
         }
         return false;
     }
     
-    bool pushCylinderFromWall(CollisionCylinder &c, CollisionModel &m, glm::vec3 *offset) {
+    bool pushCylinderFromWall(CollisionCylinder &c, CollisionTriangle &t, glm::vec3 &resPosition) {
         glm::vec3 cylinderPos = c.getPosition();
-        auto tris = m.getTris();
         bool collision = false;
-        *offset = glm::vec3(0);
-        for (auto& t : tris) {
-            glm::vec3 triNormal = t.getNormal();
-            std::array<glm::vec3, 3> triVerts = t.getVerts();
-            // vector from cylinder to any point on triangle
-            glm::vec3 toTri = triVerts[0] - cylinderPos;
-            // project vector onto plane of triangle with the tri's normal
-            // https://math.stackexchange.com/questions/3481232/projection-of-vector-v-onto-a-plane-with-normal-vector-n
-            glm::vec3 projection = toTri * triNormal;
-            // if in triangular prisim (triangle with depth of radius)
-            // move to the face which the normal vector points toward
-            if (vertOnTri(projection + cylinderPos, t.getVerts()) && fabs(glm::length(projection)) < c.getRadius()) {
-                *offset += (c.getRadius() - glm::length(projection)) * triNormal;
-                collision = true;
+        glm::vec3 triNormal = t.getNormal();
+        std::array<glm::vec3, 3> triVerts = t.getVerts();
+        // vector from cylinder to any point on triangle
+        glm::vec3 toTri = triVerts[0] - cylinderPos;
+        // project vector onto plane of triangle with the tri's normal
+        // https://math.stackexchange.com/questions/3481232/projection-of-vector-v-onto-a-plane-with-normal-vector-n
+        glm::vec3 projection = toTri * triNormal;
+        // if in triangular prisim (triangle with depth of radius)
+        // move to the face which the normal vector points toward
+        if (vertOnTri(projection + cylinderPos, t.getVerts()) && fabs(glm::length(projection)) < c.getRadius()) {
+            float pushLength = c.getRadius() - glm::length(projection);
+            resPosition = cylinderPos + (pushLength * triNormal);
+            return true;
+        }
+        return false;
+    }
+
+    glm::vec3 adjustToCollision(CollisionCylinder &c, std::vector<CollisionModel*> &models,
+            bool &resWall, bool &resCeiling, bool &resFloor) {
+        float cylinderHeight = c.getPosition().y;
+        float ceilingHeight = cylinderHeight;
+        float floorHeight = cylinderHeight; 
+        std::vector<glm::vec3> wallOffsets;
+
+        for (auto m : models) {
+            for (auto& t : m->getTris()) {
+                switch (t.getSurface()) {
+                    case CollisionTriangle::surface::wall:
+                        glm::vec3 tmpWallOffset;
+                        if (pushCylinderFromWall(c, t, tmpWallOffset)) {
+                            wallOffsets.push_back(tmpWallOffset);
+                        }
+                        break;
+                    case CollisionTriangle::surface::ceiling:
+                        float tmpCeilingHeight;
+                        if (pushCylinderFromCeiling(c, t, tmpCeilingHeight)) {
+                            if (tmpCeilingHeight < ceilingHeight) {
+                                ceilingHeight = tmpCeilingHeight;
+                            }
+                        };
+                        break;
+                    case CollisionTriangle::surface::floor:
+                        // TODO FIX MAKE RETURN BOOL AND HEIGHT POINTER
+                        float tmpFloorHeight;
+                        if (snapCylinderToFloor(c, t, tmpFloorHeight)) {
+                            if (tmpFloorHeight > floorHeight) {
+                                floorHeight = tmpFloorHeight;
+                            }
+                        };
+                        break;
+                }
             }
         }
-        return collision;
+        glm::vec3 tmpPos = c.getPosition();
+        if (wallOffsets.size()) {
+            tmpPos = std::reduce(wallOffsets.begin(), wallOffsets.end());
+        }
+        if (ceilingHeight < cylinderHeight) tmpPos.y = ceilingHeight;
+        if (floorHeight > cylinderHeight) tmpPos.y = floorHeight;
+        return tmpPos; 
     }
 
     /*

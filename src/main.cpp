@@ -79,13 +79,15 @@ int main(){
     myColCeil.setScale(glm::vec3(10.0f));
     myColCeil.setPosition(glm::vec3(0.0f, 50.0f, 0.0f));
 
-    Eend::CollisionModel collisionCube("resources/cube/cube.obj");
-    collisionCube.setPosition(glm::vec3(0.0f, 1.0f, 0.0f));
-    collisionCube.setScale(glm::vec3(1.0f));
+    Eend::CollisionModel myColCube("resources/cube/cube.obj");
+    myColCube.setPosition(glm::vec3(0.0f, 1.0f, 0.0f));
+    myColCube.setScale(glm::vec3(1.0f));
     Eend::StaticModel myCube("resources/cube/cube.obj", myTextureCache);
     myCube.setPosition(glm::vec3(0.0f, -5.0f, 0.0f));
     myCube.setScale(glm::vec3(25.0f, 1.0f, 25.0f));
 
+    std::vector<Eend::CollisionModel*> myColModels = {
+            &myColLand, &myColWall, &myColCeil};
 
     std::vector<std::string> walkAnim;
     for (int i = 16; i <= 55; i++) {
@@ -180,9 +182,19 @@ int main(){
         mp.y += fv * dt;
         // adjust for collisions
         //
-        myModel.setPosition(glm::vec3(mp.x, mp.y + 4, mp.z));
         myCylinder.setPosition(glm::vec3(mp.x, mp.y, mp.z));
+        bool hitWall = false;
+        bool hitCeiling = false;
+        bool hitFloor = false;
+        myCylinder.setPosition(
+                Eend::adjustToCollision(myCylinder, myColModels, hitWall, hitFloor, hitCeiling));
 
+        if (hitFloor && fv < 0) fv = 0;
+        if (hitCeiling && fv > 0) fv = 0;
+
+        mp = myCylinder.getPosition();
+        myModel.setPosition(glm::vec3(mp.x, mp.y + 4, mp.z));
+        /*
         float height = 0;
         if (Eend::pushCylinderFromCeiling(myCylinder, myColCeil, &height)) {
             if (fv > 0) fv = 0;
@@ -196,8 +208,7 @@ int main(){
         if (Eend::pushCylinderFromWall(myCylinder, myColWall, &offset)) {
             mp += offset;
         }
-        myCylinder.setPosition(glm::vec3(mp.x, mp.y, mp.z));
-        myModel.setPosition(glm::vec3(mp.x, mp.y + 4, mp.z));
+        */
         
         // adjust camera to follow
         float camDis = 30;

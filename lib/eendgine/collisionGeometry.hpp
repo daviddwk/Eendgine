@@ -37,8 +37,8 @@ namespace Eendgine {
     };
 
     class CollisionTriangle {
-        enum surface {floor, ceiling, wall};
         public:
+            enum surface {floor, ceiling, wall};
             CollisionTriangle(std::array<glm::vec3, 3> vertPositions,  std::array<glm::vec3, 3> vertNormals);
             void setVerts(glm::vec3 v0, glm::vec3 v1, glm::vec3 v2) { _verts = {v0, v1, v2}; };
             std::array<glm::vec3, 3> getVerts() { return _verts; };
@@ -97,7 +97,9 @@ namespace Eendgine {
     bool colliding(CollisionSphere s1, CollisionSphere s2, glm::vec3 *penetration);
     bool colliding(CollisionSphere s, CollisionPlane p, glm::vec3 *penetration);
     
-    bool snapCylinderToFloor(CollisionCylinder &c, CollisionModel &m, float *height);
-    bool pushCylinderFromCeiling(CollisionCylinder &c, CollisionModel &m, float *height);
-    bool pushCylinderFromWall(CollisionCylinder &c, CollisionModel &m, glm::vec3 *offset);
+    bool snapCylinderToFloor(CollisionCylinder &c, CollisionTriangle &t, float &resHeight);
+    bool pushCylinderFromCeiling(CollisionCylinder &c, CollisionTriangle &t, float &resHeight);
+    bool pushCylinderFromWall(CollisionCylinder &c, CollisionTriangle &t, glm::vec3 &resPosition);
+    glm::vec3 adjustToCollision(CollisionCylinder &c, std::vector<CollisionModel*> &models,
+            bool &resWall, bool &resCeiling, bool &resFloor);
 }
