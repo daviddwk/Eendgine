@@ -131,7 +131,7 @@ namespace Eendgine {
         glm::vec3 projection = toTri * triNormal;
         // if in triangular prisim (triangle with depth of radius)
         // move to the face which the normal vector points toward
-        if (vertOnTri(projection + cylinderPos, t.getVerts()) && fabs(glm::length(projection)) < c.getRadius()) {
+        if (vertOnTri(projection + cylinderPos, t.getVerts()) && glm::length(projection) < c.getRadius()) {
             float pushLength = c.getRadius() - glm::length(projection);
             return {cylinderPos + (pushLength * triNormal)};
         }
@@ -141,6 +141,7 @@ namespace Eendgine {
     glm::vec3 adjustToCollision(CollisionCylinder &c, std::vector<CollisionModel*> &models,
                                 bool &hitWall, bool &hitCeiling, bool &hitFloor)
     {
+        hitWall = false; hitCeiling = false; hitFloor = false;
         float cylinderHeight = c.getPosition().y;
         float ceilingHeight = cylinderHeight;
         float floorHeight = cylinderHeight; 
@@ -152,12 +153,14 @@ namespace Eendgine {
                     case CollisionTriangle::surface::wall:
                         if (auto tmpWallOffset = pushCylinderFromWall(c, t)) {
                             wallOffsets.push_back(*tmpWallOffset);
+                            hitWall = true;
                         }
                         break;
                     case CollisionTriangle::surface::ceiling:
                         if (auto tmpCeilingHeight = pushCylinderFromCeiling(c, t)) {
                             if (*tmpCeilingHeight < ceilingHeight) {
                                 ceilingHeight = *tmpCeilingHeight;
+                                hitCeiling = true;
                             }
                         }
                         break;
@@ -166,6 +169,7 @@ namespace Eendgine {
                         if (auto tmpFloorHeight = snapCylinderToFloor(c, t)) {
                             if (*tmpFloorHeight > floorHeight) {
                                 floorHeight = *tmpFloorHeight;
+                                hitFloor = false;
                             }
                         };
                         break;
@@ -276,7 +280,6 @@ float pointHeightOnTri(glm::vec3 p1, glm::vec3 p2, glm::vec3 p3, float x, float 
             p1.y*p3.x-p2.y*p1.x-p2.x*p3.y);
     float d = -a*p1.x-b*p1.y-c*p1.z;
     return -(a*x+c*z+d)/b;  
-
 }
 
 glm::vec3 triNormal(glm::vec3 p1, glm::vec3 p2, glm::vec3 p3) {

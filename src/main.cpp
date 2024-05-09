@@ -25,7 +25,7 @@ const unsigned int screenWidth = 1024;
 int main(){
     Eend::Window::init(screenWidth, screenHeight, "Quack"); 
     Eend::Screen::init(screenWidth, screenHeight);
-    Eend::FrameLimiter::setFPS(120.0f);
+    Eend::FrameLimiter::setFPS(30.0f);
     
     glEnable(GL_DEPTH_TEST);
 
@@ -132,87 +132,88 @@ int main(){
         // drawing HUD
         mySprite.draw(myShader, myCamera);
         
-        float dt = Eend::FrameLimiter::deltaTime;
+        float dt = Eend::FrameLimiter::deltaTime / 4;
         if (dt > 1.0f / 60.0f) dt = 1.0f / 60.0f;
-        std::cout << 1.0f / dt << std::endl;
-        float speed = 20.000f;
-        // move based on input and gravity
-        camPosX += Eend::InputManager::deltaMouseX / 100.0f;
-        camPosY += Eend::InputManager::deltaMouseY / 100.0f;
 
-        // so that this number doesn't grow out of control and lose accuracy it loops at 2pi
-        while (camPosX > std::numbers::pi) {
-            camPosX -= 2 * std::numbers::pi;
-        }
-        while (camPosX < std::numbers::pi) {
-            camPosX += 2 * std::numbers::pi;
-        }
+        for(int i = 0; i < 4; i++) {
+            float speed = 20.000f;
+            // move based on input and gravity
+            camPosX += Eend::InputManager::deltaMouseX / 100.0f;
+            camPosY += Eend::InputManager::deltaMouseY / 100.0f;
 
-        // capping the camera height at the top of the sin wave
-        if (camPosY > std::numbers::pi * 0.5) {
-            camPosY = std::numbers::pi * 0.5;
-        } else if (camPosY < -(std::numbers::pi * 0.5)) {
-            camPosY = -(std::numbers::pi * 0.5);
-        }
-        
-        if (fv > -50.0f) {
-            fv -= 1.0f;
-        }
-        
-        if (Eendgine::InputManager::upPress) {
-            // TODO fix adjustment and find out where forward actually is
-            myModel.setRadians(camPosX + (std::numbers::pi / 2), 0.0f);
-            mp.x -= (speed * cos(camPosX)) * dt;
-            mp.z -= (speed * sin(camPosX)) * dt;
-        }
-        if (Eendgine::InputManager::downPress) {
-            mp.x += (speed * cos(camPosX)) * dt;
-            mp.z += (speed * sin(camPosX)) * dt;
-        }
-        if (Eendgine::InputManager::leftPress) {
-            mp.x -= (speed * sin(camPosX)) * dt;
-            mp.z += (speed * cos(camPosX)) * dt;
-        }
-        if (Eendgine::InputManager::rightPress) {
-            mp.x += (speed * sin(camPosX)) * dt;
-            mp.z -= (speed * cos(camPosX)) * dt;
-        }
-        if (Eendgine::InputManager::spacePress) {
-            fv = 25;
-        }
-        
-        mp.y += fv * dt;
-        // adjust for collisions
-        //
-        myCylinder.setPosition(glm::vec3(mp.x, mp.y, mp.z));
-        bool hitWall = false;
-        bool hitCeiling = false;
-        bool hitFloor = false;
-        myCylinder.setPosition(
-                Eend::adjustToCollision(myCylinder, myColModels, hitWall, hitFloor, hitCeiling));
+            // so that this number doesn't grow out of control and lose accuracy it loops at 2pi
+            while (camPosX > std::numbers::pi) {
+                camPosX -= 2 * std::numbers::pi;
+            }
+            while (camPosX < std::numbers::pi) {
+                camPosX += 2 * std::numbers::pi;
+            }
 
-        if (hitFloor && fv < 0) fv = 0;
-        if (hitCeiling && fv > 0) fv = 0;
+            // capping the camera height at the top of the sin wave
+            if (camPosY > std::numbers::pi * 0.5) {
+                camPosY = std::numbers::pi * 0.5;
+            } else if (camPosY < -(std::numbers::pi * 0.5)) {
+                camPosY = -(std::numbers::pi * 0.5);
+            }
+            
+            if (fv > -50.0f) {
+                fv -= 1.0f;
+            }
+            
+            if (Eendgine::InputManager::upPress) {
+                // TODO fix adjustment and find out where forward actually is
+                myModel.setRadians(camPosX + (std::numbers::pi / 2), 0.0f);
+                mp.x -= (speed * cos(camPosX)) * dt;
+                mp.z -= (speed * sin(camPosX)) * dt;
+            }
+            if (Eendgine::InputManager::downPress) {
+                mp.x += (speed * cos(camPosX)) * dt;
+                mp.z += (speed * sin(camPosX)) * dt;
+            }
+            if (Eendgine::InputManager::leftPress) {
+                mp.x -= (speed * sin(camPosX)) * dt;
+                mp.z += (speed * cos(camPosX)) * dt;
+            }
+            if (Eendgine::InputManager::rightPress) {
+                mp.x += (speed * sin(camPosX)) * dt;
+                mp.z -= (speed * cos(camPosX)) * dt;
+            }
+            if (Eendgine::InputManager::spacePress) {
+                fv = 25;
+            }
+            
+            mp.y += fv * dt;
+            // adjust for collisions
+            //
+            myCylinder.setPosition(glm::vec3(mp.x, mp.y, mp.z));
+            bool hitWall = false;
+            bool hitCeiling = false;
+            bool hitFloor = false;
+            myCylinder.setPosition(
+                    Eend::adjustToCollision(myCylinder, myColModels, hitWall, hitFloor, hitCeiling));
 
-        mp = myCylinder.getPosition();
-        myModel.setPosition(glm::vec3(mp.x, mp.y + 4, mp.z));
-        /*
-        float height = 0;
-        if (Eend::pushCylinderFromCeiling(myCylinder, myColCeil, &height)) {
-            if (fv > 0) fv = 0;
-            mp.y = height;
-        }
-        if (Eend::snapCylinderToFloor(myCylinder, myColLand, &height)) {
-            if (fv < 0) fv = 0;
-            mp.y = height;
-        }
-        glm::vec3 offset(0.0f);
-        if (Eend::pushCylinderFromWall(myCylinder, myColWall, &offset)) {
-            mp += offset;
-        }
-        */
-        
-        // adjust camera to follow
+            if (hitFloor && fv < 0) fv = 0;
+            if (hitCeiling && fv > 0) fv = 0;
+
+            mp = myCylinder.getPosition();
+            myModel.setPosition(glm::vec3(mp.x, mp.y + 4, mp.z));
+            /*
+            float height = 0;
+            if (Eend::pushCylinderFromCeiling(myCylinder, myColCeil, &height)) {
+                if (fv > 0) fv = 0;
+                mp.y = height;
+            }
+            if (Eend::snapCylinderToFloor(myCylinder, myColLand, &height)) {
+                if (fv < 0) fv = 0;
+                mp.y = height;
+            }
+            glm::vec3 offset(0.0f);
+            if (Eend::pushCylinderFromWall(myCylinder, myColWall, &offset)) {
+                mp += offset;
+            }
+            */
+        } 
+            // adjust camera to follow
         float camDis = 30;
         my3DCamera.setTarget(mp.x, mp.y + 4, mp.z);
         my3DCamera.setPosition
