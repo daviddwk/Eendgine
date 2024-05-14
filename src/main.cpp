@@ -19,8 +19,8 @@
 
 namespace Eend = Eendgine;
 
-const unsigned int screenHeight = 1024;
-const unsigned int screenWidth = 1024; 
+const unsigned int screenHeight = 750;
+const unsigned int screenWidth = 1000; 
 
 int main(){
     Eend::Window::init(screenWidth, screenHeight, "Quack"); 
@@ -58,7 +58,7 @@ int main(){
     Eend::CollisionCylinder myCylinder(glm::vec3(mp.x, mp.y, mp.z), 1.0f, 3.0f);
     
     std::vector<std::string> courtAnim;
-    for (int i = 1; i <= 5; i++) {
+    for (int i = 1; i <= 4; i++) {
         courtAnim.emplace_back("resources/court/court" + std::to_string(i) + ".obj");
     }
 
