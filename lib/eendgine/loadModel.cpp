@@ -52,11 +52,13 @@ namespace Eendgine {
         Assimp::Importer nextImporter;
         const aiScene *scene = importer.ReadFile(modelPath, aiProcess_Triangulate | aiProcess_GenNormals);
         const aiScene *nextScene = nextImporter.ReadFile(nextModelPath, aiProcess_Triangulate | aiProcess_GenNormals);
-        if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode ||
-                !nextScene || nextScene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !nextScene->mRootNode) {
-            fatalError("failed to load model");
-            return;
-        }
+        if (!scene) fatalError("failed to load model: could not load file " + modelPath);
+        if (!nextScene) fatalError("failed to load model: could not load file" + modelPath);
+        if (scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE) fatalError ("failed to load model: scene flags incomplete");
+        if (nextScene->mFlags & AI_SCENE_FLAGS_INCOMPLETE) fatalError("failed to load model: next scene flags incomplete");
+        if (!scene->mRootNode) fatalError("failed to load model: missing mRootNode");
+        if (!nextScene->mRootNode) fatalError("failed to load model: nextScene no root node");
+
         // assuming they are in the same directory here
         std::string modelDir = modelPath.substr(0, modelPath.find_last_of('/'));
         std::vector<aiMesh*> aiMeshes;

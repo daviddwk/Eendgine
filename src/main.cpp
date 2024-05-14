@@ -19,7 +19,7 @@
 
 namespace Eend = Eendgine;
 
-const unsigned int screenHeight = 512;
+const unsigned int screenHeight = 1024;
 const unsigned int screenWidth = 1024; 
 
 int main(){
@@ -57,56 +57,29 @@ int main(){
     myModel.setPosition(glm::vec3(mp.x, mp.y + 4, mp.z));
     Eend::CollisionCylinder myCylinder(glm::vec3(mp.x, mp.y, mp.z), 1.0f, 3.0f);
     
-
-    Eend::StaticModel myLand("resources/lpland/lpland.obj", myTextureCache);
-    myLand.setScale(glm::vec3(1.0f));
-    myLand.setPosition(glm::vec3(0.0f, 0.0f, 0.0f));
-    Eend::CollisionModel myColLand("resources/lpland/lpland.obj");
-    myColLand.setScale(glm::vec3(1.0f));
-    myColLand.setPosition(glm::vec3(0.0f, 0.0f, 0.0f));
-
-    Eend::StaticModel myWall("resources/wall/wall.obj", myTextureCache);
-    myWall.setScale(glm::vec3(10.0f));
-    myWall.setPosition(glm::vec3(0.0f));
-    Eend::CollisionModel myColWall("resources/wall/wall.obj");
-    myColWall.setScale(glm::vec3(10.0f));
-    myColWall.setPosition(glm::vec3(0.0f));
-
-    Eend::StaticModel myCeil("resources/ceiling/ceiling.obj", myTextureCache);
-    myCeil.setScale(glm::vec3(10.0f));
-    myCeil.setPosition(glm::vec3(0.0f, 50.0f, 0.0f));
-    Eend::CollisionModel myColCeil("resources/ceiling/ceiling.obj");
-    myColCeil.setScale(glm::vec3(10.0f));
-    myColCeil.setPosition(glm::vec3(0.0f, 50.0f, 0.0f));
-
-    Eend::CollisionModel myColCube("resources/cube/cube.obj");
-    myColCube.setPosition(glm::vec3(0.0f, 1.0f, 0.0f));
-    myColCube.setScale(glm::vec3(1.0f));
-    Eend::StaticModel myCube("resources/cube/cube.obj", myTextureCache);
-    myCube.setPosition(glm::vec3(0.0f, -5.0f, 0.0f));
-    myCube.setScale(glm::vec3(25.0f, 1.0f, 25.0f));
-
-    std::vector<Eend::CollisionModel*> myColModels = {
-            &myColLand, &myColWall, &myColCeil};
-
-    std::vector<std::string> walkAnim;
-    for (int i = 16; i <= 55; i++) {
-        walkAnim.emplace_back("resources/ost_walk/ost" + std::to_string(i) + ".obj");
+    std::vector<std::string> courtAnim;
+    for (int i = 1; i <= 5; i++) {
+        courtAnim.emplace_back("resources/court/court" + std::to_string(i) + ".obj");
     }
+
     myModel.setScale(glm::vec3(1.0f, 1.0f, 1.0f));
     myModel.setPosition(glm::vec3(0.0f, 0.0f, 0.0f));
 
-    Eend::AnimatedModel myAnimatedModel(walkAnim, myTextureCache);
-    myAnimatedModel.setPosition(glm::vec3(0.0f, 0.0f, 0.0f));
-    myAnimatedModel.setScale(glm::vec3(0.8f, 0.8f, 0.8f));
-    myAnimatedModel.setAnim(0.0f);
+    Eend::AnimatedModel myAnimatedCourt(courtAnim, myTextureCache);
+    myAnimatedCourt.setPosition(glm::vec3(0.0f, -5.0f, 0.0f));
+    myAnimatedCourt.setScale(glm::vec3(4.0f));
+    myAnimatedCourt.setAnim(0.0f);
+    Eend::CollisionModel myColCourt("resources/courtCol/courtHitbox.obj");
+    myColCourt.setPosition(glm::vec3(0.0f, -5.0f, 0.0f));
+    myColCourt.setScale(glm::vec3(4.0f));
+    
+    
+    std::vector<Eend::CollisionModel*> myColModels = {
+            &myColCourt};
+
 
     std::vector<Eend::Model*> modelBatch;
     modelBatch.push_back(&myModel);
-    modelBatch.push_back(&myCube);
-    modelBatch.push_back(&myLand);
-    modelBatch.push_back(&myWall);
-    modelBatch.push_back(&myCeil);
     
     float fv = 0.0f;
     float camPosX = 0;
@@ -124,9 +97,9 @@ int main(){
         //myCube.draw(myShader3D, my3DCamera, true);
         //myModel.draw(myShader3D, my3DCamera, true);
         renderModelBatch(&modelBatch, myShader3D, my3DCamera);
-        myAnimatedModel.draw(myInpolShader, my3DCamera, true);
         my3DSprite.draw(myShader3D, my3DCamera);
-        myAnimatedModel.setAnim(myAnimatedModel.getAnim() + 0.01);
+
+        myAnimatedCourt.draw(myInpolShader, my3DCamera, true);
 
         glClear(GL_DEPTH_BUFFER_BIT);
         // drawing HUD
@@ -214,16 +187,13 @@ int main(){
             */
         } 
             // adjust camera to follow
-        float camDis = 30;
+        float camDis = 60;
+        myAnimatedCourt.setAnim(myAnimatedCourt.getAnim() + (0.2f * dt));
         my3DCamera.setTarget(mp.x, mp.y + 4, mp.z);
         my3DCamera.setPosition
             (mp.x + (camDis * cos(camPosX)), 
              mp.y + (camDis * sin(camPosY)), 
              mp.z + (camDis * sin(camPosX)));
-        myAnimatedModel.setPosition(glm::vec3(
-                (float)Eend::InputManager::deltaMouseX * dt / 1000,
-                (float)Eend::InputManager::deltaMouseY * dt / 1000,
-                0.0f));
 
         Eend::Screen::render(screenShader);
         Eend::InputManager::processInput();
