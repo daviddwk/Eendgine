@@ -164,11 +164,15 @@ int main(){
             bool hitFloor = false;
             Eend::CollisionResults colResults = Eend::adjustToCollision(myCylinder, myColModels);
             if (auto floorHeight = colResults.floor) {
+                std::cout << "FLOOR\n" << std::endl;
                 mp.y = *floorHeight;
                 if(fv < 0) fv = 0;
             } else if (auto ceilingHeight = colResults.ceiling) {
+                std::cout << "CEILING\n" << std::endl;
                 mp.y = *ceilingHeight;
                 if(fv > 0) fv = 0;
+            } else {
+                std::cout << "NEITHER\n" << std::endl;
             }
             if (auto wallOffset = colResults.wall) {
                 mp.x = wallOffset->x;

@@ -96,9 +96,11 @@ namespace Eendgine {
         //TODO make not hardcoded like this
         float snapDistance = 1.0f;
         if (vertOnTri(cylinderPos, triVerts)) {
+            std::cout << "ontri\n" << std::endl;
             float triHeight = pointHeightOnTri(triVerts[0], triVerts[1], triVerts[2], cylinderPos.x, cylinderPos.z);
             // if slightly above floor OR clipping into floor
-            if (fabs(cylinderPos.y - triHeight) <= snapDistance) {
+            if (cylinderPos.y - triHeight <= snapDistance) {
+                std::cout << "collision\n" << std::endl;
                 return { triHeight + snapDistance };
             }
         }
@@ -143,6 +145,8 @@ namespace Eendgine {
         std::optional<float> hitFloor = {};
         std::optional<glm::vec3> hitWall = {}; 
         std::optional<float> hitCeiling = {}; 
+
+        int numWalls = 0;
         
         float cylinderHeight = c.getPosition().y;
         float ceilingHeight = cylinderHeight;
@@ -161,7 +165,12 @@ namespace Eendgine {
                         break;
                     case CollisionTriangle::surface::wall:
                         if (auto tmpWallOffset = pushCylinderFromWall(c, t)) {
-                            hitWall = *tmpWallOffset;
+                            numWalls++;
+                            if (hitWall) {
+                                hitWall = (*tmpWallOffset + hitWall.value());
+                            } else {
+                                hitWall = *tmpWallOffset;
+                            }
                             //
                         }
                         break;
@@ -175,7 +184,9 @@ namespace Eendgine {
                 }
             }
         }
-        glm::vec3 tmpPos = c.getPosition();
+        if (hitWall) {
+            hitWall = hitWall.value() / (float)numWalls;
+        }
         return CollisionResults{
             hitFloor,
             hitWall,
