@@ -7,6 +7,12 @@
 #include <optional>
 
 namespace Eendgine {
+    struct CollisionResults{
+        std::optional<float> floor;
+        std::optional<glm::vec3> wall;
+        std::optional<float> ceiling;
+    };
+
     class CollisionSphere {
         public:
             CollisionSphere(glm::vec3 position, float radius);
@@ -99,8 +105,7 @@ namespace Eendgine {
     bool colliding(CollisionSphere s, CollisionPlane p, glm::vec3 *penetration);
     
     std::optional<float> snapCylinderToFloor(CollisionCylinder &c, CollisionTriangle &t);
-    std::optional<float> pushCylinderFromCeiling(CollisionCylinder &c, CollisionTriangle &t);
     std::optional<glm::vec3> pushCylinderFromWall(CollisionCylinder &c, CollisionTriangle &t);
-    glm::vec3 adjustToCollision(CollisionCylinder &c, std::vector<CollisionModel*> &models,
-                                bool &hitWall, bool &hitCeiling, bool &hitFloor);
+    std::optional<float> pushCylinderFromCeiling(CollisionCylinder &c, CollisionTriangle &t);
+    CollisionResults adjustToCollision(CollisionCylinder &c, std::vector<CollisionModel*> &models);
 }

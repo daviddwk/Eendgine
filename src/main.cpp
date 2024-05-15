@@ -162,11 +162,19 @@ int main(){
             bool hitWall = false;
             bool hitCeiling = false;
             bool hitFloor = false;
-            myCylinder.setPosition(
-                    Eend::adjustToCollision(myCylinder, myColModels, hitWall, hitFloor, hitCeiling));
-
-            if (hitFloor && fv < 0) fv = 0;
-            if (hitCeiling && fv > 0) fv = 0;
+            Eend::CollisionResults colResults = Eend::adjustToCollision(myCylinder, myColModels);
+            if (auto floorHeight = colResults.floor) {
+                mp.y = *floorHeight;
+                if(fv < 0) fv = 0;
+            } else if (auto ceilingHeight = colResults.ceiling) {
+                mp.y = *ceilingHeight;
+                if(fv > 0) fv = 0;
+            }
+            if (auto wallOffset = colResults.wall) {
+                mp.x = wallOffset->x;
+                mp.z = wallOffset->z;
+            }
+            myCylinder.setPosition(glm::vec3(mp.x, mp.y, mp.z));
 
             mp = myCylinder.getPosition();
             myModel.setPosition(glm::vec3(mp.x, mp.y + 4, mp.z));
