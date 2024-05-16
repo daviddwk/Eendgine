@@ -3,7 +3,6 @@
 #include "loadModel.hpp"
 #include "fatalError.hpp"
 #include <cmath>
-#include <iostream>
 #include <tuple>
 #include <numeric>
 
@@ -96,11 +95,9 @@ namespace Eendgine {
         //TODO make not hardcoded like this
         float snapDistance = 1.0f;
         if (vertOnTri(cylinderPos, triVerts)) {
-            std::cout << "ontri\n" << std::endl;
             float triHeight = pointHeightOnTri(triVerts[0], triVerts[1], triVerts[2], cylinderPos.x, cylinderPos.z);
             // if slightly above floor OR clipping into floor
             if (cylinderPos.y - triHeight <= snapDistance) {
-                std::cout << "collision\n" << std::endl;
                 return { triHeight + snapDistance };
             }
         }

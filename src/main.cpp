@@ -13,9 +13,9 @@
 #include <stb/stb_image.h>
 //#include "player.hpp"
 
-#include <iostream>
 #include <vector>
 #include <numbers>
+#include <print>
 
 namespace Eend = Eendgine;
 
@@ -23,6 +23,7 @@ const unsigned int screenHeight = 750;
 const unsigned int screenWidth = 1000; 
 
 int main(){
+    std::print("hello\n");
     Eend::Window::init(screenWidth, screenHeight, "Quack"); 
     Eend::Screen::init(screenWidth, screenHeight);
     Eend::FrameLimiter::setFPS(30.0f);
@@ -30,6 +31,7 @@ int main(){
     glEnable(GL_DEPTH_TEST);
 
     Eend::TextureCache myTextureCache;
+    Eend::RenderBatch myRenderBatch = Eend::RenderBatch();
     
     Eend::ShaderProgram myShader("shaders/shader.vert", "shaders/shader.frag");
     Eend::ShaderProgram myShader3D("shaders/shader3D.vert", "shaders/shader3D.frag");
@@ -38,7 +40,7 @@ int main(){
 
     Eend::Camera3D my3DCamera((float)screenWidth / (float)screenHeight,
             glm::vec3(20.0f, 15.0f, 20.0f), glm::vec3(0.0f, 0.0f, 0.0f));
-    
+
     Eend::Camera2D myCamera(screenWidth, screenHeight);
 
     
@@ -69,6 +71,11 @@ int main(){
     myAnimatedCourt.setPosition(glm::vec3(0.0f, -5.0f, 0.0f));
     myAnimatedCourt.setScale(glm::vec3(4.0f));
     myAnimatedCourt.setAnim(0.0f);
+    
+    //myRenderBatch.insertModel(&myAnimatedCourt);
+    myRenderBatch.insertModel(&myModel);
+
+
     Eend::CollisionModel myColCourt("resources/courtCol/courtHitbox.obj");
     myColCourt.setPosition(glm::vec3(0.0f, -5.0f, 0.0f));
     myColCourt.setScale(glm::vec3(4.0f));
@@ -78,9 +85,6 @@ int main(){
             &myColCourt};
 
 
-    std::vector<Eend::Model*> modelBatch;
-    modelBatch.push_back(&myModel);
-    
     float fv = 0.0f;
     float camPosX = 0;
     float camPosY = 0;
@@ -94,9 +98,7 @@ int main(){
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         
         // drawing 3D
-        //myCube.draw(myShader3D, my3DCamera, true);
-        //myModel.draw(myShader3D, my3DCamera, true);
-        renderModelBatch(&modelBatch, myShader3D, my3DCamera);
+        myRenderBatch.render(myShader3D, my3DCamera);
         my3DSprite.draw(myShader3D, my3DCamera);
 
         myAnimatedCourt.draw(myInpolShader, my3DCamera, true);
@@ -157,22 +159,18 @@ int main(){
             
             mp.y += fv * dt;
             // adjust for collisions
-            //
             myCylinder.setPosition(glm::vec3(mp.x, mp.y, mp.z));
             bool hitWall = false;
             bool hitCeiling = false;
             bool hitFloor = false;
             Eend::CollisionResults colResults = Eend::adjustToCollision(myCylinder, myColModels);
             if (auto floorHeight = colResults.floor) {
-                std::cout << "FLOOR\n" << std::endl;
                 mp.y = *floorHeight;
                 if(fv < 0) fv = 0;
             } else if (auto ceilingHeight = colResults.ceiling) {
-                std::cout << "CEILING\n" << std::endl;
                 mp.y = *ceilingHeight;
                 if(fv > 0) fv = 0;
             } else {
-                std::cout << "NEITHER\n" << std::endl;
             }
             if (auto wallOffset = colResults.wall) {
                 mp.x = wallOffset->x;
@@ -182,21 +180,6 @@ int main(){
 
             mp = myCylinder.getPosition();
             myModel.setPosition(glm::vec3(mp.x, mp.y + 4, mp.z));
-            /*
-            float height = 0;
-            if (Eend::pushCylinderFromCeiling(myCylinder, myColCeil, &height)) {
-                if (fv > 0) fv = 0;
-                mp.y = height;
-            }
-            if (Eend::snapCylinderToFloor(myCylinder, myColLand, &height)) {
-                if (fv < 0) fv = 0;
-                mp.y = height;
-            }
-            glm::vec3 offset(0.0f);
-            if (Eend::pushCylinderFromWall(myCylinder, myColWall, &offset)) {
-                mp += offset;
-            }
-            */
         } 
             // adjust camera to follow
         float camDis = 60;
