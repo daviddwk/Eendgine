@@ -1,8 +1,10 @@
 #include "renderBatch.hpp"
 #include <algorithm>
 
+
 namespace Eendgine {
-    RenderBatch::RenderBatch() {
+
+    RenderBatch::RenderBatch(){
     }
 
     void RenderBatch::insertModel(Model* model) {

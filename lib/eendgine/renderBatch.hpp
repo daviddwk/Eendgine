@@ -4,8 +4,14 @@
 #include "camera.hpp"
 
 #include <set>
+#include <functional>
 
 namespace Eendgine {
+    struct ModelComparator {
+        bool operator()(Model* m1, Model* m2) const {
+            return m1->getTexture() > m2->getTexture();
+        }
+    };
     class RenderBatch {
         public:
             RenderBatch();
@@ -14,10 +20,6 @@ namespace Eendgine {
             void render(ShaderProgram &shader, Camera3D &camera);
 
         private:
-            inline static auto _compare = [](Model* a, Model* b)
-                {
-                    return a->getTexture() > b->getTexture();
-                }; 
-            std::set<Model*, decltype(_compare)> _models;
+            std::set<Model*, ModelComparator> _models;
     };
 }

@@ -15,7 +15,6 @@
 
 #include <vector>
 #include <numbers>
-#include <print>
 
 namespace Eend = Eendgine;
 
@@ -23,7 +22,6 @@ const unsigned int screenHeight = 750;
 const unsigned int screenWidth = 1000; 
 
 int main(){
-    std::print("hello\n");
     Eend::Window::init(screenWidth, screenHeight, "Quack"); 
     Eend::Screen::init(screenWidth, screenHeight);
     Eend::FrameLimiter::setFPS(30.0f);
