@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.18.1)
 project(game)
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 if (NOT EXISTS "${CMAKE_SOURCE_DIR}lib/stb/stb_image.h")
