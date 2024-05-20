@@ -12,8 +12,8 @@ namespace Eendgine {
             Sprite(Texture texture);
             Sprite(std::vector<Texture> textures);
             std::vector<Texture>::size_type getNumTextures();
-            void draw(ShaderProgram &shader, Camera2D &camera);
-            void draw(ShaderProgram &shader, Camera3D &camera);
+            void draw(ShaderProgram &shader, Camera2D &camera, bool bindTexture);
+            void draw(ShaderProgram &shader, Camera3D &camera, bool bindTexture);
             
             void setTextureIdx(std::vector<Texture>::size_type textureIdx) 
                 { _textureIdx = (textureIdx < _textures.size()) ? textureIdx : 0; };
@@ -25,6 +25,7 @@ namespace Eendgine {
             glm::vec3 getPosition() { return _position; };
             glm::vec3 getSize() { return _size; };
             float getRotation() { return _rotation; };
+            unsigned int getTexture() { return _textures[_textureIdx].id; };
 
 
         private:

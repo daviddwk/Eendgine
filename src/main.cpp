@@ -8,7 +8,7 @@
 #include <eendgine/model.hpp>
 #include <eendgine/collisionGeometry.hpp>
 #include <eendgine/screen.hpp>
-#include <eendgine/modelBatch.hpp>
+#include <eendgine/drawBatch.hpp>
 
 #include <stb/stb_image.h>
 //#include "player.hpp"
@@ -101,13 +101,13 @@ int main(){
         
         // drawing 3D
         myModelBatch.draw(shaders.getShader(Shader::model), my3DCamera);
-        my3DSprite.draw(shaders.getShader(Shader::model), my3DCamera);
+        my3DSprite.draw(shaders.getShader(Shader::model), my3DCamera, true);
 
         myAnimatedCourt.draw(shaders.getShader(Shader::animation), my3DCamera, true);
 
         glClear(GL_DEPTH_BUFFER_BIT);
         // drawing HUD
-        mySprite.draw(shaders.getShader(Shader::sprite), myCamera);
+        mySprite.draw(shaders.getShader(Shader::sprite), myCamera, true);
         
         float dt = Eend::FrameLimiter::deltaTime / 4;
         if (dt > 1.0f / 60.0f) dt = 1.0f / 60.0f;

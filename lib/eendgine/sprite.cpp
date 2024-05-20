@@ -89,11 +89,14 @@ namespace Eendgine {
         return _textures.size();
     }
 
-    void Sprite::draw(Eendgine::ShaderProgram &shader, Eendgine::Camera2D &camera) {
+    void Sprite::draw(Eendgine::ShaderProgram &shader, Eendgine::Camera2D &camera, bool bindTexture) {
         shader.use();
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, _textures[_textureIdx].id);
-        
+
+        if (bindTexture) {
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_2D, _textures[_textureIdx].id);
+        }
+
         glm::mat4 trans = camera.getCameraMatrix(); //glm::mat4(1.0f);
         
         trans = glm::translate(trans, _position);
@@ -108,12 +111,14 @@ namespace Eendgine {
         glBindVertexArray(0);
     }
     
-    void Sprite::draw(Eendgine::ShaderProgram &shader, Eendgine::Camera3D &camera) {
+    void Sprite::draw(Eendgine::ShaderProgram &shader, Eendgine::Camera3D &camera, bool bindTexture) {
         shader.use();
-        
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, _textures[_textureIdx].id);
-        
+       
+        if (bindTexture) {
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_2D, _textures[_textureIdx].id);
+        }
+
         glm::mat4 transform = glm::mat4(1.0f);
         transform = glm::translate(transform, _position);
         glm::mat3 rot = glm::inverse(glm::mat3(camera.getViewMat()));

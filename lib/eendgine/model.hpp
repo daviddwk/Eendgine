@@ -23,7 +23,7 @@ namespace Eendgine {
 
             glm::vec3 getPosition() { return _position; };
             glm::vec3 getScale() { return _scale; };
-            glm::vec2 getRot() { return _rotation; };
+            glm::vec2 getRotation() { return _rotation; };
             unsigned int getTexture() { return _textures[_textureIdx].id; };
         protected:
             glm::vec3 _position;
