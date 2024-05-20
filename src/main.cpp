@@ -16,6 +16,8 @@
 #include <vector>
 #include <numbers>
 
+#include "shaders.hpp"
+
 namespace Eend = Eendgine;
 
 const unsigned int screenHeight = 750;
@@ -31,10 +33,11 @@ int main(){
     Eend::TextureCache myTextureCache;
     Eend::RenderBatch myRenderBatch = Eend::RenderBatch();
     
-    Eend::ShaderProgram myShader("shaders/shader.vert", "shaders/shader.frag");
-    Eend::ShaderProgram myShader3D("shaders/shader3D.vert", "shaders/shader3D.frag");
-    Eend::ShaderProgram myInpolShader("shaders/shaderInpol.vert", "shaders/shaderInpol.frag");
-    Eend::ShaderProgram screenShader("shaders/shaderScreen.vert", "shaders/shaderScreen.frag");
+    Shaders shaders(
+            Eend::ShaderProgram("shaders/shader.vert", "shaders/shader.frag"),
+            Eend::ShaderProgram("shaders/shader3D.vert", "shaders/shader3D.frag"),
+            Eend::ShaderProgram("shaders/shaderInpol.vert", "shaders/shaderInpol.frag"),
+            Eend::ShaderProgram("shaders/shaderScreen.vert", "shaders/shaderScreen.frag"));
 
     Eend::Camera3D my3DCamera((float)screenWidth / (float)screenHeight,
             glm::vec3(20.0f, 15.0f, 20.0f), glm::vec3(0.0f, 0.0f, 0.0f));
@@ -90,20 +93,21 @@ int main(){
     while(!Eend::InputManager::shouldClose){
         Eend::FrameLimiter::startInterval(); 
         Eend::Screen::bind();
-        screenShader.setInt("pixelSize", 5);
+
+        shaders.setPixelSize(5);
 
         glClearColor(0.1f, 0.2f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         
         // drawing 3D
-        myRenderBatch.render(myShader3D, my3DCamera);
-        my3DSprite.draw(myShader3D, my3DCamera);
+        myRenderBatch.render(shaders.getShader(Shader::model), my3DCamera);
+        my3DSprite.draw(shaders.getShader(Shader::model), my3DCamera);
 
-        myAnimatedCourt.draw(myInpolShader, my3DCamera, true);
+        myAnimatedCourt.draw(shaders.getShader(Shader::animation), my3DCamera, true);
 
         glClear(GL_DEPTH_BUFFER_BIT);
         // drawing HUD
-        mySprite.draw(myShader, myCamera);
+        mySprite.draw(shaders.getShader(Shader::sprite), myCamera);
         
         float dt = Eend::FrameLimiter::deltaTime / 4;
         if (dt > 1.0f / 60.0f) dt = 1.0f / 60.0f;
@@ -188,7 +192,7 @@ int main(){
              mp.y + (camDis * sin(camPosY)), 
              mp.z + (camDis * sin(camPosX)));
 
-        Eend::Screen::render(screenShader);
+        Eend::Screen::render(shaders.getShader(Shader::screen));
         Eend::InputManager::processInput();
         Eend::Window::swapBuffers(); 
         Eend::FrameLimiter::stopInterval();
