@@ -12,12 +12,12 @@ namespace Eendgine {
             return m1->getTexture() > m2->getTexture();
         }
     };
-    class RenderBatch {
+    class ModelBatch {
         public:
-            RenderBatch();
+            ModelBatch();
             void insertModel(Model* model);
             void eraseModel(Model* model);
-            void render(ShaderProgram &shader, Camera3D &camera);
+            void draw(ShaderProgram &shader, Camera3D &camera);
 
         private:
             std::set<Model*, ModelComparator> _models;

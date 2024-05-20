@@ -8,7 +8,7 @@
 #include <eendgine/model.hpp>
 #include <eendgine/collisionGeometry.hpp>
 #include <eendgine/screen.hpp>
-#include <eendgine/renderBatch.hpp>
+#include <eendgine/modelBatch.hpp>
 
 #include <stb/stb_image.h>
 //#include "player.hpp"
@@ -31,7 +31,7 @@ int main(){
     glEnable(GL_DEPTH_TEST);
 
     Eend::TextureCache myTextureCache;
-    Eend::RenderBatch myRenderBatch = Eend::RenderBatch();
+    Eend::ModelBatch myModelBatch = Eend::ModelBatch();
     
     Shaders shaders(
             Eend::ShaderProgram("shaders/shader.vert", "shaders/shader.frag"),
@@ -74,7 +74,7 @@ int main(){
     myAnimatedCourt.setAnim(0.0f);
     
     //myRenderBatch.insertModel(&myAnimatedCourt);
-    myRenderBatch.insertModel(&myModel);
+    myModelBatch.insertModel(&myModel);
 
 
     Eend::CollisionModel myColCourt("resources/courtCol/courtHitbox.obj");
@@ -100,7 +100,7 @@ int main(){
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         
         // drawing 3D
-        myRenderBatch.render(shaders.getShader(Shader::model), my3DCamera);
+        myModelBatch.draw(shaders.getShader(Shader::model), my3DCamera);
         my3DSprite.draw(shaders.getShader(Shader::model), my3DCamera);
 
         myAnimatedCourt.draw(shaders.getShader(Shader::animation), my3DCamera, true);

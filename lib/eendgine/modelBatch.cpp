@@ -1,21 +1,21 @@
-#include "renderBatch.hpp"
+#include "modelBatch.hpp"
 #include <algorithm>
 
 
 namespace Eendgine {
 
-    RenderBatch::RenderBatch(){
+    ModelBatch::ModelBatch(){
     }
 
-    void RenderBatch::insertModel(Model* model) {
+    void ModelBatch::insertModel(Model* model) {
         _models.insert(model);
     }
 
-    void RenderBatch::eraseModel(Model* model) {
+    void ModelBatch::eraseModel(Model* model) {
         _models.erase(model);
     }
 
-    void RenderBatch::render(ShaderProgram &shader, Camera3D &camera) {
+    void ModelBatch::draw(ShaderProgram &shader, Camera3D &camera) {
         glActiveTexture(GL_TEXTURE0);
         std::string texName = "texture_diffuse";
         glUniform1i(glGetUniformLocation(shader.getProgramID(), texName.c_str()), 0);

@@ -1,4 +1,4 @@
-#include <eendgine/renderBatch.hpp>
+#include <eendgine/modelBatch.hpp>
 #include <eendgine/shader.hpp>
 
 namespace Eend = Eendgine;
