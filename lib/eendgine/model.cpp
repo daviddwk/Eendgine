@@ -14,7 +14,7 @@ namespace Eendgine {
 
     }
 
-    void Model::draw(ShaderProgram &shader, bool bindTexture) {
+    void Model::draw(uint shaderId, bool bindTexture) {
 
     }
 
@@ -51,14 +51,15 @@ namespace Eendgine {
         glEnableVertexAttribArray(3);
     }
 
-    void StaticModel::draw(ShaderProgram& shader, bool bindTexture){
-        shader.use();
+    void StaticModel::draw(uint shaderId, bool bindTexture){
+        /*
         if (bindTexture) {
             glActiveTexture(GL_TEXTURE0);
             std::string texName = "texture_diffuse";
-            glUniform1i(glGetUniformLocation(shader.getProgramID(), texName.c_str()), 0);
+            glUniform1i(glGetUniformLocation(shaderId, texName.c_str()), 0);
             glBindTexture(GL_TEXTURE_2D, _textures[_textureIdx].id);
         }
+        */
         // using RGB(1,0,1) for transparent
         // parts of the texture using shaders
         
@@ -68,9 +69,9 @@ namespace Eendgine {
         transform = glm::rotate(transform, -_rotation.y, glm::vec3(-1.0f, 0.0f, 0.0f));
         transform = glm::scale(transform, _scale);
 
-        unsigned int projectionLoc = glGetUniformLocation(shader.getProgramID(), "projection");
-        unsigned int viewLoc = glGetUniformLocation(shader.getProgramID(), "view");
-        unsigned int transformLoc = glGetUniformLocation(shader.getProgramID(), "transform");
+        unsigned int projectionLoc = glGetUniformLocation(shaderId, "projection");
+        unsigned int viewLoc = glGetUniformLocation(shaderId, "view");
+        unsigned int transformLoc = glGetUniformLocation(shaderId, "transform");
         glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, &_camera.getProjectionMat()[0][0]);
         glUniformMatrix4fv(viewLoc, 1, GL_FALSE, &_camera.getViewMat()[0][0]);
         glUniformMatrix4fv(transformLoc, 1, GL_FALSE, &transform[0][0]);
@@ -126,27 +127,27 @@ namespace Eendgine {
         }
     }
 
-    void AnimatedModel::draw(ShaderProgram &shader, bool bindTexture){
-        shader.use();
+    void AnimatedModel::draw(uint shaderId, bool bindTexture){
         // using RGB(1,0,1) for transparent
         // parts of the texture using shaders
+        /*
         if (bindTexture) {
             glActiveTexture(GL_TEXTURE0);
             std::string texName = "texture_diffuse";
-            glUniform1i(glGetUniformLocation(shader.getProgramID(), texName.c_str()), 0);
+            glUniform1i(glGetUniformLocation(shaderId, texName.c_str()), 0);
             glBindTexture(GL_TEXTURE_2D, _textures[_textureIdx].id);
         }
-        
+        */
         glm::mat4 transform = glm::mat4(1.0f);
         transform = glm::translate(transform, _position);
         transform = glm::rotate(transform, -_rotation.x, glm::vec3( 0.0f, 1.0f, 0.0f));
         transform = glm::rotate(transform, -_rotation.y, glm::vec3(-1.0f, 0.0f, 0.0f));
         transform = glm::scale(transform, _scale);
 
-        unsigned int projectionLoc = glGetUniformLocation(shader.getProgramID(), "projection");
-        unsigned int viewLoc = glGetUniformLocation(shader.getProgramID(), "view");
-        unsigned int transformLoc = glGetUniformLocation(shader.getProgramID(), "transform");
-        unsigned int inpolLoc = glGetUniformLocation(shader.getProgramID(), "inpol");
+        unsigned int projectionLoc = glGetUniformLocation(shaderId, "projection");
+        unsigned int viewLoc = glGetUniformLocation(shaderId, "view");
+        unsigned int transformLoc = glGetUniformLocation(shaderId, "transform");
+        unsigned int inpolLoc = glGetUniformLocation(shaderId, "inpol");
         glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, &_camera.getProjectionMat()[0][0]);
         glUniformMatrix4fv(viewLoc, 1, GL_FALSE, &_camera.getViewMat()[0][0]);
         glUniformMatrix4fv(transformLoc, 1, GL_FALSE, &transform[0][0]);

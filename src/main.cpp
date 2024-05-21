@@ -32,6 +32,7 @@ int main(){
 
     Eend::TextureCache myTextureCache;
     Eend::ModelBatch myModelBatch = Eend::ModelBatch();
+    Eend::ModelBatch myAnimationBatch = Eend::ModelBatch();
     
     Shaders shaders(
             Eend::ShaderProgram("shaders/shader.vert", "shaders/shader.frag"),
@@ -75,6 +76,7 @@ int main(){
     
     //myRenderBatch.insertModel(&myAnimatedCourt);
     myModelBatch.insertModel(&myModel);
+    myAnimationBatch.insertModel(&myAnimatedCourt);
 
 
     Eend::CollisionModel myColCourt("resources/courtCol/courtHitbox.obj");
@@ -101,9 +103,8 @@ int main(){
         
         // drawing 3D
         myModelBatch.draw(shaders.getShader(Shader::model));
+        myAnimationBatch.draw(shaders.getShader(Shader::animation));
         my3DSprite.draw(shaders.getShader(Shader::model), my3DCamera, true);
-
-        myAnimatedCourt.draw(shaders.getShader(Shader::animation), true);
 
         glClear(GL_DEPTH_BUFFER_BIT);
         // drawing HUD

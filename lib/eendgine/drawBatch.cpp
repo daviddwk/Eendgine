@@ -60,6 +60,7 @@ namespace Eendgine {
     }
 
     void ModelBatch::draw(ShaderProgram &shader) {
+        shader.use();
         glActiveTexture(GL_TEXTURE0);
         std::string texName = "texture_diffuse";
         glUniform1i(glGetUniformLocation(shader.getProgramID(), texName.c_str()), 0);
@@ -71,7 +72,7 @@ namespace Eendgine {
                 glBindTexture(GL_TEXTURE_2D, thisTexture);
             }
             lastTexture = thisTexture;
-            model->draw(shader, false);
+            model->draw(shader.getProgramID(), false);
         }
         glBindTexture(GL_TEXTURE_2D, 0);
     }
