@@ -12,12 +12,10 @@ namespace Eendgine {
             Sprite(Texture texture);
             Sprite(std::vector<Texture> textures);
             std::vector<Texture>::size_type getNumTextures();
-            void draw(ShaderProgram &shader, Camera2D &camera, bool bindTexture);
-            void draw(ShaderProgram &shader, Camera3D &camera, bool bindTexture);
-            
+            virtual void draw(ShaderProgram &shader, bool bindTexture) = 0; 
             void setTextureIdx(std::vector<Texture>::size_type textureIdx) 
                 { _textureIdx = (textureIdx < _textures.size()) ? textureIdx : 0; };
-            void setPosition(float x, float y, float z = 0.0f) { _position = glm::vec3(x, y, z); };
+            void setPosition(glm::vec3 position) { _position = position; };
             void setSize(float w, float h) { _size = glm::vec3(w, h, 1.0f); };
             void setRotation(float r) { _rotation = r; };
 
@@ -27,8 +25,7 @@ namespace Eendgine {
             float getRotation() { return _rotation; };
             unsigned int getTexture() { return _textures[_textureIdx].id; };
 
-
-        private:
+        protected:
             void setup(std::vector<Texture> textures);
             glm::vec3 _position;
             glm::vec3 _size;
@@ -36,5 +33,23 @@ namespace Eendgine {
             unsigned int _VAO;
             unsigned int _textureIdx;
             std::vector<Texture> _textures;
+    };
+
+    class Sprite2D : public Sprite {
+        public:
+            Sprite2D(Texture texture, Camera2D& camera);
+            Sprite2D(std::vector<Texture>& textures, Camera2D& camera);
+            void draw(ShaderProgram &shader, bool bindTexture); 
+        private:
+            Camera2D& _camera;
+    };
+
+    class Sprite3D : public Sprite {
+        public:
+            Sprite3D(Texture texture, Camera3D& camera);
+            Sprite3D(std::vector<Texture>& textures, Camera3D& camera);
+            void draw(ShaderProgram &shader, bool bindTexture); 
+        private:
+            Camera3D& _camera;
     };
 }

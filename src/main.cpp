@@ -46,12 +46,12 @@ int main(){
     Eend::Camera2D myCamera(screenWidth, screenHeight);
 
     
-    Eend::Sprite mySprite(myTextureCache.getTexture("resources/ost/diffuse.png"));
-    mySprite.setPosition(300.0f, 300.0f);
-    mySprite.setSize(100.0f, 100.0f);
+    //Eend::Sprite2D mySprite(myTextureCache.getTexture("resources/ost/diffuse.png"), myCamera);
+    //mySprite.setPosition(300.0f, 300.0f);
+    //mySprite.setSize(100.0f, 100.0f);
 
-    Eend::Sprite my3DSprite(myTextureCache.getTexture("resources/ost/diffuse.png"));
-    my3DSprite.setPosition(20.0f, 0.0f, 0.0f);
+    Eend::Sprite3D my3DSprite(myTextureCache.getTexture("resources/ost/diffuse.png"), my3DCamera);
+    my3DSprite.setPosition(glm::vec3(10.0f, 10.0f, 10.0f));
     my3DSprite.setSize(10.0f, 10.0f);
 
     glm::vec3 mp = glm::vec3(0.0f, 50.0f, 0.0f);
@@ -100,15 +100,15 @@ int main(){
 
         glClearColor(0.1f, 0.2f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        my3DSprite.draw(shaders.getShader(Shader::model), true);
         
         // drawing 3D
         myModelBatch.draw(shaders.getShader(Shader::model));
         myAnimationBatch.draw(shaders.getShader(Shader::animation));
-        my3DSprite.draw(shaders.getShader(Shader::model), my3DCamera, true);
 
         glClear(GL_DEPTH_BUFFER_BIT);
         // drawing HUD
-        mySprite.draw(shaders.getShader(Shader::sprite), myCamera, true);
+        //mySprite.draw(shaders.getShader(Shader::sprite), true);
         
         float dt = Eend::FrameLimiter::deltaTime / 4;
         if (dt > 1.0f / 60.0f) dt = 1.0f / 60.0f;

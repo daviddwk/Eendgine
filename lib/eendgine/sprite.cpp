@@ -89,7 +89,19 @@ namespace Eendgine {
         return _textures.size();
     }
 
-    void Sprite::draw(Eendgine::ShaderProgram &shader, Eendgine::Camera2D &camera, bool bindTexture) {
+    Sprite2D::Sprite2D(Texture texture, Camera2D& camera) :
+            Sprite(texture),
+            _camera(camera)
+    {
+    }
+
+    Sprite2D::Sprite2D(std::vector<Texture>& textures, Camera2D& camera) :
+            Sprite(textures),
+            _camera(camera)
+    {
+    }
+
+    void Sprite2D::draw(Eendgine::ShaderProgram &shader, bool bindTexture) {
         shader.use();
 
         if (bindTexture) {
@@ -97,7 +109,7 @@ namespace Eendgine {
             glBindTexture(GL_TEXTURE_2D, _textures[_textureIdx].id);
         }
 
-        glm::mat4 trans = camera.getCameraMatrix(); //glm::mat4(1.0f);
+        glm::mat4 trans = _camera.getCameraMatrix(); //glm::mat4(1.0f);
         
         trans = glm::translate(trans, _position);
         trans = glm::rotate(trans, glm::radians(-_rotation), glm::vec3(0.0f, 0.0f, 1.0f));
@@ -110,8 +122,20 @@ namespace Eendgine {
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
         glBindVertexArray(0);
     }
+
+    Sprite3D::Sprite3D(Texture texture, Camera3D& camera) :
+            Sprite(texture),
+            _camera(camera)
+    {
+    }
+
+    Sprite3D::Sprite3D(std::vector<Texture>& textures, Camera3D& camera) :
+            Sprite(textures),
+            _camera(camera)
+    {
+    }
     
-    void Sprite::draw(Eendgine::ShaderProgram &shader, Eendgine::Camera3D &camera, bool bindTexture) {
+    void Sprite3D::draw(Eendgine::ShaderProgram &shader, bool bindTexture) {
         shader.use();
        
         if (bindTexture) {
@@ -121,7 +145,7 @@ namespace Eendgine {
 
         glm::mat4 transform = glm::mat4(1.0f);
         transform = glm::translate(transform, _position);
-        glm::mat3 rot = glm::inverse(glm::mat3(camera.getViewMat()));
+        glm::mat3 rot = glm::inverse(glm::mat3(_camera.getViewMat()));
         // there must be a cleaner way to do this
         transform = {
             {rot[0][0], rot[0][1], rot[0][2], transform[0][3]},
@@ -134,9 +158,9 @@ namespace Eendgine {
         unsigned int projectionLoc = glGetUniformLocation(shader.getProgramID(), "projection");
         unsigned int viewLoc = glGetUniformLocation(shader.getProgramID(), "view");
         unsigned int transformLoc = glGetUniformLocation(shader.getProgramID(), "transform");
-        glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, &camera.getProjectionMat()[0][0]);
+        glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, &_camera.getProjectionMat()[0][0]);
         
-        glUniformMatrix4fv(viewLoc, 1, GL_FALSE, &camera.getViewMat()[0][0]);
+        glUniformMatrix4fv(viewLoc, 1, GL_FALSE, &_camera.getViewMat()[0][0]);
         glUniformMatrix4fv(transformLoc, 1, GL_FALSE, &transform[0][0]);
 
         glBindVertexArray(_VAO);

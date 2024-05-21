@@ -26,7 +26,7 @@ namespace Eendgine {
                 glBindTexture(GL_TEXTURE_2D, thisTexture);
             }
             lastTexture = thisTexture;
-            sprite->draw(shader, camera, false);
+            sprite->draw(shader, false);
         }
         glBindTexture(GL_TEXTURE_2D, 0);
     }
@@ -43,7 +43,7 @@ namespace Eendgine {
                 glBindTexture(GL_TEXTURE_2D, thisTexture);
             }
             lastTexture = thisTexture;
-            sprite->draw(shader, camera, false);
+            sprite->draw(shader, false);
         }
         glBindTexture(GL_TEXTURE_2D, 0);
     }
