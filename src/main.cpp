@@ -31,8 +31,8 @@ int main(){
     glEnable(GL_DEPTH_TEST);
 
     Eend::TextureCache myTextureCache;
-    Eend::ModelBatch myModelBatch = Eend::ModelBatch();
-    Eend::ModelBatch myAnimationBatch = Eend::ModelBatch();
+    Eend::ModelBatch<Eend::StaticModel> myModelBatch;
+    Eend::ModelBatch<Eend::Model> myAnimationBatch;
     
     Shaders shaders(
             Eend::ShaderProgram("shaders/shader.vert", "shaders/shader.frag"),

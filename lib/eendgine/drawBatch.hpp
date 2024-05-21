@@ -13,9 +13,10 @@ namespace Eendgine {
             return s1->getTexture() > s2->getTexture();
         }
     };
-    struct ModelComparator {
-        bool operator()(Model* m1, Model* m2) const {
-            return m1->getTexture() > m2->getTexture();
+    template<class E>
+    struct Comparator {
+        bool operator()(E* entity1, E* entity2) const {
+            return entity1->getTexture() > entity2->getTexture();
         }
     };
     class SpriteBatch {
@@ -29,14 +30,38 @@ namespace Eendgine {
         private:
             std::set<Sprite*, SpriteComparator> _sprites;
     };
+
+    template<class E>
     class ModelBatch {
         public:
-            ModelBatch();
-            void insertModel(Model* model);
-            void eraseModel(Model* model);
-            void draw(ShaderProgram &shader);
+            void insertModel(E* entity) {
+                _entities.insert(entity);
+            }
 
+            void eraseModel(E* entity) {
+                _entities.erase(entity);
+            }
+            
+            void draw(ShaderProgram &shader) {
+                shader.use();
+                glActiveTexture(GL_TEXTURE0);
+                std::string texName = "texture_diffuse";
+                glUniform1i(glGetUniformLocation(
+                            shader.getProgramID(), texName.c_str()), 0);
+                unsigned int lastTexture = 0;
+                unsigned int thisTexture = 0; 
+                for (auto entity : _entities) {
+                    thisTexture = entity->getTexture(); 
+                    if (lastTexture != thisTexture) {
+                        glBindTexture(GL_TEXTURE_2D, thisTexture);
+                    }
+                    lastTexture = thisTexture;
+                    entity->draw(shader.getProgramID(), false);
+                }
+                glBindTexture(GL_TEXTURE_2D, 0);
+            }
         private:
-            std::set<Model*, ModelComparator> _models;
-    };
+            std::set<E*, Comparator<E>> _entities;
+                    
+            };
 }
