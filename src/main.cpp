@@ -55,7 +55,7 @@ int main(){
 
     glm::vec3 mp = glm::vec3(0.0f, 50.0f, 0.0f);
 
-    Eend::StaticModel myModel("resources/ost/ost.obj", myTextureCache);
+    Eend::StaticModel myModel("resources/ost/ost.obj", myTextureCache, my3DCamera);
     myModel.setScale(glm::vec3(1.0f, 1.0f, 1.0f));
     myModel.setPosition(glm::vec3(mp.x, mp.y + 4, mp.z));
     Eend::CollisionCylinder myCylinder(glm::vec3(mp.x, mp.y, mp.z), 1.0f, 3.0f);
@@ -68,7 +68,7 @@ int main(){
     myModel.setScale(glm::vec3(1.0f, 1.0f, 1.0f));
     myModel.setPosition(glm::vec3(0.0f, 0.0f, 0.0f));
 
-    Eend::AnimatedModel myAnimatedCourt(courtAnim, myTextureCache);
+    Eend::AnimatedModel myAnimatedCourt(courtAnim, myTextureCache, my3DCamera);
     myAnimatedCourt.setPosition(glm::vec3(0.0f, -5.0f, 0.0f));
     myAnimatedCourt.setScale(glm::vec3(4.0f));
     myAnimatedCourt.setAnim(0.0f);
@@ -100,10 +100,10 @@ int main(){
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         
         // drawing 3D
-        myModelBatch.draw(shaders.getShader(Shader::model), my3DCamera);
+        myModelBatch.draw(shaders.getShader(Shader::model));
         my3DSprite.draw(shaders.getShader(Shader::model), my3DCamera, true);
 
-        myAnimatedCourt.draw(shaders.getShader(Shader::animation), my3DCamera, true);
+        myAnimatedCourt.draw(shaders.getShader(Shader::animation), true);
 
         glClear(GL_DEPTH_BUFFER_BIT);
         // drawing HUD

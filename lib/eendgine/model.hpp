@@ -14,7 +14,7 @@ namespace Eendgine {
     class Model {
         public:
             Model();
-            virtual void draw(ShaderProgram &shader, Camera3D &camera, bool bindTexture);
+            virtual void draw(ShaderProgram &shader, bool bindTexture);
             
             void setPosition(glm::vec3 position) { _position = position; };
             void setScale(glm::vec3 scale) { _scale = scale; };
@@ -35,30 +35,44 @@ namespace Eendgine {
     
     class StaticModel : public Model {
         public:
-            StaticModel(std::string modelPath, TextureCache &texCache);
-            void draw(ShaderProgram &shader, Camera3D &camera, bool bindTexture);
+            StaticModel(
+                    std::string modelPath, 
+                    TextureCache& texCache, 
+                    Camera3D& camera);
+            void draw(ShaderProgram &shader, bool bindTexture);
 
-            void setTextureIdx(unsigned int idx) { _textureIdx = (idx < _textures.size() ? idx : 0); };
+            void setTextureIdx(unsigned int idx) { 
+                _textureIdx = (idx < _textures.size() ? idx : 0); 
+            };
+            void setCamera(Camera3D& camera) { _camera = camera; }
 
             unsigned int getTextureIdx() { return _textureIdx; };
+            Camera3D& getCamera() { return _camera; };
         private:
             unsigned int _VAO, _EBO, _VBO;
             std::vector<Vertex> _vertices;
             std::vector<unsigned int> _indices;
             TextureCache &_texCache;
+            Camera3D& _camera;
     };
 
     class AnimatedModel : public Model {
         public:
-            AnimatedModel(std::vector<std::string> modelPaths, TextureCache &texCache);
-            AnimatedModel(const std::string modelPath, const std::string nextModelPath, TextureCache &texCache);
-            void draw(ShaderProgram &shader, Camera3D &camera, bool bindTexture);
+            AnimatedModel(
+                    std::vector<std::string> modelPaths, 
+                    TextureCache &texCache,
+                    Camera3D& camera);
+            void draw(ShaderProgram &shader, bool bindTexture);
             
-            void setTextureIdx(unsigned int idx) { _textureIdx = (idx < _textures.size() ? idx : 0); };
+            void setTextureIdx(unsigned int idx) { 
+                _textureIdx = (idx < _textures.size() ? idx : 0); 
+            };
             void setAnim(float scale) { _animScale = scale - (int) scale; };
+            void setCamera(Camera3D& camera) { _camera = camera; }
 
             unsigned int getTextureIdx() { return _textureIdx; };
             float getAnim() { return _animScale; };
+            Camera3D& getCamera() { return _camera; };
 
         private:
             float _animScale;
@@ -66,5 +80,6 @@ namespace Eendgine {
             std::vector<std::vector<InpolVertex>> _vertices;
             std::vector<std::vector<unsigned int>> _indices;
             TextureCache &_texCache;
+            Camera3D& _camera;
     };
 }

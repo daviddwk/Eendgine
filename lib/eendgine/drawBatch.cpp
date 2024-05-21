@@ -59,7 +59,7 @@ namespace Eendgine {
         _models.erase(model);
     }
 
-    void ModelBatch::draw(ShaderProgram &shader, Camera3D &camera) {
+    void ModelBatch::draw(ShaderProgram &shader) {
         glActiveTexture(GL_TEXTURE0);
         std::string texName = "texture_diffuse";
         glUniform1i(glGetUniformLocation(shader.getProgramID(), texName.c_str()), 0);
@@ -71,7 +71,7 @@ namespace Eendgine {
                 glBindTexture(GL_TEXTURE_2D, thisTexture);
             }
             lastTexture = thisTexture;
-            model->draw(shader, camera, false);
+            model->draw(shader, false);
         }
         glBindTexture(GL_TEXTURE_2D, 0);
     }

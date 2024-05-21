@@ -18,4 +18,3 @@ class Shaders {
         Eend::ShaderProgram _animationShader;
         Eend::ShaderProgram _screenShader;
 };
-

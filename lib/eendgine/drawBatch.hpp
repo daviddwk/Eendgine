@@ -34,7 +34,7 @@ namespace Eendgine {
             ModelBatch();
             void insertModel(Model* model);
             void eraseModel(Model* model);
-            void draw(ShaderProgram &shader, Camera3D &camera);
+            void draw(ShaderProgram &shader);
 
         private:
             std::set<Model*, ModelComparator> _models;
