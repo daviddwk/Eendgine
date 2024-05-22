@@ -101,9 +101,7 @@ namespace Eendgine {
     {
     }
 
-    void Sprite2D::draw(Eendgine::ShaderProgram &shader, bool bindTexture) {
-        shader.use();
-
+    void Sprite2D::draw(uint shaderId, bool bindTexture) {
         if (bindTexture) {
             glActiveTexture(GL_TEXTURE0);
             glBindTexture(GL_TEXTURE_2D, _textures[_textureIdx].id);
@@ -115,7 +113,7 @@ namespace Eendgine {
         trans = glm::rotate(trans, glm::radians(-_rotation), glm::vec3(0.0f, 0.0f, 1.0f));
         trans = glm::scale(trans, _size);
 
-        unsigned int transformLoc = glGetUniformLocation(shader.getProgramID(), "transform");
+        unsigned int transformLoc = glGetUniformLocation(shaderId, "transform");
         glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
 
         glBindVertexArray(_VAO);
@@ -135,9 +133,7 @@ namespace Eendgine {
     {
     }
     
-    void Sprite3D::draw(Eendgine::ShaderProgram &shader, bool bindTexture) {
-        shader.use();
-       
+    void Sprite3D::draw(uint shaderId, bool bindTexture) {
         if (bindTexture) {
             glActiveTexture(GL_TEXTURE0);
             glBindTexture(GL_TEXTURE_2D, _textures[_textureIdx].id);
@@ -155,9 +151,9 @@ namespace Eendgine {
         };
         transform = glm::scale(transform, _size);
 
-        unsigned int projectionLoc = glGetUniformLocation(shader.getProgramID(), "projection");
-        unsigned int viewLoc = glGetUniformLocation(shader.getProgramID(), "view");
-        unsigned int transformLoc = glGetUniformLocation(shader.getProgramID(), "transform");
+        unsigned int projectionLoc = glGetUniformLocation(shaderId, "projection");
+        unsigned int viewLoc = glGetUniformLocation(shaderId, "view");
+        unsigned int transformLoc = glGetUniformLocation(shaderId, "transform");
         glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, &_camera.getProjectionMat()[0][0]);
         
         glUniformMatrix4fv(viewLoc, 1, GL_FALSE, &_camera.getViewMat()[0][0]);

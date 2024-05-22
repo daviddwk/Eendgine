@@ -13,35 +13,25 @@ namespace Eendgine {
             return s1->getTexture() > s2->getTexture();
         }
     };
+
     template<class E>
     struct Comparator {
         bool operator()(E* entity1, E* entity2) const {
             return entity1->getTexture() > entity2->getTexture();
         }
     };
-    class SpriteBatch {
-        public:
-            SpriteBatch();
-            void insertSprite(Sprite* sprite);
-            void eraseSprite(Sprite* sprite);
-            void draw(ShaderProgram &shader, Camera3D &camera);
-            void draw(ShaderProgram &shader, Camera2D &camera);
-
-        private:
-            std::set<Sprite*, SpriteComparator> _sprites;
-    };
 
     template<class E>
-    class ModelBatch {
+    class DrawBatch {
         public:
-            void insertModel(E* entity) {
+            void insert(E* entity) {
                 _entities.insert(entity);
             }
 
-            void eraseModel(E* entity) {
+            void erase(E* entity) {
                 _entities.erase(entity);
             }
-            
+
             void draw(ShaderProgram &shader) {
                 shader.use();
                 glActiveTexture(GL_TEXTURE0);
@@ -62,6 +52,5 @@ namespace Eendgine {
             }
         private:
             std::set<E*, Comparator<E>> _entities;
-                    
-            };
+    };
 }

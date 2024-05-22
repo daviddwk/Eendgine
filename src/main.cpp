@@ -31,8 +31,9 @@ int main(){
     glEnable(GL_DEPTH_TEST);
 
     Eend::TextureCache myTextureCache;
-    Eend::ModelBatch<Eend::StaticModel> myModelBatch;
-    Eend::ModelBatch<Eend::Model> myAnimationBatch;
+    Eend::DrawBatch<Eend::StaticModel> myModelBatch;
+    Eend::DrawBatch<Eend::Model> myAnimationBatch;
+    Eend::DrawBatch<Eend::Sprite3D> myFacingPlaneBatch;
     
     Shaders shaders(
             Eend::ShaderProgram("shaders/shader.vert", "shaders/shader.frag"),
@@ -75,9 +76,10 @@ int main(){
     myAnimatedCourt.setAnim(0.0f);
     
     //myRenderBatch.insertModel(&myAnimatedCourt);
-    myModelBatch.insertModel(&myModel);
-    myAnimationBatch.insertModel(&myAnimatedCourt);
-
+    myModelBatch.insert(&myModel);
+    myAnimationBatch.insert(&myAnimatedCourt);
+    
+    myFacingPlaneBatch.insert(&my3DSprite);
 
     Eend::CollisionModel myColCourt("resources/courtCol/courtHitbox.obj");
     myColCourt.setPosition(glm::vec3(0.0f, -5.0f, 0.0f));
@@ -100,11 +102,11 @@ int main(){
 
         glClearColor(0.1f, 0.2f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        my3DSprite.draw(shaders.getShader(Shader::model), true);
         
         // drawing 3D
         myModelBatch.draw(shaders.getShader(Shader::model));
         myAnimationBatch.draw(shaders.getShader(Shader::animation));
+        myFacingPlaneBatch.draw(shaders.getShader(Shader::model));
 
         glClear(GL_DEPTH_BUFFER_BIT);
         // drawing HUD
