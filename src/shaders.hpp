@@ -1,3 +1,5 @@
+#pragma once
+
 #include <eendgine/drawBatch.hpp>
 #include <eendgine/shader.hpp>
 

@@ -17,6 +17,7 @@
 #include <numbers>
 
 #include "shaders.hpp"
+#include "drawBatches.hpp"
 
 namespace Eend = Eendgine;
 
@@ -27,13 +28,9 @@ int main(){
     Eend::Window::init(screenWidth, screenHeight, "Quack"); 
     Eend::Screen::init(screenWidth, screenHeight);
     Eend::FrameLimiter::setFPS(30.0f);
-    
     glEnable(GL_DEPTH_TEST);
 
     Eend::TextureCache myTextureCache;
-    Eend::DrawBatch<Eend::StaticModel> myModelBatch;
-    Eend::DrawBatch<Eend::Model> myAnimationBatch;
-    Eend::DrawBatch<Eend::Sprite3D> myFacingPlaneBatch;
     
     Shaders shaders(
             Eend::ShaderProgram("shaders/shader.vert", "shaders/shader.frag"),
@@ -41,23 +38,23 @@ int main(){
             Eend::ShaderProgram("shaders/shaderInpol.vert", "shaders/shaderInpol.frag"),
             Eend::ShaderProgram("shaders/shaderScreen.vert", "shaders/shaderScreen.frag"));
 
-    Eend::Camera3D my3DCamera((float)screenWidth / (float)screenHeight,
+    Eend::Camera2D hudCamera(screenWidth, screenHeight);
+    Eend::Camera3D sceneCamera((float)screenWidth / (float)screenHeight,
             glm::vec3(20.0f, 15.0f, 20.0f), glm::vec3(0.0f, 0.0f, 0.0f));
 
-    Eend::Camera2D myCamera(screenWidth, screenHeight);
-
+    DrawBatches drawBatches;
     
     //Eend::Sprite2D mySprite(myTextureCache.getTexture("resources/ost/diffuse.png"), myCamera);
     //mySprite.setPosition(300.0f, 300.0f);
     //mySprite.setSize(100.0f, 100.0f);
 
-    Eend::Sprite3D my3DSprite(myTextureCache.getTexture("resources/ost/diffuse.png"), my3DCamera);
+    Eend::Sprite3D my3DSprite(myTextureCache.getTexture("resources/ost/diffuse.png"), sceneCamera);
     my3DSprite.setPosition(glm::vec3(10.0f, 10.0f, 10.0f));
     my3DSprite.setSize(10.0f, 10.0f);
 
     glm::vec3 mp = glm::vec3(0.0f, 50.0f, 0.0f);
 
-    Eend::StaticModel myModel("resources/ost/ost.obj", myTextureCache, my3DCamera);
+    Eend::StaticModel myModel("resources/ost/ost.obj", myTextureCache, sceneCamera);
     myModel.setScale(glm::vec3(1.0f, 1.0f, 1.0f));
     myModel.setPosition(glm::vec3(mp.x, mp.y + 4, mp.z));
     Eend::CollisionCylinder myCylinder(glm::vec3(mp.x, mp.y, mp.z), 1.0f, 3.0f);
@@ -70,16 +67,15 @@ int main(){
     myModel.setScale(glm::vec3(1.0f, 1.0f, 1.0f));
     myModel.setPosition(glm::vec3(0.0f, 0.0f, 0.0f));
 
-    Eend::AnimatedModel myAnimatedCourt(courtAnim, myTextureCache, my3DCamera);
+    Eend::AnimatedModel myAnimatedCourt(courtAnim, myTextureCache, sceneCamera);
     myAnimatedCourt.setPosition(glm::vec3(0.0f, -5.0f, 0.0f));
     myAnimatedCourt.setScale(glm::vec3(4.0f));
     myAnimatedCourt.setAnim(0.0f);
     
     //myRenderBatch.insertModel(&myAnimatedCourt);
-    myModelBatch.insert(&myModel);
-    myAnimationBatch.insert(&myAnimatedCourt);
-    
-    myFacingPlaneBatch.insert(&my3DSprite);
+    drawBatches.insert(&myModel);
+    drawBatches.insert(&myAnimatedCourt); 
+    drawBatches.insert(&my3DSprite);
 
     Eend::CollisionModel myColCourt("resources/courtCol/courtHitbox.obj");
     myColCourt.setPosition(glm::vec3(0.0f, -5.0f, 0.0f));
@@ -100,17 +96,7 @@ int main(){
 
         shaders.setPixelSize(5);
 
-        glClearColor(0.1f, 0.2f, 0.3f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        
-        // drawing 3D
-        myModelBatch.draw(shaders.getShader(Shader::model));
-        myAnimationBatch.draw(shaders.getShader(Shader::animation));
-        myFacingPlaneBatch.draw(shaders.getShader(Shader::model));
-
-        glClear(GL_DEPTH_BUFFER_BIT);
-        // drawing HUD
-        //mySprite.draw(shaders.getShader(Shader::sprite), true);
+        drawBatches.draw(shaders);
         
         float dt = Eend::FrameLimiter::deltaTime / 4;
         if (dt > 1.0f / 60.0f) dt = 1.0f / 60.0f;
@@ -189,8 +175,8 @@ int main(){
             // adjust camera to follow
         float camDis = 60;
         myAnimatedCourt.setAnim(myAnimatedCourt.getAnim() + (0.2f * dt));
-        my3DCamera.setTarget(mp.x, mp.y + 4, mp.z);
-        my3DCamera.setPosition
+        sceneCamera.setTarget(mp.x, mp.y + 4, mp.z);
+        sceneCamera.setPosition
             (mp.x + (camDis * cos(camPosX)), 
              mp.y + (camDis * sin(camPosY)), 
              mp.z + (camDis * sin(camPosX)));
