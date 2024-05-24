@@ -18,6 +18,8 @@
 
 #include "shaders.hpp"
 #include "drawBatches.hpp"
+#include "player.hpp"
+
 
 namespace Eend = Eendgine;
 
@@ -52,20 +54,11 @@ int main(){
     my3DSprite.setPosition(glm::vec3(10.0f, 10.0f, 10.0f));
     my3DSprite.setSize(10.0f, 10.0f);
 
-    glm::vec3 mp = glm::vec3(0.0f, 50.0f, 0.0f);
 
-    Eend::StaticModel myModel("resources/ost/ost.obj", myTextureCache, sceneCamera);
-    myModel.setScale(glm::vec3(1.0f, 1.0f, 1.0f));
-    myModel.setPosition(glm::vec3(mp.x, mp.y + 4, mp.z));
-    Eend::CollisionCylinder myCylinder(glm::vec3(mp.x, mp.y, mp.z), 1.0f, 3.0f);
-    
     std::vector<std::string> courtAnim;
     for (int i = 1; i <= 4; i++) {
         courtAnim.emplace_back("resources/court/court" + std::to_string(i) + ".obj");
     }
-
-    myModel.setScale(glm::vec3(1.0f, 1.0f, 1.0f));
-    myModel.setPosition(glm::vec3(0.0f, 0.0f, 0.0f));
 
     Eend::AnimatedModel myAnimatedCourt(courtAnim, myTextureCache, sceneCamera);
     myAnimatedCourt.setPosition(glm::vec3(0.0f, -5.0f, 0.0f));
@@ -73,7 +66,6 @@ int main(){
     myAnimatedCourt.setAnim(0.0f);
     
     //myRenderBatch.insertModel(&myAnimatedCourt);
-    drawBatches.insert(&myModel);
     drawBatches.insert(&myAnimatedCourt); 
     drawBatches.insert(&my3DSprite);
 
@@ -85,101 +77,25 @@ int main(){
     std::vector<Eend::CollisionModel*> myColModels = {
             &myColCourt};
 
+    Player player(drawBatches, myColModels,
+            glm::vec3(0.0f, 10.0f, 0.0f),
+            "resources/ost/ost.obj", myTextureCache, sceneCamera,
+            5.0f, 5.0f, 5.0f,
+            10.0f, 20.0f);
 
-    float fv = 0.0f;
-    float camPosX = 0;
-    float camPosY = 0;
-    
     while(!Eend::InputManager::shouldClose){
         Eend::FrameLimiter::startInterval(); 
         Eend::Screen::bind();
 
         shaders.setPixelSize(5);
 
-        drawBatches.draw(shaders);
-        
         float dt = Eend::FrameLimiter::deltaTime / 4;
         if (dt > 1.0f / 60.0f) dt = 1.0f / 60.0f;
-
-        for(int i = 0; i < 4; i++) {
-            float speed = 20.000f;
-            // move based on input and gravity
-            camPosX += Eend::InputManager::deltaMouseX / 100.0f;
-            camPosY += Eend::InputManager::deltaMouseY / 100.0f;
-
-            // so that this number doesn't grow out of control and lose accuracy it loops at 2pi
-            while (camPosX > std::numbers::pi) {
-                camPosX -= 2 * std::numbers::pi;
-            }
-            while (camPosX < std::numbers::pi) {
-                camPosX += 2 * std::numbers::pi;
-            }
-
-            // capping the camera height at the top of the sin wave
-            if (camPosY > std::numbers::pi * 0.5) {
-                camPosY = std::numbers::pi * 0.5;
-            } else if (camPosY < -(std::numbers::pi * 0.5)) {
-                camPosY = -(std::numbers::pi * 0.5);
-            }
-            
-            if (fv > -50.0f) {
-                fv -= 1.0f;
-            }
-            
-            if (Eendgine::InputManager::upPress) {
-                // TODO fix adjustment and find out where forward actually is
-                myModel.setRadians(camPosX + (std::numbers::pi / 2), 0.0f);
-                mp.x -= (speed * cos(camPosX)) * dt;
-                mp.z -= (speed * sin(camPosX)) * dt;
-            }
-            if (Eendgine::InputManager::downPress) {
-                mp.x += (speed * cos(camPosX)) * dt;
-                mp.z += (speed * sin(camPosX)) * dt;
-            }
-            if (Eendgine::InputManager::leftPress) {
-                mp.x -= (speed * sin(camPosX)) * dt;
-                mp.z += (speed * cos(camPosX)) * dt;
-            }
-            if (Eendgine::InputManager::rightPress) {
-                mp.x += (speed * sin(camPosX)) * dt;
-                mp.z -= (speed * cos(camPosX)) * dt;
-            }
-            if (Eendgine::InputManager::spacePress) {
-                fv = 25;
-            }
-            
-            mp.y += fv * dt;
-            // adjust for collisions
-            myCylinder.setPosition(glm::vec3(mp.x, mp.y, mp.z));
-            bool hitWall = false;
-            bool hitCeiling = false;
-            bool hitFloor = false;
-            Eend::CollisionResults colResults = Eend::adjustToCollision(myCylinder, myColModels);
-            if (auto floorHeight = colResults.floor) {
-                mp.y = *floorHeight;
-                if(fv < 0) fv = 0;
-            } else if (auto ceilingHeight = colResults.ceiling) {
-                mp.y = *ceilingHeight;
-                if(fv > 0) fv = 0;
-            } else {
-            }
-            if (auto wallOffset = colResults.wall) {
-                mp.x = wallOffset->x;
-                mp.z = wallOffset->z;
-            }
-            myCylinder.setPosition(glm::vec3(mp.x, mp.y, mp.z));
-
-            mp = myCylinder.getPosition();
-            myModel.setPosition(glm::vec3(mp.x, mp.y + 4, mp.z));
-        } 
-            // adjust camera to follow
-        float camDis = 60;
         myAnimatedCourt.setAnim(myAnimatedCourt.getAnim() + (0.2f * dt));
-        sceneCamera.setTarget(mp.x, mp.y + 4, mp.z);
-        sceneCamera.setPosition
-            (mp.x + (camDis * cos(camPosX)), 
-             mp.y + (camDis * sin(camPosY)), 
-             mp.z + (camDis * sin(camPosX)));
+
+        player.update(dt);
+
+        drawBatches.draw(shaders); 
 
         Eend::Screen::render(shaders.getShader(Shader::screen));
         Eend::InputManager::processInput();
