@@ -1,3 +1,5 @@
+#pragma once
+
 #include <eendgine/model.hpp>
 #include <eendgine/collisionGeometry.hpp>
 #include "drawBatches.hpp"

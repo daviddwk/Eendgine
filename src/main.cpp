@@ -19,6 +19,7 @@
 #include "shaders.hpp"
 #include "drawBatches.hpp"
 #include "player.hpp"
+#include "ball.hpp"
 
 
 namespace Eend = Eendgine;
