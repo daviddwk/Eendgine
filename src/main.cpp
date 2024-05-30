@@ -11,7 +11,6 @@
 #include <eendgine/drawBatch.hpp>
 
 #include <stb/stb_image.h>
-//#include "player.hpp"
 
 #include <vector>
 #include <numbers>
@@ -19,6 +18,7 @@
 #include "shaders.hpp"
 #include "drawBatches.hpp"
 #include "player.hpp"
+#include "ball.hpp"
 
 
 namespace Eend = Eendgine;
@@ -50,11 +50,6 @@ int main(){
     //mySprite.setPosition(300.0f, 300.0f);
     //mySprite.setSize(100.0f, 100.0f);
 
-    Eend::Sprite3D my3DSprite(myTextureCache.getTexture("resources/ost/diffuse.png"), sceneCamera);
-    my3DSprite.setPosition(glm::vec3(10.0f, 10.0f, 10.0f));
-    my3DSprite.setSize(10.0f, 10.0f);
-
-
     std::vector<std::string> courtAnim;
     for (int i = 1; i <= 4; i++) {
         courtAnim.emplace_back("resources/court/court" + std::to_string(i) + ".obj");
@@ -67,7 +62,6 @@ int main(){
     
     //myRenderBatch.insertModel(&myAnimatedCourt);
     drawBatches.insert(&myAnimatedCourt); 
-    drawBatches.insert(&my3DSprite);
 
     Eend::CollisionModel myColCourt("resources/courtCol/courtHitbox.obj");
     myColCourt.setPosition(glm::vec3(0.0f, -5.0f, 0.0f));
@@ -82,6 +76,8 @@ int main(){
             "resources/ost/ost.obj", myTextureCache, sceneCamera,
             5.0f, 5.0f, 5.0f,
             10.0f, 20.0f);
+    Ball ball("resources/ost/diffuse_noeyes.png", glm::vec3(10.0f, 10.0f, 10.0f), 
+            myTextureCache, sceneCamera, drawBatches);
 
     while(!Eend::InputManager::shouldClose){
         Eend::FrameLimiter::startInterval(); 

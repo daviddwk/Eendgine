@@ -1,5 +1,8 @@
+#pragma once
+
 #include <eendgine/model.hpp>
 #include <eendgine/collisionGeometry.hpp>
+#include <eendgine/camera.hpp>
 #include "drawBatches.hpp"
 
 namespace Eend = Eendgine;
