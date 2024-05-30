@@ -16,6 +16,7 @@ Shaders::Shaders(Eend::ShaderProgram spriteShader,
 
 Eend::ShaderProgram& Shaders::getShader(Shader shader) {
     switch (shader) {
+        default:
         case sprite:
             return _spriteShader;
             break;

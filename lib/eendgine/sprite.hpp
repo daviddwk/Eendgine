@@ -16,7 +16,7 @@ namespace Eendgine {
             void setTextureIdx(std::vector<Texture>::size_type textureIdx) 
                 { _textureIdx = (textureIdx < _textures.size()) ? textureIdx : 0; };
             void setPosition(glm::vec3 position) { _position = position; };
-            void setSize(float w, float h) { _size = glm::vec3(w, h, 1.0f); };
+            void setScale(float w, float h) { _size = glm::vec3(w, h, 1.0f); };
             void setRotation(float r) { _rotation = r; };
 
             unsigned int getTextureIdx() { return _textureIdx; };

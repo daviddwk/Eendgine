@@ -11,7 +11,7 @@ Ball::Ball(std::string texturePath, glm::vec3 position,
     _drawBatches(drawBatches)
 {
     _drawBatches.insert(&_sprite);
-    _sprite.setSize(10.0f, 10.0f);
+    _sprite.setScale(10.0f, 10.0f);
 }
 
 Ball::~Ball() {
