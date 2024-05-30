@@ -76,7 +76,7 @@ int main(){
             "resources/ost/ost.obj", myTextureCache, sceneCamera,
             5.0f, 5.0f, 5.0f,
             10.0f, 20.0f);
-    Ball ball("resources/ost/diffuse_noeyes.png", glm::vec3(10.0f, 10.0f, 10.0f), 
+    Ball ball("resources/ost/diffuse_noeyes.png", glm::vec3(0.0f, 10.0f, 0.0f), 
             myTextureCache, sceneCamera, drawBatches);
 
     while(!Eend::InputManager::shouldClose){
@@ -90,6 +90,7 @@ int main(){
         myAnimatedCourt.setAnim(myAnimatedCourt.getAnim() + (0.2f * dt));
 
         player.update(dt);
+        ball.update(dt);
 
         drawBatches.draw(shaders); 
 
