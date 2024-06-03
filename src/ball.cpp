@@ -22,6 +22,11 @@ Ball::~Ball() {
     _drawBatches.remove(&_sprite);
 }
 
+void Ball::setPosition(glm::vec3 position) {
+    _position = position;
+    _sprite.setPosition(position);
+}
+
 void Ball::update(float dt) {
     // -55 55 z
     // -35 35 x
@@ -33,12 +38,11 @@ void Ball::update(float dt) {
     std::mt19937 gen(rd());
     std::uniform_int_distribution<> xDistribution(-35, 35);
     std::uniform_int_distribution<> zDistribution(0, 55);
-    _position = _sprite.getPosition();
+    glm::vec3 position = getPosition();
 
     static bool reachedDestination = true;
     static bool courtSide = true;
     if (reachedDestination) {
-        std::cout << "reached destination" << std::endl;
         courtSide = !courtSide;
         int xDestination = xDistribution(gen);
         int zDestination = zDistribution(gen);
@@ -48,23 +52,18 @@ void Ball::update(float dt) {
         _destination = glm::vec3((float)xDestination, 0.0f, (float)zDestination);
         reachedDestination = false;
     } 
-    std::cout << _destination.x << ' ' << _destination.y << ' ' << _destination.z << std::endl;
 
-    glm::vec3 toDestination = _destination - _position;  
+    glm::vec3 toDestination = _destination - position;  
     toDestination = glm::vec3(toDestination.x, 0.0f, toDestination.z);
 
     glm::vec3 toDestinationNormal = glm::normalize(toDestination);
-    std::cout << "destination length" << glm::length(toDestination) << std::endl;
     if (glm::length(toDestinationNormal) > glm::length(toDestination)) {
-        std::cout << "short" << std::endl;
         reachedDestination = true;
     }
-    _position = glm::vec3(
-            _position.x + (toDestinationNormal.x * _speedMultiplier * dt),
-            _position.y,
-            _position.z + (toDestinationNormal.z * _speedMultiplier * dt));
+    position = glm::vec3(
+            position.x + (toDestinationNormal.x * _speedMultiplier * dt),
+            position.y,
+            position.z + (toDestinationNormal.z * _speedMultiplier * dt));
 
-    // make some more self referential function so this is not nessary
-    _sprite.setPosition(_position);
-    std::cout << _position.x << ' ' << _position.y << ' ' << _position.z << std::endl;
+    setPosition(position);
 }

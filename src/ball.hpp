@@ -14,6 +14,8 @@ class Ball {
                 Eend::TextureCache& textureCache, Eend::Camera3D& camera, DrawBatches& drawBatches);
         Ball();
         ~Ball();
+        void setPosition(glm::vec3 position);
+        glm::vec3 getPosition() { return _position; };
         void update(float dt);
     private:
         Eend::Sprite3D _sprite;
