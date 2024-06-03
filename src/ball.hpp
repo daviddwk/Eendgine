@@ -22,4 +22,10 @@ class Ball {
         DrawBatches& _drawBatches;
 
         glm::vec3 _position;
+        glm::vec3 _destination; //x, z
+        
+        const int _halfCourtWidth = 32;
+        const int _halfCourtLength = 55;
+        const float _peakHeight = 30;
+        const float _speedMultiplier = 100;
 };
