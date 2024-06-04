@@ -33,23 +33,22 @@ void Ball::update(float dt) {
     // TODO don't have these be hardcoded obviously
     // have these initiazized with the ball and be member variables
     // probably
-    // also generate floats actually
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    std::uniform_int_distribution<> xDistribution(-35, 35);
-    std::uniform_int_distribution<> zDistribution(0, 55);
+    std::random_device rng;
+    std::mt19937 gen(rng());
+    std::uniform_real_distribution<float> xDistribution(-35.0f, 35.0f);
+    std::uniform_real_distribution<float> zDistribution( 0.0f,  50.0f);
     glm::vec3 position = getPosition();
 
     static bool reachedDestination = true;
     static bool courtSide = true;
     if (reachedDestination) {
         courtSide = !courtSide;
-        int xDestination = xDistribution(gen);
-        int zDestination = zDistribution(gen);
+        float xDestination = xDistribution(gen);
+        float zDestination = zDistribution(gen);
         if (courtSide) {
             zDestination = -zDestination;
         }
-        _destination = glm::vec3((float)xDestination, 0.0f, (float)zDestination);
+        _destination = glm::vec3(xDestination, 0.0f, zDestination);
         reachedDestination = false;
     } 
 
