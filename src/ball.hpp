@@ -26,8 +26,8 @@ class Ball {
         glm::vec3 _position;
         glm::vec3 _destination; //x, z
         
-        const int _halfCourtWidth = 35;
-        const int _halfCourtLength = 55;
-        const float _peakHeight = 30;
-        const float _speedMultiplier = 100;
+        const float _halfCourtWidth = 35.0f;
+        const float _halfCourtLength = 55.0f;
+        const float _peakHeight = 30.0f;
+        const float _speedMultiplier = 100.0f;
 };

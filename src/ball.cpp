@@ -36,12 +36,6 @@ void Ball::update(float dt) {
     static float totalDistance = 0.0f;
     const glm::vec3 position = getPosition();
     
-    // move this into it's own function in Eendgine
-    std::random_device rng;
-    std::minstd_rand gen(rng());
-    std::uniform_real_distribution<float> xDistribution(-_halfCourtWidth, -_halfCourtWidth);
-    std::uniform_real_distribution<float> zDistribution(0, _halfCourtLength);
-
     if (reachedDestination) {
         courtSide = !courtSide;
         float xDestination = Eend::randomRange(-_halfCourtWidth, _halfCourtWidth);

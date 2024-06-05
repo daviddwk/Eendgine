@@ -5,4 +5,5 @@ namespace Eendgine {
     static std::minstd_rand gen(rng());
 
     float randomRange(float min, float max);
+    int randomRange(int min, int max);
 }
