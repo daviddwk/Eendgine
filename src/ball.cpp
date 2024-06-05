@@ -2,6 +2,8 @@
 #include "drawBatches.hpp"
 
 #include <random>
+#include <numbers>
+#include <cmath>
 
 namespace Eend = Eendgine;
 
@@ -33,14 +35,16 @@ void Ball::update(float dt) {
     // TODO don't have these be hardcoded obviously
     // have these initiazized with the ball and be member variables
     // probably
+    static bool reachedDestination = true;
+    static bool courtSide = true;
+    static float totalDistance = 0.0f;
+    glm::vec3 position = getPosition();
+
     std::random_device rng;
     std::mt19937 gen(rng());
     std::uniform_real_distribution<float> xDistribution(-35.0f, 35.0f);
     std::uniform_real_distribution<float> zDistribution( 0.0f,  50.0f);
-    glm::vec3 position = getPosition();
 
-    static bool reachedDestination = true;
-    static bool courtSide = true;
     if (reachedDestination) {
         courtSide = !courtSide;
         float xDestination = xDistribution(gen);
@@ -49,6 +53,7 @@ void Ball::update(float dt) {
             zDestination = -zDestination;
         }
         _destination = glm::vec3(xDestination, 0.0f, zDestination);
+        totalDistance = glm::length(_destination - position);
         reachedDestination = false;
     } 
 
@@ -59,9 +64,12 @@ void Ball::update(float dt) {
     if (glm::length(toDestinationNormal) > glm::length(toDestination)) {
         reachedDestination = true;
     }
+    
+    const float ratioTraveled = glm::length(toDestination) / totalDistance;
+    const float height = std::sin(ratioTraveled * std::numbers::pi) * _peakHeight;
     position = glm::vec3(
             position.x + (toDestinationNormal.x * _speedMultiplier * dt),
-            position.y,
+            height,
             position.z + (toDestinationNormal.z * _speedMultiplier * dt));
 
     setPosition(position);
