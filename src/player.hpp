@@ -16,31 +16,29 @@ class Player {
                 float strikeRadius, float strikeOffset);
         ~Player();
         void update(float dt);
-
-        void setPosition(glm::vec3 position) {
-            _strikeZone.setPosition(position + _strikeOffset);
-            _hitBox.setPosition(position + _hitBoxOffset);
-            _model.setPosition(position);
-        };
-        void setRadians(glm::vec2 rotation) {
-            _model.setRadians(rotation.x, rotation.y);
-        }
+        void setPosition(glm::vec3 position);
+        void setRadians(glm::vec2 rotation) { _model.setRadians(rotation.x, rotation.y); }
+        glm::vec3 getPosition() { return _position; };
+        bool getStrike() { return _strike; };
+        Eend::CollisionSphere getStrikeCollision() { return _strikeCollision; };
         /*
         void setAnimation(float scale) {
             _model.setAnim(scale);
         };
         */
     private:
-        Eend::CollisionSphere _strikeZone;
+        Eend::CollisionSphere _strikeCollision;
         Eend::CollisionCylinder _hitBox;
         Eend::StaticModel _model;
         
         Eend::Camera3D& _camera;
+
+        bool _strike;
         
         glm::vec2 _cameraRotation;
         glm::vec3 _position;
         float _strikeOffset;
-        float _hitBoxOffset;
+        float _modelOffset;
         float _fallVelocity;
         float _cameraDistance;
         std::vector<Eend::CollisionModel*>& _collisionModels;

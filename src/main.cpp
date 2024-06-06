@@ -67,16 +67,15 @@ int main(){
     myColCourt.setPosition(glm::vec3(0.0f, -5.0f, 0.0f));
     myColCourt.setScale(glm::vec3(4.0f));
     
-    
     std::vector<Eend::CollisionModel*> myColModels = {
             &myColCourt};
 
     Player player(drawBatches, myColModels,
             glm::vec3(0.0f, 10.0f, 0.0f),
             "resources/ost/ost.obj", myTextureCache, sceneCamera,
-            5.0f, 5.0f, 5.0f,
-            10.0f, 20.0f);
-    Ball ball("resources/ost/diffuse_noeyes.png", glm::vec3(0.0f, 10.0f, 0.0f), 
+            5.0f, 5.0f, 4.0f,
+            10.0f, 10.0f);
+    Ball ball("resources/ost/diffuse_noeyes.png", glm::vec3(0.0f, 10.0f, 0.0f), 10.0f,
             myTextureCache, sceneCamera, drawBatches);
 
     while(!Eend::InputManager::shouldClose){
@@ -88,9 +87,15 @@ int main(){
         float dt = Eend::FrameLimiter::deltaTime / 4;
         if (dt > 1.0f / 60.0f) dt = 1.0f / 60.0f;
         myAnimatedCourt.setAnim(myAnimatedCourt.getAnim() + (0.2f * dt));
+        glm::vec3 debugPlayerStrike = player.getStrikeCollision().getPosition();
+        glm::vec3 debugBallStrike = player.getPosition();
+        if (player.getStrike() && Eend::colliding(player.getStrikeCollision(), ball.getCollision(), nullptr)) {
+            ball.hit();
+        }
 
         player.update(dt);
         ball.update(dt);
+
 
         drawBatches.draw(shaders); 
 

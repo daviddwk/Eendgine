@@ -9,15 +9,16 @@
 
 namespace Eend = Eendgine;
 
-Ball::Ball(std::string texturePath, glm::vec3 position, 
+Ball::Ball(std::string texturePath, glm::vec3 position, float radius, 
         Eend::TextureCache& textureCache, Eend::Camera3D& camera, DrawBatches& drawBatches) :
     _position(position),
     _camera(camera),
     _sprite(textureCache.getTexture(texturePath), camera),
-    _drawBatches(drawBatches)
+    _drawBatches(drawBatches),
+    _collision(position, radius)
 {
     _sprite.setPosition(glm::vec3(0.0f, 20.0f, 0.0f));
-    _sprite.setScale(10.0f, 10.0f);
+    _sprite.setScale(radius, radius);
     _drawBatches.insert(&_sprite);
 }
 
@@ -28,6 +29,11 @@ Ball::~Ball() {
 void Ball::setPosition(glm::vec3 position) {
     _position = position;
     _sprite.setPosition(position);
+    _collision.setPosition(position);
+}
+
+void Ball::hit() {
+    _hit = true;
 }
 
 void Ball::update(float dt) {
@@ -36,7 +42,7 @@ void Ball::update(float dt) {
     static float totalDistance = 0.0f;
     const glm::vec3 position = getPosition();
     
-    if (reachedDestination) {
+    if (_hit) {
         courtSide = !courtSide;
         float xDestination = Eend::randomRange(-_halfCourtWidth, _halfCourtWidth);
         float zDestination = Eend::randomRange(0.0f, _halfCourtLength);
@@ -46,6 +52,7 @@ void Ball::update(float dt) {
         _destination = glm::vec3(xDestination, 0.0f, zDestination);
         totalDistance = glm::length(_destination - position);
         reachedDestination = false;
+        _hit = false;
     } 
 
     glm::vec3 toDestination = _destination - position;  
@@ -58,8 +65,11 @@ void Ball::update(float dt) {
     
     const float ratioTraveled = glm::length(toDestination) / totalDistance;
     const float height = std::sin(ratioTraveled * std::numbers::pi) * _peakHeight;
-    setPosition (glm::vec3(
-            position.x + (toDestinationNormal.x * _speedMultiplier * dt),
-            height,
-            position.z + (toDestinationNormal.z * _speedMultiplier * dt)));
+    
+    if (!reachedDestination) {
+        setPosition(glm::vec3(
+                position.x + (toDestinationNormal.x * _speedMultiplier * dt),
+                height,
+                position.z + (toDestinationNormal.z * _speedMultiplier * dt)));
+    }
 }

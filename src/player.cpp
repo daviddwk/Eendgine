@@ -6,14 +6,14 @@ namespace Eend = Eendgine;
 Player::Player(DrawBatches& drawBatches, std::vector<Eend::CollisionModel*>& collisionModels,
         glm::vec3 position, 
         std::string modelPath, Eend::TextureCache& textureCache, Eend::Camera3D& camera, 
-        float hitHeight, float hitRadius, float hitOffset, 
+        float hitHeight, float hitRadius, float modelOffset, 
         float strikeRadius, float strikeOffset) :
-    _hitBox(position + glm::vec3(0.0f, hitOffset, 0.0f), hitHeight, hitRadius),
-    _strikeZone(position + glm::vec3(0.0f, strikeOffset, 0.0f), strikeRadius),
+    _hitBox(position, hitHeight, hitRadius),
+    _strikeCollision(position + glm::vec3(0.0f, strikeOffset, 0.0f), strikeRadius),
     _model("resources/ost/ost.obj", textureCache, camera),
     _position(position),
     _strikeOffset(strikeOffset),
-    _hitBoxOffset(hitOffset),
+    _modelOffset(modelOffset),
     _camera(camera),
     _cameraRotation(0.0f, 0.0f),
     _fallVelocity(0.0f),
@@ -23,10 +23,17 @@ Player::Player(DrawBatches& drawBatches, std::vector<Eend::CollisionModel*>& col
 {
     _drawBatches.insert(&_model);
     _model.setScale(glm::vec3(1.0f));
+    setPosition(position);
 }
 
 Player::~Player() {
     _drawBatches.remove(&_model);
+}
+
+void Player::setPosition(glm::vec3 position) {
+    _strikeCollision.setPosition(glm::vec3(position.x, position.y + _strikeOffset, position.z));
+    _hitBox.setPosition(glm::vec3(position.x, position.y, position.z));
+    _model.setPosition(glm::vec3(position.x, position.y + _modelOffset, position.z));
 }
 
 void Player::update(float dt) {
@@ -75,6 +82,9 @@ void Player::update(float dt) {
         }
         if (Eendgine::InputManager::spacePress) {
             _fallVelocity = 25;
+            _strike = true;
+        } else {
+            _strike = false;
         }
         
         _position.y += _fallVelocity * dt;
@@ -96,16 +106,11 @@ void Player::update(float dt) {
             _position.x = wallOffset->x;
             _position.z = wallOffset->z;
         }
-        _hitBox.setPosition(glm::vec3(_position.x, _position.y, _position.z));
-
-        _position = _hitBox.getPosition();
-        _model.setPosition(glm::vec3(_position.x, _position.y + 4, _position.z));
+        setPosition(glm::vec3(_position.x, _position.y, _position.z));
     }  
     _camera.setTarget(_position.x, _position.y + 4, _position.z);
-    _camera.setPosition
-        (_position.x + (_cameraDistance * cos(_cameraRotation.x)), 
-         _position.y + (_cameraDistance * sin(_cameraRotation.y)), 
-         _position.z + (_cameraDistance * sin(_cameraRotation.x)));
-    // adjust camera to follow
-
+    _camera.setPosition(
+            _position.x + (_cameraDistance * cos(_cameraRotation.x)), 
+            _position.y + (_cameraDistance * sin(_cameraRotation.y)), 
+            _position.z + (_cameraDistance * sin(_cameraRotation.x)));
 }
