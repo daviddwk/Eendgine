@@ -97,6 +97,8 @@ int main(){
         ball.update(dt);
 
 
+        // could just bake this into draw;
+        drawBatches.sort();
         drawBatches.draw(shaders); 
 
         Eend::Screen::render(shaders.getShader(Shader::screen));

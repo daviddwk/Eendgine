@@ -8,28 +8,26 @@
 #include <functional>
 
 namespace Eendgine {
-    struct SpriteComparator {
-        bool operator()(Sprite* s1, Sprite* s2) const {
-            return s1->getTexture() > s2->getTexture();
-        }
-    };
-
     template<class E>
-    struct Comparator {
-        bool operator()(E* entity1, E* entity2) const {
-            return entity1->getTexture() > entity2->getTexture();
-        }
-    };
+    static bool textureCompare(E* entity1, E* entity2) {
+        return entity1->getTexture() > entity2->getTexture();
+    }
 
     template<class E>
     class DrawBatch {
         public:
+            //assuming that you don't put two of the same in here, but not checking
             void insert(E* entity) {
-                _entities.insert(entity);
+                _entities.push_back(entity);
             }
 
             void erase(E* entity) {
-                _entities.erase(entity);
+                auto iter = std::find(_entities.begin(), _entities.end(), entity);
+                _entities.erase(iter);
+            }
+
+            void sort() {
+                std::sort(_entities.begin(), _entities.end(), textureCompare<E>);
             }
 
             void draw(ShaderProgram &shader) {
@@ -51,6 +49,10 @@ namespace Eendgine {
                 glBindTexture(GL_TEXTURE_2D, 0);
             }
         private:
-            std::set<E*, Comparator<E>> _entities;
+            // this probably shouldn't be a vector of pointers, 
+            // but I'll get around to making a real ECS later
+            //
+            // vector so I can control when it sorts
+            std::vector<E*> _entities;
     };
 }

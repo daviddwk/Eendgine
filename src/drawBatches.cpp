@@ -12,3 +12,9 @@ void DrawBatches::draw(Shaders& shaders) {
 
     _sprites.draw(shaders.getShader(Shader::sprite)); 
 }
+
+void DrawBatches::sort() {
+    _models.sort();
+    _animations.sort();
+    _facingPlanes.sort();
+}
