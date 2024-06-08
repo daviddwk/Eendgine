@@ -37,21 +37,18 @@ void Ball::hit() {
 }
 
 void Ball::update(float dt) {
-    static bool reachedDestination = true;
-    static bool courtSide = true;
-    static float totalDistance = 0.0f;
     const glm::vec3 position = getPosition();
     
     if (_hit) {
-        courtSide = !courtSide;
+        _courtSide = !_courtSide;
         float xDestination = Eend::randomRange(-_halfCourtWidth, _halfCourtWidth);
         float zDestination = Eend::randomRange(0.0f, _halfCourtLength);
-        if (courtSide) {
+        if (_courtSide) {
             zDestination = -zDestination;
         }
         _destination = glm::vec3(xDestination, 0.0f, zDestination);
-        totalDistance = glm::length(_destination - position);
-        reachedDestination = false;
+        _totalDistance = glm::length(_destination - position);
+        _reachedDestination = false;
         _hit = false;
     } 
 
@@ -60,13 +57,13 @@ void Ball::update(float dt) {
     glm::vec3 toDestinationNormal = glm::normalize(toDestination);
 
     if (glm::length(toDestinationNormal) > glm::length(toDestination)) {
-        reachedDestination = true;
+        _reachedDestination = true;
     }
     
-    const float ratioTraveled = glm::length(toDestination) / totalDistance;
+    const float ratioTraveled = glm::length(toDestination) / _totalDistance;
     const float height = std::sin(ratioTraveled * std::numbers::pi) * _peakHeight;
     
-    if (!reachedDestination) {
+    if (!_reachedDestination) {
         setPosition(glm::vec3(
                 position.x + (toDestinationNormal.x * _speedMultiplier * dt),
                 height,

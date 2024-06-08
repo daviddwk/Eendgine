@@ -25,6 +25,7 @@ class Ball {
         Eend::Sprite3D _sprite;
         Eend::CollisionSphere _collision;
         
+        // camera should be included in draw batch
         Eend::Camera3D& _camera;
         DrawBatches& _drawBatches;
 
@@ -37,4 +38,8 @@ class Ball {
         const float _halfCourtLength = 55.0f;
         const float _peakHeight = 30.0f;
         const float _speedMultiplier = 100.0f;
+
+        bool _reachedDestination = true;
+        bool _courtSide = true;
+        float _totalDistance = 0.0f;
 };
