@@ -12,7 +12,7 @@ namespace Eendgine {
             Sprite(Texture texture);
             Sprite(std::vector<Texture> textures);
             std::vector<Texture>::size_type getNumTextures();
-            virtual void draw(uint shaderId, bool bindTexture) = 0; 
+            virtual void draw(uint shaderId) = 0; 
             void setTextureIdx(std::vector<Texture>::size_type textureIdx) 
                 { _textureIdx = (textureIdx < _textures.size()) ? textureIdx : 0; };
             void setPosition(glm::vec3 position) { _position = position; };
@@ -39,7 +39,7 @@ namespace Eendgine {
         public:
             Sprite2D(Texture texture, Camera2D& camera);
             Sprite2D(std::vector<Texture>& textures, Camera2D& camera);
-            void draw(uint shaderId, bool bindTexture); 
+            void draw(uint shaderId); 
         private:
             // TODO move camera to draw batch
             Camera2D _camera;
@@ -49,7 +49,7 @@ namespace Eendgine {
         public:
             Sprite3D(Texture texture, Camera3D& camera);
             Sprite3D(std::vector<Texture>& textures, Camera3D& camera);
-            void draw(uint shaderId, bool bindTexture); 
+            void draw(uint shaderId); 
         private:
             Camera3D _camera;
     };

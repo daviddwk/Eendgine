@@ -44,7 +44,7 @@ namespace Eendgine {
                         glBindTexture(GL_TEXTURE_2D, thisTexture);
                     }
                     lastTexture = thisTexture;
-                    entity->draw(shader.getProgramID(), false);
+                    entity->draw(shader.getProgramID());
                 }
                 glBindTexture(GL_TEXTURE_2D, 0);
             }

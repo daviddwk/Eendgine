@@ -14,7 +14,7 @@ namespace Eendgine {
     class Model {
         public:
             Model();
-            virtual void draw(uint shaderId, bool bindTexture);
+            virtual void draw(uint shaderId) = 0;
             
             void setPosition(glm::vec3 position) { _position = position; };
             void setScale(glm::vec3 scale) { _scale = scale; };
@@ -39,7 +39,7 @@ namespace Eendgine {
                     std::string modelPath, 
                     TextureCache& texCache, 
                     Camera3D& camera);
-            void draw(uint shaderId, bool bindTexture);
+            void draw(uint shaderId);
 
             void setTextureIdx(unsigned int idx) { 
                 _textureIdx = (idx < _textures.size() ? idx : 0); 
@@ -62,7 +62,7 @@ namespace Eendgine {
                     std::vector<std::string> modelPaths, 
                     TextureCache &texCache,
                     Camera3D& camera);
-            void draw(uint shaderId, bool bindTexture);
+            void draw(uint shaderId);
             
             void setTextureIdx(unsigned int idx) { 
                 _textureIdx = (idx < _textures.size() ? idx : 0); 

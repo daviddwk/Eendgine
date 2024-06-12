@@ -63,14 +63,14 @@ namespace Eendgine {
                         glBindTexture(GL_TEXTURE_2D, thisTexture);
                     }
                     lastTexture = thisTexture;
-                    ewi.entity.draw(shader.getProgramID(), false);
+                    ewi.entity.draw(shader.getProgramID());
                 }
                 glBindTexture(GL_TEXTURE_2D, 0);
             }
         private:
             void sort() {
                 // sorted greatest to largest, so that we can move later elements
-                // to the end and pop them off without effecting earlier elements
+                // to the end and erase them without effecting earlier elements
                 std::sort(_toErase.begin(), _toErase.end(), std::greater<int>());
                 for (auto idxToErase : _toErase) {
                     auto it = _indexMap.find(idxToErase);

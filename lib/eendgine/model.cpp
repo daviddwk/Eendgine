@@ -14,10 +14,6 @@ namespace Eendgine {
 
     }
 
-    void Model::draw(uint shaderId, bool bindTexture) {
-
-    }
-
     StaticModel::StaticModel(std::string modelPath, 
             TextureCache& texCache, 
             Camera3D& camera) : 
@@ -51,15 +47,7 @@ namespace Eendgine {
         glEnableVertexAttribArray(3);
     }
 
-    void StaticModel::draw(uint shaderId, bool bindTexture){
-        /*
-        if (bindTexture) {
-            glActiveTexture(GL_TEXTURE0);
-            std::string texName = "texture_diffuse";
-            glUniform1i(glGetUniformLocation(shaderId, texName.c_str()), 0);
-            glBindTexture(GL_TEXTURE_2D, _textures[_textureIdx].id);
-        }
-        */
+    void StaticModel::draw(uint shaderId){
         // using RGB(1,0,1) for transparent
         // parts of the texture using shaders
         
@@ -127,17 +115,9 @@ namespace Eendgine {
         }
     }
 
-    void AnimatedModel::draw(uint shaderId, bool bindTexture){
+    void AnimatedModel::draw(uint shaderId){
         // using RGB(1,0,1) for transparent
         // parts of the texture using shaders
-        /*
-        if (bindTexture) {
-            glActiveTexture(GL_TEXTURE0);
-            std::string texName = "texture_diffuse";
-            glUniform1i(glGetUniformLocation(shaderId, texName.c_str()), 0);
-            glBindTexture(GL_TEXTURE_2D, _textures[_textureIdx].id);
-        }
-        */
         glm::mat4 transform = glm::mat4(1.0f);
         transform = glm::translate(transform, _position);
         transform = glm::rotate(transform, -_rotation.x, glm::vec3( 0.0f, 1.0f, 0.0f));

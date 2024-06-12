@@ -101,12 +101,7 @@ namespace Eendgine {
     {
     }
 
-    void Sprite2D::draw(uint shaderId, bool bindTexture) {
-        if (bindTexture) {
-            glActiveTexture(GL_TEXTURE0);
-            glBindTexture(GL_TEXTURE_2D, _textures[_textureIdx].id);
-        }
-
+    void Sprite2D::draw(uint shaderId) {
         glm::mat4 trans = _camera.getCameraMatrix(); //glm::mat4(1.0f);
         
         trans = glm::translate(trans, _position);
@@ -133,12 +128,7 @@ namespace Eendgine {
     {
     }
     
-    void Sprite3D::draw(uint shaderId, bool bindTexture) {
-        if (bindTexture) {
-            glActiveTexture(GL_TEXTURE0);
-            glBindTexture(GL_TEXTURE_2D, _textures[_textureIdx].id);
-        }
-
+    void Sprite3D::draw(uint shaderId) {
         glm::mat4 transform = glm::mat4(1.0f);
         transform = glm::translate(transform, _position);
         glm::mat3 rot = glm::inverse(glm::mat3(_camera.getViewMat()));
