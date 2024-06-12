@@ -21,7 +21,7 @@ class DrawBatches {
         void remove(Eend::Sprite2D* sprite) { _sprites.erase(sprite); };
         void remove(Eend::Sprite3D* sprite) { _facingPlanes.erase(sprite); };
 
-        void draw(Shaders&);
+        void draw(Shaders& shaders, Eend::Camera2D &hudCamera, Eend::Camera3D &sceneCamera);
         void sort();
     private:
         Eend::DrawBatch<Eend::StaticModel> _models;

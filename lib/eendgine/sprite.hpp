@@ -7,12 +7,12 @@
 #include <vector>
 
 namespace Eendgine {
+    // TODO combine these into one again
     class Sprite {
         public:
             Sprite(Texture texture);
             Sprite(std::vector<Texture> textures);
             std::vector<Texture>::size_type getNumTextures();
-            virtual void draw(uint shaderId) = 0; 
             void setTextureIdx(std::vector<Texture>::size_type textureIdx) 
                 { _textureIdx = (textureIdx < _textures.size()) ? textureIdx : 0; };
             void setPosition(glm::vec3 position) { _position = position; };
@@ -37,20 +37,15 @@ namespace Eendgine {
 
     class Sprite2D : public Sprite {
         public:
-            Sprite2D(Texture texture, Camera2D& camera);
-            Sprite2D(std::vector<Texture>& textures, Camera2D& camera);
-            void draw(uint shaderId); 
-        private:
-            // TODO move camera to draw batch
-            Camera2D _camera;
+            Sprite2D(Texture texture);
+            Sprite2D(std::vector<Texture>& textures);
+            void draw(uint shaderId, Camera2D &camera); 
     };
 
     class Sprite3D : public Sprite {
         public:
-            Sprite3D(Texture texture, Camera3D& camera);
-            Sprite3D(std::vector<Texture>& textures, Camera3D& camera);
-            void draw(uint shaderId); 
-        private:
-            Camera3D _camera;
+            Sprite3D(Texture texture);
+            Sprite3D(std::vector<Texture>& textures);
+            void draw(uint shaderId, Camera3D &camera); 
     };
 }

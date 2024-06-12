@@ -29,8 +29,8 @@ namespace Eendgine {
             void sort() {
                 std::sort(_entities.begin(), _entities.end(), textureCompare<E>);
             }
-
-            void draw(ShaderProgram &shader) {
+            template<class C>
+            void draw(ShaderProgram &shader, C &camera) {
                 shader.use();
                 glActiveTexture(GL_TEXTURE0);
                 std::string texName = "texture_diffuse";
@@ -44,7 +44,7 @@ namespace Eendgine {
                         glBindTexture(GL_TEXTURE_2D, thisTexture);
                     }
                     lastTexture = thisTexture;
-                    entity->draw(shader.getProgramID());
+                    entity->draw(shader.getProgramID(), camera);
                 }
                 glBindTexture(GL_TEXTURE_2D, 0);
             }

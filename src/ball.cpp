@@ -10,10 +10,9 @@
 namespace Eend = Eendgine;
 
 Ball::Ball(std::string texturePath, glm::vec3 position, float radius, 
-        Eend::TextureCache& textureCache, Eend::Camera3D& camera, DrawBatches& drawBatches) :
+        Eend::TextureCache& textureCache, DrawBatches& drawBatches) :
     _position(position),
-    _camera(camera),
-    _sprite(textureCache.getTexture(texturePath), camera),
+    _sprite(textureCache.getTexture(texturePath)),
     _drawBatches(drawBatches),
     _collision(position, radius)
 {

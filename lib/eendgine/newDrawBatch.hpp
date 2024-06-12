@@ -47,8 +47,8 @@ namespace Eendgine {
                 // check if it's in there here? could do it in sort
                 _toErase.push_back(idx);
             }
-
-            void draw(ShaderProgram &shader) {
+            template<typename C>
+            void draw(ShaderProgram &shader, C &camera) {
                 sort();
                 shader.use();
                 glActiveTexture(GL_TEXTURE0);
@@ -63,7 +63,7 @@ namespace Eendgine {
                         glBindTexture(GL_TEXTURE_2D, thisTexture);
                     }
                     lastTexture = thisTexture;
-                    ewi.entity.draw(shader.getProgramID());
+                    ewi.entity.draw(shader.getProgramID(), camera);
                 }
                 glBindTexture(GL_TEXTURE_2D, 0);
             }

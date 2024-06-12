@@ -58,7 +58,7 @@ int main(){
         courtAnim.emplace_back("resources/court/court" + std::to_string(i) + ".obj");
     }
 
-    Eend::AnimatedModel myAnimatedCourt(courtAnim, myTextureCache, sceneCamera);
+    Eend::AnimatedModel myAnimatedCourt(courtAnim, myTextureCache);
     myAnimatedCourt.setPosition(glm::vec3(0.0f, -5.0f, 0.0f));
     myAnimatedCourt.setScale(glm::vec3(4.0f));
     myAnimatedCourt.setAnim(0.0f);
@@ -79,9 +79,9 @@ int main(){
             5.0f, 5.0f, 4.0f,
             10.0f, 10.0f);
     Ball ball("resources/ost/diffuse_noeyes.png", glm::vec3(0.0f, 10.0f, 0.0f), 10.0f,
-            myTextureCache, sceneCamera, drawBatches);
+            myTextureCache, drawBatches);
     Eend::NewDrawBatch<Eend::Sprite3D> newBatch;
-    newBatch.insert(myTextureCache.getTexture("resources/ost/diffuse.png"), sceneCamera);
+    newBatch.insert(myTextureCache.getTexture("resources/ost/diffuse.png"));
 
     while(!Eend::InputManager::shouldClose){
         Eend::FrameLimiter::startInterval(); 
@@ -95,7 +95,7 @@ int main(){
         glm::vec3 debugPlayerStrike = player.getStrikeCollision().getPosition();
         glm::vec3 debugBallStrike = player.getPosition();
         if (player.getStrike() && Eend::colliding(player.getStrikeCollision(), ball.getCollision(), nullptr)) {
-            ball.hit();
+            //ball.hit();
         }
 
         player.update(dt);
@@ -104,8 +104,8 @@ int main(){
 
         // could just bake this into draw;
         drawBatches.sort();
-        drawBatches.draw(shaders); 
-        newBatch.draw(newShader);
+        drawBatches.draw(shaders, hudCamera, sceneCamera); 
+        newBatch.draw(newShader, sceneCamera);
 
         Eend::Screen::render(shaders.getShader(Shader::screen));
         Eend::InputManager::processInput();

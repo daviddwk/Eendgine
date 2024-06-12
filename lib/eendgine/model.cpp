@@ -14,13 +14,10 @@ namespace Eendgine {
 
     }
 
-    StaticModel::StaticModel(std::string modelPath, 
-            TextureCache& texCache, 
-            Camera3D& camera) : 
+    StaticModel::StaticModel(std::string modelPath, TextureCache& texCache) : 
                 Model(),
                 _VAO(0), _VBO(0), _EBO(0),       
-                _texCache(texCache),
-                _camera(camera)
+                _texCache(texCache)
     {
 
         loadModel(modelPath, _vertices, _indices, _textures, _texCache);
@@ -47,7 +44,7 @@ namespace Eendgine {
         glEnableVertexAttribArray(3);
     }
 
-    void StaticModel::draw(uint shaderId){
+    void StaticModel::draw(uint shaderId, Camera3D &camera){
         // using RGB(1,0,1) for transparent
         // parts of the texture using shaders
         
@@ -60,8 +57,8 @@ namespace Eendgine {
         unsigned int projectionLoc = glGetUniformLocation(shaderId, "projection");
         unsigned int viewLoc = glGetUniformLocation(shaderId, "view");
         unsigned int transformLoc = glGetUniformLocation(shaderId, "transform");
-        glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, &_camera.getProjectionMat()[0][0]);
-        glUniformMatrix4fv(viewLoc, 1, GL_FALSE, &_camera.getViewMat()[0][0]);
+        glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, &camera.getProjectionMat()[0][0]);
+        glUniformMatrix4fv(viewLoc, 1, GL_FALSE, &camera.getViewMat()[0][0]);
         glUniformMatrix4fv(transformLoc, 1, GL_FALSE, &transform[0][0]);
         
         glBindVertexArray(_VAO);
@@ -72,17 +69,13 @@ namespace Eendgine {
 
     }
 
-    AnimatedModel::AnimatedModel(
-            std::vector<std::string> modelPaths, 
-            TextureCache &texCache,
-            Camera3D& camera) :
+    AnimatedModel::AnimatedModel(std::vector<std::string> modelPaths, TextureCache &texCache) :
                 Model(),
                 _VAOs(modelPaths.size(), 0), _VBOs(modelPaths.size(), 0), _EBOs(modelPaths.size(), 0),
                 _vertices(modelPaths.size()),
                 _indices(modelPaths.size()),
                 _animScale(0.0f),
-                _texCache(texCache),
-                _camera(camera)
+                _texCache(texCache)
     {
         for (int i = 0; i < modelPaths.size(); i++) {
             loadModel(modelPaths[i], modelPaths[i + 1 == modelPaths.size() ? 0 : i + 1],
@@ -115,7 +108,7 @@ namespace Eendgine {
         }
     }
 
-    void AnimatedModel::draw(uint shaderId){
+    void AnimatedModel::draw(uint shaderId, Camera3D &camera){
         // using RGB(1,0,1) for transparent
         // parts of the texture using shaders
         glm::mat4 transform = glm::mat4(1.0f);
@@ -128,8 +121,8 @@ namespace Eendgine {
         unsigned int viewLoc = glGetUniformLocation(shaderId, "view");
         unsigned int transformLoc = glGetUniformLocation(shaderId, "transform");
         unsigned int inpolLoc = glGetUniformLocation(shaderId, "inpol");
-        glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, &_camera.getProjectionMat()[0][0]);
-        glUniformMatrix4fv(viewLoc, 1, GL_FALSE, &_camera.getViewMat()[0][0]);
+        glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, &camera.getProjectionMat()[0][0]);
+        glUniformMatrix4fv(viewLoc, 1, GL_FALSE, &camera.getViewMat()[0][0]);
         glUniformMatrix4fv(transformLoc, 1, GL_FALSE, &transform[0][0]);
 
         float scaledAnimScale = _VAOs.size() * _animScale;

@@ -12,7 +12,7 @@ namespace Eend = Eendgine;
 class Ball {
     public:
         Ball(std::string texturePath, glm::vec3 position, float radius, 
-                Eend::TextureCache& textureCache, Eend::Camera3D& camera, DrawBatches& drawBatches);
+                Eend::TextureCache& textureCache, DrawBatches& drawBatches);
         ~Ball();
         
         void setPosition(glm::vec3 position);
@@ -26,7 +26,6 @@ class Ball {
         Eend::CollisionSphere _collision;
         
         // camera should be included in draw batch
-        Eend::Camera3D& _camera;
         DrawBatches& _drawBatches;
 
         glm::vec3 _position;

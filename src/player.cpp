@@ -10,7 +10,7 @@ Player::Player(DrawBatches& drawBatches, std::vector<Eend::CollisionModel*>& col
         float strikeRadius, float strikeOffset) :
     _hitBox(position, hitHeight, hitRadius),
     _strikeCollision(position + glm::vec3(0.0f, strikeOffset, 0.0f), strikeRadius),
-    _model("resources/ost/ost.obj", textureCache, camera),
+    _model("resources/ost/ost.obj", textureCache),
     _position(position),
     _strikeOffset(strikeOffset),
     _modelOffset(modelOffset),

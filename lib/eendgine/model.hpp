@@ -14,7 +14,6 @@ namespace Eendgine {
     class Model {
         public:
             Model();
-            virtual void draw(uint shaderId) = 0;
             
             void setPosition(glm::vec3 position) { _position = position; };
             void setScale(glm::vec3 scale) { _scale = scale; };
@@ -35,44 +34,33 @@ namespace Eendgine {
     
     class StaticModel : public Model {
         public:
-            StaticModel(
-                    std::string modelPath, 
-                    TextureCache& texCache, 
-                    Camera3D& camera);
-            void draw(uint shaderId);
+            StaticModel(std::string modelPath, TextureCache& texCache);
+            void draw(uint shaderId, Camera3D &camera);
 
             void setTextureIdx(unsigned int idx) { 
                 _textureIdx = (idx < _textures.size() ? idx : 0); 
             };
-            void setCamera(Camera3D& camera) { _camera = camera; }
 
             unsigned int getTextureIdx() { return _textureIdx; };
-            Camera3D& getCamera() { return _camera; };
         private:
             unsigned int _VAO, _EBO, _VBO;
             std::vector<Vertex> _vertices;
             std::vector<unsigned int> _indices;
             TextureCache &_texCache;
-            Camera3D& _camera;
     };
 
     class AnimatedModel : public Model {
         public:
-            AnimatedModel(
-                    std::vector<std::string> modelPaths, 
-                    TextureCache &texCache,
-                    Camera3D& camera);
-            void draw(uint shaderId);
+            AnimatedModel(std::vector<std::string> modelPaths, TextureCache &texCache);
+            void draw(uint shaderId, Camera3D &camera);
             
             void setTextureIdx(unsigned int idx) { 
                 _textureIdx = (idx < _textures.size() ? idx : 0); 
             };
             void setAnim(float scale) { _animScale = scale - (int) scale; };
-            void setCamera(Camera3D& camera) { _camera = camera; }
 
             unsigned int getTextureIdx() { return _textureIdx; };
             float getAnim() { return _animScale; };
-            Camera3D& getCamera() { return _camera; };
 
         private:
             float _animScale;
@@ -80,6 +68,5 @@ namespace Eendgine {
             std::vector<std::vector<InpolVertex>> _vertices;
             std::vector<std::vector<unsigned int>> _indices;
             TextureCache &_texCache;
-            Camera3D& _camera;
     };
 }
