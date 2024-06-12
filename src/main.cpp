@@ -9,6 +9,7 @@
 #include <eendgine/collisionGeometry.hpp>
 #include <eendgine/screen.hpp>
 #include <eendgine/drawBatch.hpp>
+#include <eendgine/newDrawBatch.hpp>
 
 #include <stb/stb_image.h>
 
@@ -34,6 +35,7 @@ int main(){
 
     Eend::TextureCache myTextureCache;
     
+    Eend::ShaderProgram newShader("shaders/shader.vert", "shaders/shader.frag");
     Shaders shaders(
             Eend::ShaderProgram("shaders/shader.vert", "shaders/shader.frag"),
             Eend::ShaderProgram("shaders/shader3D.vert", "shaders/shader3D.frag"),
@@ -45,6 +47,7 @@ int main(){
             glm::vec3(20.0f, 15.0f, 20.0f), glm::vec3(0.0f, 0.0f, 0.0f));
 
     DrawBatches drawBatches;
+
     
     //Eend::Sprite2D mySprite(myTextureCache.getTexture("resources/ost/diffuse.png"), myCamera);
     //mySprite.setPosition(300.0f, 300.0f);
@@ -77,12 +80,14 @@ int main(){
             10.0f, 10.0f);
     Ball ball("resources/ost/diffuse_noeyes.png", glm::vec3(0.0f, 10.0f, 0.0f), 10.0f,
             myTextureCache, sceneCamera, drawBatches);
+    Eend::NewDrawBatch<Eend::Sprite3D> newBatch;
+    newBatch.insert(myTextureCache.getTexture("resources/ost/diffuse.png"), sceneCamera);
 
     while(!Eend::InputManager::shouldClose){
         Eend::FrameLimiter::startInterval(); 
         Eend::Screen::bind();
 
-        shaders.setPixelSize(5);
+        shaders.setPixelSize(1);
 
         float dt = Eend::FrameLimiter::deltaTime / 4;
         if (dt > 1.0f / 60.0f) dt = 1.0f / 60.0f;
@@ -100,6 +105,7 @@ int main(){
         // could just bake this into draw;
         drawBatches.sort();
         drawBatches.draw(shaders); 
+        newBatch.draw(newShader);
 
         Eend::Screen::render(shaders.getShader(Shader::screen));
         Eend::InputManager::processInput();

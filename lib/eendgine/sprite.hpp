@@ -41,7 +41,8 @@ namespace Eendgine {
             Sprite2D(std::vector<Texture>& textures, Camera2D& camera);
             void draw(uint shaderId, bool bindTexture); 
         private:
-            Camera2D& _camera;
+            // TODO move camera to draw batch
+            Camera2D _camera;
     };
 
     class Sprite3D : public Sprite {
@@ -50,6 +51,6 @@ namespace Eendgine {
             Sprite3D(std::vector<Texture>& textures, Camera3D& camera);
             void draw(uint shaderId, bool bindTexture); 
         private:
-            Camera3D& _camera;
+            Camera3D _camera;
     };
 }

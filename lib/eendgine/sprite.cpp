@@ -7,7 +7,7 @@ namespace Eendgine {
     
     Sprite::Sprite(Texture texture) :
             _position(glm::vec3(0.0f)),
-            _size(glm::vec3(1.0f)),
+            _size(glm::vec3(100.0f)),
             _rotation(0.0f),
             _VAO(0),
             _textureIdx(0)
