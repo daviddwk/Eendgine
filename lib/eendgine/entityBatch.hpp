@@ -24,29 +24,32 @@ namespace Eendgine {
     }
 
     template<class E>
-    class NewDrawBatch {
+    class EntityBatch {
         public:
             //assuming that you don't put two of the same in here, but not checking
             template<typename... Args>
-            int insert(Args&&... args) {
-                int _entitiesIdx = _entities.size();
+            unsigned int insert(Args&&... args) {
+                unsigned int _entitiesIdx = _entities.size();
                 // check if already in map
                 _indexMap[_nextIdx] = _entitiesIdx;
                 _nextIdx += 1;
-                _entities.push_back(
-                        entityLabeled(_nextIdx, E(std::forward<Args>(args)...))
-                );
+                _entities.emplace_back(_nextIdx, E(std::forward<Args>(args)...));
                 // just in case these are evaluated out of order
                 return _nextIdx;
             }
 
-            void erase(int idx) {
+            void erase(unsigned int id) {
                 // postpose erase until right before sort
                 // so that the _indexMap is always accurate
                 //
                 // check if it's in there here? could do it in sort
-                _toErase.push_back(idx);
+                _toErase.push_back(id);
             }
+            
+            E& getRef(unsigned int id) {
+                return _entities[_indexMap[id]].entity;
+            }
+
             template<typename C>
             void draw(ShaderProgram &shader, C &camera) {
                 sort();

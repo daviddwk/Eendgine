@@ -1,39 +1,42 @@
 #include "sprite.hpp"
+#include "textureCache.hpp"
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
 namespace Eendgine {
     
-    Sprite::Sprite(Texture texture) :
-            _position(glm::vec3(0.0f)),
-            _size(glm::vec3(100.0f)),
-            _rotation(0.0f),
-            _VAO(0),
-            _textureIdx(0)
-    {
-        std::vector<Texture> textures;
-        textures.push_back(texture);
-        setup(textures);
-    }
-
-    Sprite::Sprite(std::vector<Texture> textures) :
+    // can remove the need for two different initializers using templating
+    Sprite::Sprite(std::string texturePath) :
             _position(glm::vec3(0.0f)),
             _size(glm::vec3(1.0f)),
             _rotation(0.0f),
             _VAO(0),
             _textureIdx(0)
     {
-        setup(textures);
+        std::vector<std::string> texturePaths{texturePath};
+        setup(texturePaths);
+    }
+
+    Sprite::Sprite(std::vector<std::string> texturePaths) :
+            _position(glm::vec3(0.0f)),
+            _size(glm::vec3(1.0f)),
+            _rotation(0.0f),
+            _VAO(0),
+            _textureIdx(0)
+    {
+        setup(texturePaths);
     }
     
-    void Sprite::setup(std::vector<Texture> textures) {
+    void Sprite::setup(std::vector<std::string> &texturePaths) {
 
         _position = glm::vec3(0.0f);
         _size = glm::vec3(1.0f);
         _rotation = 0;
-
-        _textures = textures;
+        
+        for (auto t : texturePaths){
+            _textures.push_back(Eendgine::TextureCache::getTexture(t));
+        }
         _textureIdx = 0;
         
         Vertex verticies[4];
@@ -89,17 +92,8 @@ namespace Eendgine {
         return _textures.size();
     }
 
-    Sprite2D::Sprite2D(Texture texture) :
-            Sprite(texture)
-    {
-    }
 
-    Sprite2D::Sprite2D(std::vector<Texture>& textures) :
-            Sprite(textures)
-    {
-    }
-
-    void Sprite2D::draw(uint shaderId, Camera2D& camera) {
+    void Sprite::draw(uint shaderId, Camera2D& camera) {
         glm::mat4 trans = camera.getCameraMatrix(); //glm::mat4(1.0f);
         
         trans = glm::translate(trans, _position);
@@ -114,17 +108,7 @@ namespace Eendgine {
         glBindVertexArray(0);
     }
 
-    Sprite3D::Sprite3D(Texture texture) :
-            Sprite(texture)
-    {
-    }
-
-    Sprite3D::Sprite3D(std::vector<Texture>& textures) :
-            Sprite(textures)
-    {
-    }
-    
-    void Sprite3D::draw(uint shaderId, Camera3D &camera) {
+    void Sprite::draw(uint shaderId, Camera3D &camera) {
         glm::mat4 transform = glm::mat4(1.0f);
         transform = glm::translate(transform, _position);
         glm::mat3 rot = glm::inverse(glm::mat3(camera.getViewMat()));

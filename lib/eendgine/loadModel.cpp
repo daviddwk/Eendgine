@@ -8,7 +8,7 @@ namespace Eendgine {
  
     void loadModel(std::string modelPath, std::vector<Vertex> &vertices,
             std::vector<unsigned int> &indices, 
-            std::vector<Texture> &textures, TextureCache &texCache) {
+            std::vector<Texture> &textures) {
         Assimp::Importer importer;
         const aiScene *scene = importer.ReadFile(modelPath, 
                 aiProcess_Triangulate | aiProcess_GenNormals);
@@ -24,7 +24,7 @@ namespace Eendgine {
             processMesh(m, scene, vertices, indices, startIdx);
             startIdx += m->mNumVertices;
         }
-        processTextures(modelDir, scene, textures, texCache);
+        processTextures(modelDir, scene, textures);
     }
     
     void loadModel(std::string modelPath, std::vector<Vertex> &vertices, std::vector<unsigned int> &indices) {
@@ -47,7 +47,7 @@ namespace Eendgine {
 
     void loadModel(std::string modelPath, std::string nextModelPath, 
             std::vector<InpolVertex> &vertices, std::vector<unsigned int> &indices,
-            std::vector<Texture> &textures, TextureCache &texCache) {
+            std::vector<Texture> &textures) {
         Assimp::Importer importer;
         Assimp::Importer nextImporter;
         const aiScene *scene = importer.ReadFile(modelPath, aiProcess_Triangulate | aiProcess_GenNormals);
@@ -92,7 +92,7 @@ namespace Eendgine {
             vertices[i].nextNormal = tmpVertices[i].normal;
             vertices[i].nextPosition = tmpVertices[i].position;
         }
-        processTextures(modelDir, scene, textures, texCache);
+        processTextures(modelDir, scene, textures);
     }
 
     void processNode(aiNode *node, const aiScene *scene, std::vector<aiMesh*> &aiMeshes) {
@@ -145,13 +145,13 @@ namespace Eendgine {
     }
 
     void processTextures(std::string texDir, const aiScene *scene, 
-            std::vector<Texture> &textures, TextureCache &texCache){
+            std::vector<Texture> &textures){
         for (unsigned int i = 0; i < scene->mNumMaterials; i++){
             aiMaterial *material  = scene->mMaterials[i];
             for (unsigned int i = 0; i < material->GetTextureCount(aiTextureType_DIFFUSE); i++) {
                 aiString str;
                 material->GetTexture(aiTextureType_DIFFUSE, i, &str);
-                Texture texture = texCache.getTexture(texDir + '/' + (std::string)str.C_Str());
+                Texture texture = TextureCache::getTexture(texDir + '/' + (std::string)str.C_Str());
                 textures.push_back(texture);
             }
         }

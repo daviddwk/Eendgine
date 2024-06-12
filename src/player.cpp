@@ -5,12 +5,12 @@ namespace Eend = Eendgine;
 
 Player::Player(DrawBatches& drawBatches, std::vector<Eend::CollisionModel*>& collisionModels,
         glm::vec3 position, 
-        std::string modelPath, Eend::TextureCache& textureCache, Eend::Camera3D& camera, 
+        std::string modelPath, Eend::Camera3D& camera, 
         float hitHeight, float hitRadius, float modelOffset, 
         float strikeRadius, float strikeOffset) :
     _hitBox(position, hitHeight, hitRadius),
     _strikeCollision(position + glm::vec3(0.0f, strikeOffset, 0.0f), strikeRadius),
-    _model("resources/ost/ost.obj", textureCache),
+    _model("resources/ost/ost.obj"),
     _position(position),
     _strikeOffset(strikeOffset),
     _modelOffset(modelOffset),
@@ -21,13 +21,13 @@ Player::Player(DrawBatches& drawBatches, std::vector<Eend::CollisionModel*>& col
     _collisionModels(collisionModels),
     _drawBatches(drawBatches)
 {
-    _drawBatches.insert(&_model);
+    _drawBatches.insertModel(&_model);
     _model.setScale(glm::vec3(1.0f));
     setPosition(position);
 }
 
 Player::~Player() {
-    _drawBatches.remove(&_model);
+    _drawBatches.removeModel(&_model);
 }
 
 void Player::setPosition(glm::vec3 position) {

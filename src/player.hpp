@@ -11,7 +11,7 @@ class Player {
     public:
         Player(DrawBatches& drawBatches, std::vector<Eend::CollisionModel*>& collisionModels,
                 glm::vec3 position, 
-                std::string modelPath, Eend::TextureCache& textureCache, Eend::Camera3D& camera, 
+                std::string modelPath, Eend::Camera3D& camera, 
                 float hitHeight, float hitRadius, float hitOffset, 
                 float strikeRadius, float strikeOffset);
         ~Player();

@@ -34,7 +34,7 @@ namespace Eendgine {
     
     class StaticModel : public Model {
         public:
-            StaticModel(std::string modelPath, TextureCache& texCache);
+            StaticModel(std::string modelPath);
             void draw(uint shaderId, Camera3D &camera);
 
             void setTextureIdx(unsigned int idx) { 
@@ -46,12 +46,11 @@ namespace Eendgine {
             unsigned int _VAO, _EBO, _VBO;
             std::vector<Vertex> _vertices;
             std::vector<unsigned int> _indices;
-            TextureCache &_texCache;
     };
 
     class AnimatedModel : public Model {
         public:
-            AnimatedModel(std::vector<std::string> modelPaths, TextureCache &texCache);
+            AnimatedModel(std::vector<std::string> modelPaths);
             void draw(uint shaderId, Camera3D &camera);
             
             void setTextureIdx(unsigned int idx) { 
@@ -67,6 +66,5 @@ namespace Eendgine {
             std::vector<unsigned int> _VAOs, _EBOs, _VBOs;
             std::vector<std::vector<InpolVertex>> _vertices;
             std::vector<std::vector<unsigned int>> _indices;
-            TextureCache &_texCache;
     };
 }

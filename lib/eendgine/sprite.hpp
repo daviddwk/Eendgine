@@ -10,8 +10,8 @@ namespace Eendgine {
     // TODO combine these into one again
     class Sprite {
         public:
-            Sprite(Texture texture);
-            Sprite(std::vector<Texture> textures);
+            Sprite(std::string texturePath);
+            Sprite(std::vector<std::string> texturePaths);
             std::vector<Texture>::size_type getNumTextures();
             void setTextureIdx(std::vector<Texture>::size_type textureIdx) 
                 { _textureIdx = (textureIdx < _textures.size()) ? textureIdx : 0; };
@@ -25,27 +25,15 @@ namespace Eendgine {
             float getRotation() { return _rotation; };
             unsigned int getTexture() { return _textures[_textureIdx].id; };
 
+            void draw(uint shaderId, Camera2D &camera); 
+            void draw(uint shaderId, Camera3D &camera); 
         protected:
-            void setup(std::vector<Texture> textures);
+            void setup(std::vector<std::string> &texturePaths);
             glm::vec3 _position;
             glm::vec3 _size;
             float _rotation;
             unsigned int _VAO;
             unsigned int _textureIdx;
             std::vector<Texture> _textures;
-    };
-
-    class Sprite2D : public Sprite {
-        public:
-            Sprite2D(Texture texture);
-            Sprite2D(std::vector<Texture>& textures);
-            void draw(uint shaderId, Camera2D &camera); 
-    };
-
-    class Sprite3D : public Sprite {
-        public:
-            Sprite3D(Texture texture);
-            Sprite3D(std::vector<Texture>& textures);
-            void draw(uint shaderId, Camera3D &camera); 
     };
 }

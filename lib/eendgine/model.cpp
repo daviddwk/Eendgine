@@ -14,13 +14,12 @@ namespace Eendgine {
 
     }
 
-    StaticModel::StaticModel(std::string modelPath, TextureCache& texCache) : 
+    StaticModel::StaticModel(std::string modelPath) : 
                 Model(),
-                _VAO(0), _VBO(0), _EBO(0),       
-                _texCache(texCache)
+                _VAO(0), _VBO(0), _EBO(0)
     {
 
-        loadModel(modelPath, _vertices, _indices, _textures, _texCache);
+        loadModel(modelPath, _vertices, _indices, _textures);
 
         glGenVertexArrays(1, &_VAO);
         glBindVertexArray(_VAO);
@@ -69,17 +68,16 @@ namespace Eendgine {
 
     }
 
-    AnimatedModel::AnimatedModel(std::vector<std::string> modelPaths, TextureCache &texCache) :
+    AnimatedModel::AnimatedModel(std::vector<std::string> modelPaths) :
                 Model(),
                 _VAOs(modelPaths.size(), 0), _VBOs(modelPaths.size(), 0), _EBOs(modelPaths.size(), 0),
                 _vertices(modelPaths.size()),
                 _indices(modelPaths.size()),
-                _animScale(0.0f),
-                _texCache(texCache)
+                _animScale(0.0f)
     {
         for (int i = 0; i < modelPaths.size(); i++) {
             loadModel(modelPaths[i], modelPaths[i + 1 == modelPaths.size() ? 0 : i + 1],
-                    _vertices[i], _indices[i], _textures, _texCache);
+                    _vertices[i], _indices[i], _textures);
 
             glGenVertexArrays(1, &_VAOs[i]);
             glBindVertexArray(_VAOs[i]);

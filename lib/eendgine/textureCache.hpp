@@ -6,8 +6,8 @@
 namespace Eendgine {
     class TextureCache {
         public:
-            Texture getTexture(std::string texturePath);
+            static Texture getTexture(std::string texturePath);
         private:
-            std::map<std::string, Texture> _textureMap;
+            inline static std::map<std::string, Texture> _textureMap;
     };
 }

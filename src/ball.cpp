@@ -2,6 +2,7 @@
 #include "drawBatches.hpp"
 
 #include <eendgine/random.hpp>
+#include <eendgine/textureCache.hpp>
 
 #include <random>
 #include <numbers>
@@ -9,20 +10,19 @@
 
 namespace Eend = Eendgine;
 
-Ball::Ball(std::string texturePath, glm::vec3 position, float radius, 
-        Eend::TextureCache& textureCache, DrawBatches& drawBatches) :
+Ball::Ball(std::string texturePath, glm::vec3 position, float radius, DrawBatches& drawBatches) :
     _position(position),
-    _sprite(textureCache.getTexture(texturePath)),
+    _sprite(texturePath),
     _drawBatches(drawBatches),
     _collision(position, radius)
 {
     _sprite.setPosition(glm::vec3(0.0f, 20.0f, 0.0f));
     _sprite.setScale(radius, radius);
-    _drawBatches.insert(&_sprite);
+    _drawBatches.insertFacing(&_sprite);
 }
 
 Ball::~Ball() {
-    _drawBatches.remove(&_sprite);
+    _drawBatches.removeFacing(&_sprite);
 }
 
 void Ball::setPosition(glm::vec3 position) {
