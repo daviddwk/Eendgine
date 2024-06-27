@@ -6,12 +6,12 @@
 #include "camera.hpp"
 #include "shaders.hpp"
 
-using ModelId = unsigned int;
-using AnimationId = unsigned int;
-using BillboardId = unsigned int;
-using SpriteId = unsigned int;
 
 namespace Eendgine {
+    using ModelId = unsigned int;
+    using AnimationId = unsigned int;
+    using BillboardId = unsigned int;
+    using SpriteId = unsigned int;
     class EntityBatches {
         public:
             static ModelId insertModel(std::string modelPath) { 

@@ -3,13 +3,14 @@
 #include <eendgine/model.hpp>
 #include <eendgine/collisionGeometry.hpp>
 #include <eendgine/camera.hpp>
+#include <eendgine/entityBatches.hpp>
 #include "drawBatches.hpp"
 
 namespace Eend = Eendgine;
 
 class Player {
     public:
-        Player(DrawBatches& drawBatches, std::vector<Eend::CollisionModel*>& collisionModels,
+        Player(std::vector<Eend::CollisionModel*>& collisionModels,
                 glm::vec3 position, 
                 std::string modelPath, Eend::Camera3D& camera, 
                 float hitHeight, float hitRadius, float hitOffset, 
@@ -17,7 +18,7 @@ class Player {
         ~Player();
         void update(float dt);
         void setPosition(glm::vec3 position);
-        void setRadians(glm::vec2 rotation) { _model.setRadians(rotation.x, rotation.y); }
+        void setRadians(glm::vec2 rotation);
         glm::vec3 getPosition() { return _position; };
         bool getStrike() { return _strike; };
         Eend::CollisionSphere getStrikeCollision() { return _strikeCollision; };
@@ -29,7 +30,6 @@ class Player {
     private:
         Eend::CollisionSphere _strikeCollision;
         Eend::CollisionCylinder _hitBox;
-        Eend::StaticModel _model;
         
         Eend::Camera3D& _camera;
 
@@ -42,5 +42,5 @@ class Player {
         float _fallVelocity;
         float _cameraDistance;
         std::vector<Eend::CollisionModel*>& _collisionModels;
-        DrawBatches& _drawBatches;
+        Eend::ModelId _modelId;
 };

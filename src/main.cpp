@@ -8,7 +8,6 @@
 #include <eendgine/model.hpp>
 #include <eendgine/collisionGeometry.hpp>
 #include <eendgine/screen.hpp>
-#include <eendgine/drawBatch.hpp>
 #include <eendgine/entityBatch.hpp>
 #include <eendgine/entityBatches.hpp>
 #include <eendgine/shaders.hpp>
@@ -46,20 +45,20 @@ int main(){
     Eend::Camera3D sceneCamera((float)screenWidth / (float)screenHeight,
             glm::vec3(20.0f, 15.0f, 20.0f), glm::vec3(0.0f, 0.0f, 0.0f));
 
-    DrawBatches drawBatches;
-    Eend::EntityBatches entityBatches;
     
     //Eend::Sprite2D mySprite(myTextureCache.getTexture("resources/ost/diffuse.png"), myCamera);
     //mySprite.setPosition(300.0f, 300.0f);
     //mySprite.setSize(100.0f, 100.0f);
+    
+    DrawBatches drawBatches;
 
     std::vector<std::string> courtAnim;
     for (int i = 1; i <= 4; i++) {
         courtAnim.emplace_back("resources/court/court" + std::to_string(i) + ".obj");
     }
     
-    AnimationId courtId = entityBatches.insertAnimation(courtAnim);
-    auto& courtAnimation = entityBatches.getRefAnimation(courtId);
+    Eend::AnimationId courtId = Eend::EntityBatches::insertAnimation(courtAnim);
+    auto& courtAnimation = Eend::EntityBatches::getRefAnimation(courtId);
     courtAnimation.setPosition(glm::vec3(0.0f, -5.0f, 0.0f));
     courtAnimation.setScale(glm::vec3(4.0f));
 
@@ -69,7 +68,7 @@ int main(){
     myAnimatedCourt.setAnim(0.0f);
     
     //myRenderBatch.insertModel(&myAnimatedCourt);
-    drawBatches.insertAnimation(&myAnimatedCourt); 
+    //drawBatches.insertAnimation(&myAnimatedCourt); 
 
     Eend::EntityBatch<Eend::Sprite> newSpriteBatch;
     unsigned int newSpriteId = newSpriteBatch.insert("resources/ost/diffuse.png");
@@ -82,9 +81,9 @@ int main(){
     
     std::vector<Eend::CollisionModel*> myColModels = {
             &myColCourt};
-
-    Player player(drawBatches, myColModels,
-            glm::vec3(0.0f, 10.0f, 0.0f),
+    
+    Player player(myColModels,
+            glm::vec3(0.0f, 100.0f, 0.0f),
             "resources/ost/ost.obj", sceneCamera,
             5.0f, 5.0f, 4.0f,
             10.0f, 10.0f);
@@ -97,11 +96,12 @@ int main(){
         Eend::FrameLimiter::startInterval(); 
         Eend::Screen::bind();
 
-        shaders.setPixelSize(1);
+        shaders.setPixelSize(5);
 
         float dt = Eend::FrameLimiter::deltaTime / 4;
         if (dt > 1.0f / 60.0f) dt = 1.0f / 60.0f;
         myAnimatedCourt.setAnim(myAnimatedCourt.getAnim() + (0.2f * dt));
+        
         glm::vec3 debugPlayerStrike = player.getStrikeCollision().getPosition();
         glm::vec3 debugBallStrike = player.getPosition();
         if (player.getStrike() && Eend::colliding(player.getStrikeCollision(), ball.getCollision(), nullptr)) {
@@ -110,13 +110,14 @@ int main(){
 
         player.update(dt);
         ball.update(dt);
+        
         Eend::AnimatedModel &newAnimRef = newBatch.getRef(newAnimationId);
         newAnimRef.setPosition(newAnimRef.getPosition() + 0.1f);
         Eend::Sprite &newSpriteRef = newSpriteBatch.getRef(newSpriteId);
         newSpriteRef.setScale(100.0f, 100.0f);
         newSpriteRef.setPosition(glm::vec3(10.0f, 10.0f, 10.0f));
         
-        entityBatches.draw(shaders, hudCamera, sceneCamera);
+        Eend::EntityBatches::draw(shaders, hudCamera, sceneCamera);
         
         Eend::Screen::render(shaders.getShader(Eend::Shader::screen));
         Eend::InputManager::processInput();

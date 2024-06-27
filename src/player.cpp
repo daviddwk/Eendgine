@@ -3,14 +3,13 @@
 
 namespace Eend = Eendgine;
 
-Player::Player(DrawBatches& drawBatches, std::vector<Eend::CollisionModel*>& collisionModels,
+Player::Player(std::vector<Eend::CollisionModel*>& collisionModels,
         glm::vec3 position, 
         std::string modelPath, Eend::Camera3D& camera, 
         float hitHeight, float hitRadius, float modelOffset, 
         float strikeRadius, float strikeOffset) :
     _hitBox(position, hitHeight, hitRadius),
     _strikeCollision(position + glm::vec3(0.0f, strikeOffset, 0.0f), strikeRadius),
-    _model("resources/ost/ost.obj"),
     _position(position),
     _strikeOffset(strikeOffset),
     _modelOffset(modelOffset),
@@ -18,25 +17,32 @@ Player::Player(DrawBatches& drawBatches, std::vector<Eend::CollisionModel*>& col
     _cameraRotation(0.0f, 0.0f),
     _fallVelocity(0.0f),
     _cameraDistance(60.0f),
-    _collisionModels(collisionModels),
-    _drawBatches(drawBatches)
+    _collisionModels(collisionModels)
 {
-    _drawBatches.insertModel(&_model);
-    _model.setScale(glm::vec3(1.0f));
-    setPosition(position);
+    _modelId = Eend::EntityBatches::insertModel(modelPath);
+    auto _modelRef = Eend::EntityBatches::getRefModel(_modelId);
+    _modelRef.setScale(glm::vec3(1.0f));
+    _modelRef.setPosition(position);
 }
 
 Player::~Player() {
-    _drawBatches.removeModel(&_model);
+    Eend::EntityBatches::eraseModel(_modelId);
 }
 
 void Player::setPosition(glm::vec3 position) {
     _strikeCollision.setPosition(glm::vec3(position.x, position.y + _strikeOffset, position.z));
     _hitBox.setPosition(glm::vec3(position.x, position.y, position.z));
-    _model.setPosition(glm::vec3(position.x, position.y + _modelOffset, position.z));
+    auto _modelRef = Eend::EntityBatches::getRefModel(_modelId);
+    _modelRef.setPosition(glm::vec3(position.x, position.y + _modelOffset, position.z));
+}
+
+void Player::setRadians(glm::vec2 rotation) { 
+    auto _modelRef = Eend::EntityBatches::getRefModel(_modelId);
+    _modelRef.setRadians(rotation.x, rotation.y); 
 }
 
 void Player::update(float dt) {
+    auto _modelRef = Eend::EntityBatches::getRefModel(_modelId);
     for(int i = 0; i < 4; i++) {
         float speed = 20.000f;
         // move based on input and gravity
@@ -64,7 +70,7 @@ void Player::update(float dt) {
         
         if (Eendgine::InputManager::upPress) {
             // TODO fix adjustment and find out where forward actually is
-            _model.setRadians(_cameraRotation.x + (std::numbers::pi / 2), 0.0f);
+            _modelRef.setRadians(_cameraRotation.x + (std::numbers::pi / 2), 0.0f);
             _position.x -= (speed * cos(_cameraRotation.x)) * dt;
             _position.z -= (speed * sin(_cameraRotation.x)) * dt;
         }
