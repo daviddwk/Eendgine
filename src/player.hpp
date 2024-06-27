@@ -4,7 +4,6 @@
 #include <eendgine/collisionGeometry.hpp>
 #include <eendgine/camera.hpp>
 #include <eendgine/entityBatches.hpp>
-#include "drawBatches.hpp"
 
 namespace Eend = Eendgine;
 

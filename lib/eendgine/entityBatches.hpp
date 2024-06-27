@@ -32,10 +32,10 @@ namespace Eendgine {
             static void eraseBillboard(BillboardId id) { _billboards.erase(id); };
             static void eraseSprite(SpriteId id) { _sprites.erase(id); };
 
-            static StaticModel& getRefModel(ModelId id) { return _models.getRef(id); }
-            static AnimatedModel& getRefAnimation(AnimationId id) { return _animations.getRef(id); }
-            static Sprite& getRefBillboard(BillboardId id) { return _billboards.getRef(id); }
-            static Sprite& getRefSprite(SpriteId id) { return _sprites.getRef(id); }
+            static StaticModel* getRefModel(ModelId id) { return _models.getRef(id); }
+            static AnimatedModel* getRefAnimation(AnimationId id) { return _animations.getRef(id); }
+            static Sprite* getRefBillboard(BillboardId id) { return _billboards.getRef(id); }
+            static Sprite* getRefSprite(SpriteId id) { return _sprites.getRef(id); }
 
             static void draw(Shaders &shaders, Camera2D &hudCamera, Camera3D &sceneCamera);
         private:

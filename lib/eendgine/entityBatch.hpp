@@ -46,8 +46,8 @@ namespace Eendgine {
                 _toErase.push_back(id);
             }
             
-            E& getRef(unsigned int id) {
-                return _entities[_indexMap[id]].entity;
+            E* getRef(unsigned int id) {
+                return &_entities[_indexMap[id]].entity;
             }
 
             template<typename C>

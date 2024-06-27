@@ -4,14 +4,14 @@
 #include <eendgine/camera.hpp>
 #include <eendgine/textureCache.hpp>
 #include <eendgine/collisionGeometry.hpp>
-#include "drawBatches.hpp"
+#include <eendgine/entityBatches.hpp>
 
 
 namespace Eend = Eendgine;
 
 class Ball {
     public:
-        Ball(std::string texturePath, glm::vec3 position, float radius, DrawBatches& drawBatches);
+        Ball(std::string texturePath, glm::vec3 position, float radius);
         ~Ball();
         
         void setPosition(glm::vec3 position);
@@ -21,11 +21,8 @@ class Ball {
         void hit();
         void update(float dt);
     private:
-        Eend::Sprite _sprite;
+        Eend::BillboardId _billboardId;
         Eend::CollisionSphere _collision;
-        
-        // camera should be included in draw batch
-        DrawBatches& _drawBatches;
 
         glm::vec3 _position;
         glm::vec3 _destination;

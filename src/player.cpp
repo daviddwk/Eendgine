@@ -21,8 +21,8 @@ Player::Player(std::vector<Eend::CollisionModel*>& collisionModels,
 {
     _modelId = Eend::EntityBatches::insertModel(modelPath);
     auto _modelRef = Eend::EntityBatches::getRefModel(_modelId);
-    _modelRef.setScale(glm::vec3(1.0f));
-    _modelRef.setPosition(position);
+    _modelRef->setScale(glm::vec3(1.0f));
+    _modelRef->setPosition(position);
 }
 
 Player::~Player() {
@@ -33,12 +33,12 @@ void Player::setPosition(glm::vec3 position) {
     _strikeCollision.setPosition(glm::vec3(position.x, position.y + _strikeOffset, position.z));
     _hitBox.setPosition(glm::vec3(position.x, position.y, position.z));
     auto _modelRef = Eend::EntityBatches::getRefModel(_modelId);
-    _modelRef.setPosition(glm::vec3(position.x, position.y + _modelOffset, position.z));
+    _modelRef->setPosition(glm::vec3(position.x, position.y + _modelOffset, position.z));
 }
 
 void Player::setRadians(glm::vec2 rotation) { 
     auto _modelRef = Eend::EntityBatches::getRefModel(_modelId);
-    _modelRef.setRadians(rotation.x, rotation.y); 
+    _modelRef->setRadians(rotation.x, rotation.y); 
 }
 
 void Player::update(float dt) {
@@ -70,7 +70,7 @@ void Player::update(float dt) {
         
         if (Eendgine::InputManager::upPress) {
             // TODO fix adjustment and find out where forward actually is
-            _modelRef.setRadians(_cameraRotation.x + (std::numbers::pi / 2), 0.0f);
+            _modelRef->setRadians(_cameraRotation.x + (std::numbers::pi / 2), 0.0f);
             _position.x -= (speed * cos(_cameraRotation.x)) * dt;
             _position.z -= (speed * sin(_cameraRotation.x)) * dt;
         }

@@ -1,5 +1,4 @@
 #include "ball.hpp"
-#include "drawBatches.hpp"
 
 #include <eendgine/random.hpp>
 #include <eendgine/textureCache.hpp>
@@ -10,24 +9,24 @@
 
 namespace Eend = Eendgine;
 
-Ball::Ball(std::string texturePath, glm::vec3 position, float radius, DrawBatches& drawBatches) :
+Ball::Ball(std::string texturePath, glm::vec3 position, float radius) :
     _position(position),
-    _sprite(texturePath),
-    _drawBatches(drawBatches),
     _collision(position, radius)
 {
-    _sprite.setPosition(glm::vec3(0.0f, 20.0f, 0.0f));
-    _sprite.setScale(radius, radius);
-    _drawBatches.insertFacing(&_sprite);
+    _billboardId = Eend::EntityBatches::insertBillboard({texturePath});
+    auto _billboardRef = Eend::EntityBatches::getRefBillboard(_billboardId);
+    _billboardRef->setPosition(glm::vec3(0.0f, 20.0f, 0.0f));
+    _billboardRef->setScale(radius, radius);
 }
 
 Ball::~Ball() {
-    _drawBatches.removeFacing(&_sprite);
+    Eend::EntityBatches::eraseBillboard(_billboardId);
 }
 
 void Ball::setPosition(glm::vec3 position) {
+    auto _billboardRef = Eend::EntityBatches::getRefBillboard(_billboardId);
     _position = position;
-    _sprite.setPosition(position);
+    _billboardRef->setPosition(position);
     _collision.setPosition(position);
 }
 

@@ -17,7 +17,6 @@
 #include <vector>
 #include <numbers>
 
-#include "drawBatches.hpp"
 #include "player.hpp"
 #include "ball.hpp"
 
@@ -50,17 +49,15 @@ int main(){
     //mySprite.setPosition(300.0f, 300.0f);
     //mySprite.setSize(100.0f, 100.0f);
     
-    DrawBatches drawBatches;
-
     std::vector<std::string> courtAnim;
     for (int i = 1; i <= 4; i++) {
         courtAnim.emplace_back("resources/court/court" + std::to_string(i) + ".obj");
     }
     
     Eend::AnimationId courtId = Eend::EntityBatches::insertAnimation(courtAnim);
-    auto& courtAnimation = Eend::EntityBatches::getRefAnimation(courtId);
-    courtAnimation.setPosition(glm::vec3(0.0f, -5.0f, 0.0f));
-    courtAnimation.setScale(glm::vec3(4.0f));
+    auto courtAnimation = Eend::EntityBatches::getRefAnimation(courtId);
+    courtAnimation->setPosition(glm::vec3(0.0f, -5.0f, 0.0f));
+    courtAnimation->setScale(glm::vec3(4.0f));
 
     Eend::AnimatedModel myAnimatedCourt(courtAnim);
     myAnimatedCourt.setPosition(glm::vec3(0.0f, -5.0f, 0.0f));
@@ -87,8 +84,7 @@ int main(){
             "resources/ost/ost.obj", sceneCamera,
             5.0f, 5.0f, 4.0f,
             10.0f, 10.0f);
-    Ball ball("resources/ost/diffuse_noeyes.png", glm::vec3(0.0f, 10.0f, 0.0f), 10.0f,
-            drawBatches);
+    Ball ball("resources/ost/diffuse_noeyes.png", glm::vec3(0.0f, 10.0f, 0.0f), 10.0f);
     Eend::Sprite testSprite("resources/ost/diffuse.png");
     //drawBatches.insert(&testSprite);
 
@@ -111,11 +107,11 @@ int main(){
         player.update(dt);
         ball.update(dt);
         
-        Eend::AnimatedModel &newAnimRef = newBatch.getRef(newAnimationId);
-        newAnimRef.setPosition(newAnimRef.getPosition() + 0.1f);
-        Eend::Sprite &newSpriteRef = newSpriteBatch.getRef(newSpriteId);
-        newSpriteRef.setScale(100.0f, 100.0f);
-        newSpriteRef.setPosition(glm::vec3(10.0f, 10.0f, 10.0f));
+        Eend::AnimatedModel *newAnimRef = newBatch.getRef(newAnimationId);
+        newAnimRef->setPosition(newAnimRef->getPosition() + 0.1f);
+        Eend::Sprite *newSpriteRef = newSpriteBatch.getRef(newSpriteId);
+        newSpriteRef->setScale(100.0f, 100.0f);
+        newSpriteRef->setPosition(glm::vec3(10.0f, 10.0f, 10.0f));
         
         Eend::EntityBatches::draw(shaders, hudCamera, sceneCamera);
         
