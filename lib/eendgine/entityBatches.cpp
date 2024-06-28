@@ -11,6 +11,6 @@ namespace Eendgine {
 
         glClear(GL_DEPTH_BUFFER_BIT);
 
-        _sprites.draw(shaders.getShader(Shader::sprite), hudCamera); 
+        _panels.draw(shaders.getShader(Shader::sprite), hudCamera); 
     }
 }

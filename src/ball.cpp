@@ -13,18 +13,18 @@ Ball::Ball(std::string texturePath, glm::vec3 position, float radius) :
     _position(position),
     _collision(position, radius)
 {
-    _billboardId = Eend::EntityBatches::insertBillboard({texturePath});
-    auto _billboardRef = Eend::EntityBatches::getRefBillboard(_billboardId);
+    _billboardId = Eend::EntityBatches::Billboard::insert({texturePath});
+    auto _billboardRef = Eend::EntityBatches::Billboard::getRef(_billboardId);
     _billboardRef->setPosition(glm::vec3(0.0f, 20.0f, 0.0f));
     _billboardRef->setScale(radius, radius);
 }
 
 Ball::~Ball() {
-    Eend::EntityBatches::eraseBillboard(_billboardId);
+    Eend::EntityBatches::Billboard::erase(_billboardId);
 }
 
 void Ball::setPosition(glm::vec3 position) {
-    auto _billboardRef = Eend::EntityBatches::getRefBillboard(_billboardId);
+    auto _billboardRef = Eend::EntityBatches::Billboard::getRef(_billboardId);
     _position = position;
     _billboardRef->setPosition(position);
     _collision.setPosition(position);

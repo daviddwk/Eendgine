@@ -54,8 +54,8 @@ int main(){
         courtAnim.emplace_back("resources/court/court" + std::to_string(i) + ".obj");
     }
     
-    Eend::AnimationId courtId = Eend::EntityBatches::insertAnimation(courtAnim);
-    auto courtAnimation = Eend::EntityBatches::getRefAnimation(courtId);
+    Eend::AnimationId courtId = Eend::EntityBatches::Animation::insert(courtAnim);
+    auto courtAnimation = Eend::EntityBatches::Animation::getRef(courtId);
     courtAnimation->setPosition(glm::vec3(0.0f, -5.0f, 0.0f));
     courtAnimation->setScale(glm::vec3(4.0f));
 
