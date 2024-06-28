@@ -54,12 +54,12 @@ int main(){
         courtAnim.emplace_back("resources/court/court" + std::to_string(i) + ".obj");
     }
     
-    Eend::AnimationId courtId = Eend::EntityBatches::Animation::insert(courtAnim);
-    auto courtAnimation = Eend::EntityBatches::Animation::getRef(courtId);
+    Eend::AnimationId courtId = Eend::Entities::AnimationBatch::insert(courtAnim);
+    auto courtAnimation = Eend::Entities::AnimationBatch::getRef(courtId);
     courtAnimation->setPosition(glm::vec3(0.0f, -5.0f, 0.0f));
     courtAnimation->setScale(glm::vec3(4.0f));
 
-    Eend::AnimatedModel myAnimatedCourt(courtAnim);
+    Eend::Animation myAnimatedCourt(courtAnim);
     myAnimatedCourt.setPosition(glm::vec3(0.0f, -5.0f, 0.0f));
     myAnimatedCourt.setScale(glm::vec3(4.0f));
     myAnimatedCourt.setAnim(0.0f);
@@ -69,7 +69,7 @@ int main(){
 
     Eend::EntityBatch<Eend::Sprite> newSpriteBatch;
     unsigned int newSpriteId = newSpriteBatch.insert("resources/ost/diffuse.png");
-    Eend::EntityBatch<Eend::AnimatedModel> newBatch;
+    Eend::EntityBatch<Eend::Animation> newBatch;
     unsigned int newAnimationId = newBatch.insert(courtAnim);
 
     Eend::CollisionModel myColCourt("resources/courtCol/courtHitbox.obj");
@@ -107,13 +107,13 @@ int main(){
         player.update(dt);
         ball.update(dt);
         
-        Eend::AnimatedModel *newAnimRef = newBatch.getRef(newAnimationId);
+        Eend::Animation *newAnimRef = newBatch.getRef(newAnimationId);
         newAnimRef->setPosition(newAnimRef->getPosition() + 0.1f);
         Eend::Sprite *newSpriteRef = newSpriteBatch.getRef(newSpriteId);
         newSpriteRef->setScale(100.0f, 100.0f);
         newSpriteRef->setPosition(glm::vec3(10.0f, 10.0f, 10.0f));
         
-        Eend::EntityBatches::draw(shaders, hudCamera, sceneCamera);
+        Eend::Entities::draw(shaders, hudCamera, sceneCamera);
         
         Eend::Screen::render(shaders.getShader(Eend::Shader::screen));
         Eend::InputManager::processInput();

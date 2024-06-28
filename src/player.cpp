@@ -19,30 +19,30 @@ Player::Player(std::vector<Eend::CollisionModel*>& collisionModels,
     _cameraDistance(60.0f),
     _collisionModels(collisionModels)
 {
-    _modelId = Eend::EntityBatches::Model::insert(modelPath);
-    auto _modelRef = Eend::EntityBatches::Model::getRef(_modelId);
+    _modelId = Eend::Entities::ModelBatch::insert(modelPath);
+    auto _modelRef = Eend::Entities::ModelBatch::getRef(_modelId);
     _modelRef->setScale(glm::vec3(1.0f));
     _modelRef->setPosition(position);
 }
 
 Player::~Player() {
-    Eend::EntityBatches::Model::erase(_modelId);
+    Eend::Entities::ModelBatch::erase(_modelId);
 }
 
 void Player::setPosition(glm::vec3 position) {
     _strikeCollision.setPosition(glm::vec3(position.x, position.y + _strikeOffset, position.z));
     _hitBox.setPosition(glm::vec3(position.x, position.y, position.z));
-    auto _modelRef = Eend::EntityBatches::Model::getRef(_modelId);
+    auto _modelRef = Eend::Entities::ModelBatch::getRef(_modelId);
     _modelRef->setPosition(glm::vec3(position.x, position.y + _modelOffset, position.z));
 }
 
 void Player::setRadians(glm::vec2 rotation) { 
-    auto _modelRef = Eend::EntityBatches::Model::getRef(_modelId);
+    auto _modelRef = Eend::Entities::ModelBatch::getRef(_modelId);
     _modelRef->setRadians(rotation.x, rotation.y); 
 }
 
 void Player::update(float dt) {
-    auto _modelRef = Eend::EntityBatches::Model::getRef(_modelId);
+    auto _modelRef = Eend::Entities::ModelBatch::getRef(_modelId);
     for(int i = 0; i < 4; i++) {
         float speed = 20.000f;
         // move based on input and gravity

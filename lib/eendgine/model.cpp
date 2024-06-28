@@ -5,7 +5,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 namespace Eendgine {
-    StaticModel::StaticModel(std::string modelPath) : 
+    Model::Model(std::string modelPath) : 
             _position(glm::vec3(0.0f)),
             _scale(glm::vec3(1.0f)),
             _rotation(glm::vec2(0.0f)),
@@ -37,7 +37,7 @@ namespace Eendgine {
         glEnableVertexAttribArray(3);
     }
 
-    void StaticModel::draw(uint shaderId, Camera3D &camera){
+    void Model::draw(uint shaderId, Camera3D &camera){
         // using RGB(1,0,1) for transparent
         // parts of the texture using shaders
         
@@ -62,7 +62,7 @@ namespace Eendgine {
 
     }
 
-    AnimatedModel::AnimatedModel(std::vector<std::string> modelPaths) :
+    Animation::Animation(std::vector<std::string> modelPaths) :
             _position(glm::vec3(0.0f)),
             _scale(glm::vec3(1.0f)),
             _rotation(glm::vec2(0.0f)),
@@ -103,7 +103,7 @@ namespace Eendgine {
         }
     }
 
-    void AnimatedModel::draw(uint shaderId, Camera3D &camera){
+    void Animation::draw(uint shaderId, Camera3D &camera){
         // using RGB(1,0,1) for transparent
         // parts of the texture using shaders
         glm::mat4 transform = glm::mat4(1.0f);

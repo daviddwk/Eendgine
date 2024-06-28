@@ -11,9 +11,9 @@
 #include <vector>
 
 namespace Eendgine {
-    class StaticModel {
+    class Model {
         public:
-            StaticModel(std::string modelPath);
+            Model(std::string modelPath);
             
             void setPosition(glm::vec3 position) { _position = position; };
             void setScale(glm::vec3 scale) { _scale = scale; };
@@ -43,9 +43,9 @@ namespace Eendgine {
             std::vector<Texture> _textures;
     };
 
-    class AnimatedModel {
+    class Animation {
         public:
-            AnimatedModel(std::vector<std::string> modelPaths);
+            Animation(std::vector<std::string> modelPaths);
 
             void setPosition(glm::vec3 position) { _position = position; };
             void setScale(glm::vec3 scale) { _scale = scale; };
