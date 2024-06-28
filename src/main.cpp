@@ -55,9 +55,9 @@ int main(){
     }
     
     Eend::AnimationId courtId = Eend::Entities::AnimationBatch::insert(courtAnim);
-    auto courtAnimation = Eend::Entities::AnimationBatch::getRef(courtId);
-    courtAnimation->setPosition(glm::vec3(0.0f, -5.0f, 0.0f));
-    courtAnimation->setScale(glm::vec3(4.0f));
+    Eend::Animation& courtAnimation = Eend::Entities::AnimationBatch::getRef(courtId);
+    courtAnimation.setPosition(glm::vec3(0.0f, -5.0f, 0.0f));
+    courtAnimation.setScale(glm::vec3(4.0f));
 
     Eend::Animation myAnimatedCourt(courtAnim);
     myAnimatedCourt.setPosition(glm::vec3(0.0f, -5.0f, 0.0f));
@@ -107,11 +107,11 @@ int main(){
         player.update(dt);
         ball.update(dt);
         
-        Eend::Animation *newAnimRef = newBatch.getRef(newAnimationId);
-        newAnimRef->setPosition(newAnimRef->getPosition() + 0.1f);
-        Eend::Sprite *newSpriteRef = newSpriteBatch.getRef(newSpriteId);
-        newSpriteRef->setScale(100.0f, 100.0f);
-        newSpriteRef->setPosition(glm::vec3(10.0f, 10.0f, 10.0f));
+        Eend::Animation& newAnimRef = newBatch.getRef(newAnimationId);
+        newAnimRef.setPosition(newAnimRef.getPosition() + 0.1f);
+        Eend::Sprite& newSpriteRef = newSpriteBatch.getRef(newSpriteId);
+        newSpriteRef.setScale(100.0f, 100.0f);
+        newSpriteRef.setPosition(glm::vec3(10.0f, 10.0f, 10.0f));
         
         Eend::Entities::draw(shaders, hudCamera, sceneCamera);
         

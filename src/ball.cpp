@@ -14,9 +14,9 @@ Ball::Ball(std::string texturePath, glm::vec3 position, float radius) :
     _collision(position, radius)
 {
     _billboardId = Eend::Entities::BillboardBatch::insert({texturePath});
-    auto _billboardRef = Eend::Entities::BillboardBatch::getRef(_billboardId);
-    _billboardRef->setPosition(glm::vec3(0.0f, 20.0f, 0.0f));
-    _billboardRef->setScale(radius, radius);
+    Eend::Sprite& billboardRef = Eend::Entities::BillboardBatch::getRef(_billboardId);
+    billboardRef.setPosition(glm::vec3(0.0f, 20.0f, 0.0f));
+    billboardRef.setScale(radius, radius);
 }
 
 Ball::~Ball() {
@@ -24,9 +24,9 @@ Ball::~Ball() {
 }
 
 void Ball::setPosition(glm::vec3 position) {
-    auto _billboardRef = Eend::Entities::BillboardBatch::getRef(_billboardId);
+    Eend::Sprite& billboardRef = Eend::Entities::BillboardBatch::getRef(_billboardId);
     _position = position;
-    _billboardRef->setPosition(position);
+    billboardRef.setPosition(position);
     _collision.setPosition(position);
 }
 

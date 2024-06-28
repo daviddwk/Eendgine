@@ -20,7 +20,7 @@ namespace Eendgine {
                         return _models.insert(modelPath); 
                     };
                     static void erase(ModelId id) { _models.erase(id); };
-                    static Model* getRef(ModelId id) { return _models.getRef(id); }
+                    static Model& getRef(ModelId id) { return _models.getRef(id); }
             };
             class AnimationBatch {
                 public:
@@ -28,7 +28,7 @@ namespace Eendgine {
                         return _animations.insert(modelPaths); 
                     };
                     static void erase(AnimationId id) { _animations.erase(id); };
-                    static Animation* getRef(AnimationId id) { return _animations.getRef(id); }
+                    static Animation& getRef(AnimationId id) { return _animations.getRef(id); }
             };
             class BillboardBatch {
                 public:
@@ -36,7 +36,7 @@ namespace Eendgine {
                         return _billboards.insert(texturePaths); 
                     };
                     static void erase(BillboardId id) { _billboards.erase(id); };
-                    static Sprite* getRef(BillboardId id) { return _billboards.getRef(id); }
+                    static Sprite& getRef(BillboardId id) { return _billboards.getRef(id); }
             };
             class PanelBatch {
                 public:
@@ -44,7 +44,7 @@ namespace Eendgine {
                         return _panels.insert(texturePaths); 
                     };
                     static void erase(PanelId id) { _panels.erase(id); };
-                    static Sprite* getRef(PanelId id) { return _panels.getRef(id); }
+                    static Sprite& getRef(PanelId id) { return _panels.getRef(id); }
             };
             static void draw(Shaders &shaders, Camera2D &hudCamera, Camera3D &sceneCamera);
         private:

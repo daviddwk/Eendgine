@@ -20,9 +20,9 @@ Player::Player(std::vector<Eend::CollisionModel*>& collisionModels,
     _collisionModels(collisionModels)
 {
     _modelId = Eend::Entities::ModelBatch::insert(modelPath);
-    auto _modelRef = Eend::Entities::ModelBatch::getRef(_modelId);
-    _modelRef->setScale(glm::vec3(1.0f));
-    _modelRef->setPosition(position);
+    Eend::Model& modelRef = Eend::Entities::ModelBatch::getRef(_modelId);
+    modelRef.setScale(glm::vec3(1.0f));
+    modelRef.setPosition(position);
 }
 
 Player::~Player() {
@@ -32,17 +32,17 @@ Player::~Player() {
 void Player::setPosition(glm::vec3 position) {
     _strikeCollision.setPosition(glm::vec3(position.x, position.y + _strikeOffset, position.z));
     _hitBox.setPosition(glm::vec3(position.x, position.y, position.z));
-    auto _modelRef = Eend::Entities::ModelBatch::getRef(_modelId);
-    _modelRef->setPosition(glm::vec3(position.x, position.y + _modelOffset, position.z));
+    Eend::Model& modelRef = Eend::Entities::ModelBatch::getRef(_modelId);
+    modelRef.setPosition(glm::vec3(position.x, position.y + _modelOffset, position.z));
 }
 
 void Player::setRadians(glm::vec2 rotation) { 
-    auto _modelRef = Eend::Entities::ModelBatch::getRef(_modelId);
-    _modelRef->setRadians(rotation.x, rotation.y); 
+    Eend::Model& modelRef = Eend::Entities::ModelBatch::getRef(_modelId);
+    modelRef.setRadians(rotation.x, rotation.y); 
 }
 
 void Player::update(float dt) {
-    auto _modelRef = Eend::Entities::ModelBatch::getRef(_modelId);
+    Eend::Model& modelRef = Eend::Entities::ModelBatch::getRef(_modelId);
     for(int i = 0; i < 4; i++) {
         float speed = 20.000f;
         // move based on input and gravity
@@ -70,7 +70,7 @@ void Player::update(float dt) {
         
         if (Eendgine::InputManager::upPress) {
             // TODO fix adjustment and find out where forward actually is
-            _modelRef->setRadians(_cameraRotation.x + (std::numbers::pi / 2), 0.0f);
+            modelRef.setRadians(_cameraRotation.x + (std::numbers::pi / 2), 0.0f);
             _position.x -= (speed * cos(_cameraRotation.x)) * dt;
             _position.z -= (speed * sin(_cameraRotation.x)) * dt;
         }
