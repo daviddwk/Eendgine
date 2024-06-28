@@ -5,18 +5,12 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 namespace Eendgine {
-    Model::Model(): 
+    StaticModel::StaticModel(std::string modelPath) : 
             _position(glm::vec3(0.0f)),
             _scale(glm::vec3(1.0f)),
             _rotation(glm::vec2(0.0f)),
-            _textureIdx(0)
-    {
-
-    }
-
-    StaticModel::StaticModel(std::string modelPath) : 
-                Model(),
-                _VAO(0), _VBO(0), _EBO(0)
+            _textureIdx(0),
+            _VAO(0), _VBO(0), _EBO(0)
     {
 
         loadModel(modelPath, _vertices, _indices, _textures);
@@ -69,11 +63,14 @@ namespace Eendgine {
     }
 
     AnimatedModel::AnimatedModel(std::vector<std::string> modelPaths) :
-                Model(),
-                _VAOs(modelPaths.size(), 0), _VBOs(modelPaths.size(), 0), _EBOs(modelPaths.size(), 0),
-                _vertices(modelPaths.size()),
-                _indices(modelPaths.size()),
-                _animScale(0.0f)
+            _position(glm::vec3(0.0f)),
+            _scale(glm::vec3(1.0f)),
+            _rotation(glm::vec2(0.0f)),
+            _textureIdx(0),
+            _VAOs(modelPaths.size(), 0), _VBOs(modelPaths.size(), 0), _EBOs(modelPaths.size(), 0),
+            _vertices(modelPaths.size()),
+            _indices(modelPaths.size()),
+            _animScale(0.0f)
     {
         for (int i = 0; i < modelPaths.size(); i++) {
             loadModel(modelPaths[i], modelPaths[i + 1 == modelPaths.size() ? 0 : i + 1],

@@ -38,7 +38,7 @@ namespace Eendgine {
                     static void erase(BillboardId id) { _billboards.erase(id); };
                     static Sprite* getRef(BillboardId id) { return _billboards.getRef(id); }
             };
-            class Icon {
+            class Panel {
                 public:
                     static PanelId insert(std::vector<std::string> texturePaths) { 
                         return _panels.insert(texturePaths); 
