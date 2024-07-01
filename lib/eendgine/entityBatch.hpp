@@ -49,28 +49,7 @@ namespace Eendgine {
             E& getRef(unsigned int id) {
                 return _entities[_indexMap[id]].entity;
             }
-
-            template<typename C>
-            void draw(ShaderProgram &shader, C &camera) {
-                sort();
-                shader.use();
-                glActiveTexture(GL_TEXTURE0);
-                std::string texName = "texture_diffuse";
-                glUniform1i(glGetUniformLocation(
-                            shader.getProgramID(), texName.c_str()), 0);
-                unsigned int lastTexture = 0;
-                unsigned int thisTexture = 0; 
-                for (auto ewi : _entities) {
-                    thisTexture = ewi.entity.getTexture(); 
-                    if (lastTexture != thisTexture) {
-                        glBindTexture(GL_TEXTURE_2D, thisTexture);
-                    }
-                    lastTexture = thisTexture;
-                    ewi.entity.draw(shader.getProgramID(), camera);
-                }
-                glBindTexture(GL_TEXTURE_2D, 0);
-            }
-        private:
+        protected:
             void sort() {
                 // sorted greatest to largest, so that we can move later elements
                 // to the end and erase them without effecting earlier elements
@@ -99,8 +78,35 @@ namespace Eendgine {
             //
             // vector so I can control when it sorts
             std::vector<entityLabeled<E>> _entities;
+        private:
             std::unordered_map<unsigned int, unsigned int> _indexMap;
             unsigned int _nextIdx = 0;
             std::vector<unsigned int> _toErase;
+    };
+
+    template<class E>
+    class DrawBatch : public EntityBatch<E> {
+        public:
+            template<typename C>
+            void draw(ShaderProgram &shader, C &camera) {
+                EntityBatch<E>::sort();
+                shader.use();
+                glActiveTexture(GL_TEXTURE0);
+                std::string texName = "texture_diffuse";
+                glUniform1i(glGetUniformLocation(
+                            shader.getProgramID(), texName.c_str()), 0);
+                unsigned int lastTexture = 0;
+                unsigned int thisTexture = 0; 
+                for (auto ewi : EntityBatch<E>::_entities) {
+                    thisTexture = ewi.entity.getTexture(); 
+                    if (lastTexture != thisTexture) {
+                        glBindTexture(GL_TEXTURE_2D, thisTexture);
+                    }
+                    lastTexture = thisTexture;
+                    ewi.entity.draw(shader.getProgramID(), camera);
+                }
+                glBindTexture(GL_TEXTURE_2D, 0);
+            }
+
     };
 }

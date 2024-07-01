@@ -1,6 +1,5 @@
 #pragma once
 
-#include "drawBatch.hpp"
 #include "shader.hpp"
 
 namespace Eendgine {
