@@ -78,10 +78,8 @@ namespace Eendgine {
         int modelNum = 0;
         std::string nextModelName = modelsDir.filename().string() + std::to_string(modelNum) + ".obj";
         auto modelPath = modelsDir / std::filesystem::path(nextModelName);
-        std::cout << modelPath << std::endl;
-        while (std::filesystem::exists(modelPath)) {
+        while (std::filesystem::is_regular_file(modelPath)) {
             modelPaths.push_back(modelPath.string());
-            std::cout << modelPath.string() << std::endl;
             modelNum++;
             nextModelName = modelsDir.filename().string() + std::to_string(modelNum) + ".obj";
             modelPath = modelsDir / std::filesystem::path(nextModelName);
@@ -94,7 +92,8 @@ namespace Eendgine {
         _indices.resize(modelPaths.size());
 
         for (int i = 0; i < modelPaths.size(); i++) {
-            loadModel(modelPaths[i], modelPaths[i + 1 == modelPaths.size() ? 0 : i + 1],
+            // use next model looping back to the first
+            loadModel(modelPaths[i], modelPaths[(i + 1) % modelPaths.size()],
                     _vertices[i], _indices[i], _textures);
 
             glGenVertexArrays(1, &_VAOs[i]);

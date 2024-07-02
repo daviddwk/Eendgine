@@ -4,7 +4,7 @@
 #include <glad/glad.h>
 
 namespace Eendgine {
-    Texture loadTexture(std::string filePath){
+    Texture loadTexture(std::filesystem::path filePath){
         int numChannels;
         Texture texture;
 
@@ -23,7 +23,7 @@ namespace Eendgine {
                     0, GL_RGB, texture.width, texture.height, 
                     0, GL_RGB, GL_UNSIGNED_BYTE, imageData);
         } else {
-            fatalError("Failed to load image" + filePath);
+            fatalError("Failed to load image" + filePath.string());
         }
         stbi_image_free(imageData);
         return texture;

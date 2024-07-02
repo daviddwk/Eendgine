@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include <filesystem>
 
 namespace Eendgine {
     struct Texture {
@@ -8,5 +9,5 @@ namespace Eendgine {
         int height = 0;
     }; 
 
-    Texture loadTexture(std::string filePath);
+    Texture loadTexture(std::filesystem::path filePath);
 }

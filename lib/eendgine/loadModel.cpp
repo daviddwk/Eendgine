@@ -1,14 +1,16 @@
 #include "loadModel.hpp"
 #include "fatalError.hpp"
 
-
 #include <iostream>
 
 namespace Eendgine {
  
-    void loadModel(std::string modelPath, std::vector<Vertex> &vertices,
+    void loadModel(
+            std::filesystem::path modelPath, 
+            std::vector<Vertex> &vertices,
             std::vector<unsigned int> &indices, 
-            std::vector<Texture> &textures) {
+            std::vector<Texture> &textures) 
+    {
         Assimp::Importer importer;
         const aiScene *scene = importer.ReadFile(modelPath, 
                 aiProcess_Triangulate | aiProcess_GenNormals);
@@ -16,7 +18,7 @@ namespace Eendgine {
             fatalError("failed to load model");
             return;
         }
-        std::string modelDir = modelPath.substr(0, modelPath.find_last_of('/'));
+        std::filesystem::path modelDir = modelPath.parent_path();
         std::vector<aiMesh*> aiMeshes;
         processNode(scene->mRootNode, scene, aiMeshes);
         unsigned int startIdx = 0;
@@ -27,7 +29,11 @@ namespace Eendgine {
         processTextures(modelDir, scene, textures);
     }
     
-    void loadModel(std::string modelPath, std::vector<Vertex> &vertices, std::vector<unsigned int> &indices) {
+    void loadModel(
+            std::filesystem::path modelPath, 
+            std::vector<Vertex> &vertices, 
+            std::vector<unsigned int> &indices) 
+    {
         Assimp::Importer importer;
         const aiScene *scene = importer.ReadFile(modelPath, 
                 aiProcess_Triangulate | aiProcess_GenNormals);
@@ -35,7 +41,7 @@ namespace Eendgine {
             fatalError("failed to load model");
             return;
         }
-        std::string modelDir = modelPath.substr(0, modelPath.find_last_of('/'));
+        std::string modelDir = modelPath.filename().string();
         std::vector<aiMesh*> aiMeshes;
         processNode(scene->mRootNode, scene, aiMeshes);
         unsigned int startIdx = 0;
@@ -45,22 +51,26 @@ namespace Eendgine {
         }
     }
 
-    void loadModel(std::string modelPath, std::string nextModelPath, 
-            std::vector<InpolVertex> &vertices, std::vector<unsigned int> &indices,
-            std::vector<Texture> &textures) {
+    void loadModel(
+            std::filesystem::path modelPath, 
+            std::filesystem::path nextModelPath, 
+            std::vector<InpolVertex> &vertices, 
+            std::vector<unsigned int> &indices,
+            std::vector<Texture> &textures) 
+    {
         Assimp::Importer importer;
         Assimp::Importer nextImporter;
         const aiScene *scene = importer.ReadFile(modelPath, aiProcess_Triangulate | aiProcess_GenNormals);
         const aiScene *nextScene = nextImporter.ReadFile(nextModelPath, aiProcess_Triangulate | aiProcess_GenNormals);
-        if (!scene) fatalError("failed to load model: could not load file " + modelPath);
-        if (!nextScene) fatalError("failed to load model: could not load file" + modelPath);
+        if (!scene) fatalError("failed to load model: could not load file " + modelPath.string());
+        if (!nextScene) fatalError("failed to load model: could not load file" + modelPath.string());
         if (scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE) fatalError ("failed to load model: scene flags incomplete");
         if (nextScene->mFlags & AI_SCENE_FLAGS_INCOMPLETE) fatalError("failed to load model: next scene flags incomplete");
         if (!scene->mRootNode) fatalError("failed to load model: missing mRootNode");
         if (!nextScene->mRootNode) fatalError("failed to load model: nextScene no root node");
 
         // assuming they are in the same directory here
-        std::string modelDir = modelPath.substr(0, modelPath.find_last_of('/'));
+        std::filesystem::path modelDir = modelPath.parent_path();
         std::vector<aiMesh*> aiMeshes;
         std::vector<aiMesh*> nextAiMeshes;
         processNode(scene->mRootNode, scene, aiMeshes);
@@ -144,14 +154,17 @@ namespace Eendgine {
         }
     }
 
-    void processTextures(std::string texDir, const aiScene *scene, 
-            std::vector<Texture> &textures){
+    void processTextures(
+            std::filesystem::path textureDir,
+            const aiScene *scene, 
+            std::vector<Texture> &textures)
+    {
         for (unsigned int i = 0; i < scene->mNumMaterials; i++){
             aiMaterial *material  = scene->mMaterials[i];
             for (unsigned int i = 0; i < material->GetTextureCount(aiTextureType_DIFFUSE); i++) {
                 aiString str;
                 material->GetTexture(aiTextureType_DIFFUSE, i, &str);
-                Texture texture = TextureCache::getTexture(texDir + '/' + (std::string)str.C_Str());
+                Texture texture = TextureCache::getTexture(textureDir / (std::filesystem::path)str.C_Str());
                 textures.push_back(texture);
             }
         }

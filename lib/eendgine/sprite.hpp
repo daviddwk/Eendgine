@@ -5,13 +5,14 @@
 #include "camera.hpp"
 #include <glm/glm.hpp>
 #include <vector>
+#include <filesystem>
 
 namespace Eendgine {
     // TODO combine these into one again
     class Sprite {
         public:
-            Sprite(std::string texturePath);
-            Sprite(std::vector<std::string> texturePaths);
+            Sprite(std::filesystem::path texturePath);
+            Sprite(std::vector<std::filesystem::path> texturePaths);
             std::vector<Texture>::size_type getNumTextures();
             void setTextureIdx(std::vector<Texture>::size_type textureIdx) 
                 { _textureIdx = (textureIdx < _textures.size()) ? textureIdx : 0; };
@@ -28,7 +29,7 @@ namespace Eendgine {
             void draw(uint shaderId, Camera2D &camera); 
             void draw(uint shaderId, Camera3D &camera); 
         protected:
-            void setup(std::vector<std::string> &texturePaths);
+            void setup(std::vector<std::filesystem::path> &texturePaths);
             glm::vec3 _position;
             glm::vec3 _size;
             float _rotation;

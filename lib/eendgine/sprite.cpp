@@ -7,18 +7,18 @@
 namespace Eendgine {
     
     // can remove the need for two different initializers using templating
-    Sprite::Sprite(std::string texturePath) :
+    Sprite::Sprite(std::filesystem::path texturePath) :
             _position(glm::vec3(0.0f)),
             _size(glm::vec3(1.0f)),
             _rotation(0.0f),
             _VAO(0),
             _textureIdx(0)
     {
-        std::vector<std::string> texturePaths{texturePath};
+        std::vector<std::filesystem::path> texturePaths{texturePath};
         setup(texturePaths);
     }
 
-    Sprite::Sprite(std::vector<std::string> texturePaths) :
+    Sprite::Sprite(std::vector<std::filesystem::path> texturePaths) :
             _position(glm::vec3(0.0f)),
             _size(glm::vec3(1.0f)),
             _rotation(0.0f),
@@ -28,7 +28,7 @@ namespace Eendgine {
         setup(texturePaths);
     }
     
-    void Sprite::setup(std::vector<std::string> &texturePaths) {
+    void Sprite::setup(std::vector<std::filesystem::path> &texturePaths) {
 
         _position = glm::vec3(0.0f);
         _size = glm::vec3(1.0f);

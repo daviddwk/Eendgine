@@ -4,7 +4,7 @@
 
 namespace Eendgine
 {
-    Texture TextureCache::getTexture(std::string texturePath) {
+    Texture TextureCache::getTexture(std::filesystem::path texturePath) {
         auto mapItr = _textureMap.find(texturePath);
         if (mapItr == _textureMap.end()) {
             Texture texture = loadTexture(texturePath);
