@@ -18,7 +18,7 @@ namespace Eendgine {
         public:
             class ModelBatch {
                 public:
-                    static ModelId insert(std::string modelPath) { 
+                    static ModelId insert(std::filesystem::path modelPath) { 
                         return _models.insert(modelPath); 
                     };
                     static void erase(ModelId id) { _models.erase(id); };
@@ -34,7 +34,7 @@ namespace Eendgine {
             };
             class BillboardBatch {
                 public:
-                    static BillboardId insert(std::vector<std::string> texturePaths) { 
+                    static BillboardId insert(std::vector<std::filesystem::path> texturePaths) { 
                         return _billboards.insert(texturePaths); 
                     };
                     static void erase(BillboardId id) { _billboards.erase(id); };
@@ -42,7 +42,7 @@ namespace Eendgine {
             };
             class PanelBatch {
                 public:
-                    static PanelId insert(std::vector<std::string> texturePaths) { 
+                    static PanelId insert(std::vector<std::filesystem::path> texturePaths) { 
                         return _panels.insert(texturePaths); 
                     };
                     static void erase(PanelId id) { _panels.erase(id); };
