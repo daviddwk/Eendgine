@@ -50,9 +50,9 @@ namespace Eendgine {
             };
             static void draw(Shaders &shaders, Camera2D &hudCamera, Camera3D &sceneCamera);
         private:
-            inline static DrawBatch<Model> _models;
-            inline static DrawBatch<Animation> _animations;
-            inline static DrawBatch<Sprite> _billboards;
-            inline static DrawBatch<Sprite> _panels;
+            inline static EntityBatch<Model> _models;
+            inline static EntityBatch<Animation> _animations;
+            inline static EntityBatch<Sprite> _billboards;
+            inline static EntityBatch<Sprite> _panels;
     };
 }
