@@ -2,6 +2,7 @@
 #include <glm/glm.hpp>
 #include <cmath>
 #include <string>
+#include <filesystem>
 #include <vector>
 #include <array>
 #include <optional>
@@ -77,7 +78,7 @@ namespace Eendgine {
 
     class CollisionModel {
         public:
-            CollisionModel(std::string modelPath);
+            CollisionModel(std::filesystem::path modelPath);
             void setPosition(glm::vec3 position) { _position = position; };
             void setScale(glm::vec3 scale) { _scale = scale; };
             glm::vec3 getPosition() { return _position; }; 

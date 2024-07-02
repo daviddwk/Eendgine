@@ -5,6 +5,7 @@
 #include <cmath>
 #include <tuple>
 #include <numeric>
+#include <filesystem>
 
 
 float sign (glm::vec3 p1, glm::vec3 p2, glm::vec3 p3);
@@ -46,7 +47,7 @@ namespace Eendgine {
             _radius(radius)
     {
     }
-    CollisionModel::CollisionModel(std::string modelPath) {
+    CollisionModel::CollisionModel(std::filesystem::path modelPath) {
         std::vector <Vertex> vertices;
         std::vector <unsigned int> indices;
         loadModel(modelPath, vertices, indices);

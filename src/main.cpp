@@ -20,7 +20,7 @@
 
 #include "player.hpp"
 #include "ball.hpp"
-
+#include "court.hpp"
 
 namespace Eend = Eendgine;
 
@@ -45,34 +45,21 @@ int main(){
     Eend::Camera3D sceneCamera((float)screenWidth / (float)screenHeight,
             glm::vec3(20.0f, 15.0f, 20.0f), glm::vec3(0.0f, 0.0f, 0.0f));
 
-
-    auto courtDir = std::filesystem::path("resources/court");
+    std::vector<Eend::CollisionModel*> myColModels;
     
-    Eend::AnimationId courtId = Eend::Entities::AnimationBatch::insert(courtDir);
-    Eend::Animation& courtAnimation = Eend::Entities::AnimationBatch::getRef(courtId);
-    courtAnimation.setPosition(glm::vec3(0.0f, -5.0f, 0.0f));
-    courtAnimation.setScale(glm::vec3(4.0f));
+    Court court(
+            std::filesystem::path("resources/court"),
+            std::filesystem::path("resources/courtCol/courtHitbox.obj"),
+            glm::vec3(0.0f, -5.0f, 0.0f), glm::vec3(4.0f), 0.5f,
+            myColModels);
 
-    Eend::EntityBatch<Eend::Sprite> newSpriteBatch;
-    unsigned int newSpriteId = newSpriteBatch.insert("resources/ost/diffuse.png");
-    Eend::EntityBatch<Eend::Animation> newBatch;
-    unsigned int newAnimationId = newBatch.insert(courtDir);
-
-    Eend::CollisionModel myColCourt("resources/courtCol/courtHitbox.obj");
-    myColCourt.setPosition(glm::vec3(0.0f, -5.0f, 0.0f));
-    myColCourt.setScale(glm::vec3(4.0f));
-    
-    std::vector<Eend::CollisionModel*> myColModels = {
-            &myColCourt};
-    
     Player player(myColModels,
             glm::vec3(0.0f, 100.0f, 0.0f),
             "resources/ost/ost.obj", sceneCamera,
             5.0f, 5.0f, 4.0f,
             10.0f, 10.0f);
+
     Ball ball("resources/ost/diffuse_noeyes.png", glm::vec3(0.0f, 10.0f, 0.0f), 10.0f);
-    Eend::Sprite testSprite("resources/ost/diffuse.png");
-    //drawBatches.insert(&testSprite);
 
     while(!Eend::InputManager::shouldClose){
         Eend::FrameLimiter::startInterval(); 
@@ -91,12 +78,7 @@ int main(){
 
         player.update(dt);
         ball.update(dt);
-        
-        Eend::Animation& newAnimRef = newBatch.getRef(newAnimationId);
-        newAnimRef.setPosition(newAnimRef.getPosition() + 0.1f);
-        Eend::Sprite& newSpriteRef = newSpriteBatch.getRef(newSpriteId);
-        newSpriteRef.setScale(100.0f, 100.0f);
-        newSpriteRef.setPosition(glm::vec3(10.0f, 10.0f, 10.0f));
+        court.update(dt);
         
         Eend::Entities::draw(shaders, hudCamera, sceneCamera);
         
