@@ -1,6 +1,7 @@
 #include "model.hpp"
 #include "shader.hpp"
 #include "loadModel.hpp"
+#include "fatalError.hpp"
 #include <glad/glad.h>
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -62,16 +63,36 @@ namespace Eendgine {
 
     }
 
-    Animation::Animation(std::vector<std::string> modelPaths) :
+    Animation::Animation(std::filesystem::path modelsDir) :
             _position(glm::vec3(0.0f)),
             _scale(glm::vec3(1.0f)),
             _rotation(glm::vec2(0.0f)),
             _textureIdx(0),
-            _VAOs(modelPaths.size(), 0), _VBOs(modelPaths.size(), 0), _EBOs(modelPaths.size(), 0),
-            _vertices(modelPaths.size()),
-            _indices(modelPaths.size()),
             _animScale(0.0f)
     {
+        std::vector<std::string> modelPaths;
+
+        if (!std::filesystem::is_directory(modelsDir)) {
+            fatalError("animation dir not a dir"); 
+        }
+        int modelNum = 0;
+        std::string nextModelName = modelsDir.filename().string() + std::to_string(modelNum) + ".obj";
+        auto modelPath = modelsDir / std::filesystem::path(nextModelName);
+        std::cout << modelPath << std::endl;
+        while (std::filesystem::exists(modelPath)) {
+            modelPaths.push_back(modelPath.string());
+            std::cout << modelPath.string() << std::endl;
+            modelNum++;
+            nextModelName = modelsDir.filename().string() + std::to_string(modelNum) + ".obj";
+            modelPath = modelsDir / std::filesystem::path(nextModelName);
+        }
+
+        _VAOs.resize(modelPaths.size(), 0);
+        _VBOs.resize(modelPaths.size(), 0);
+        _EBOs.resize(modelPaths.size(), 0);
+        _vertices.resize(modelPaths.size());
+        _indices.resize(modelPaths.size());
+
         for (int i = 0; i < modelPaths.size(); i++) {
             loadModel(modelPaths[i], modelPaths[i + 1 == modelPaths.size() ? 0 : i + 1],
                     _vertices[i], _indices[i], _textures);

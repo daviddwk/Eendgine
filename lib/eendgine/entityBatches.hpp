@@ -6,6 +6,8 @@
 #include "camera.hpp"
 #include "shaders.hpp"
 
+#include <filesystem>
+
 
 namespace Eendgine {
     using ModelId = unsigned int;
@@ -24,8 +26,8 @@ namespace Eendgine {
             };
             class AnimationBatch {
                 public:
-                    static AnimationId insert(std::vector<std::string> modelPaths) { 
-                        return _animations.insert(modelPaths); 
+                    static AnimationId insert(std::filesystem::path modelsDir) { 
+                        return _animations.insert(modelsDir); 
                     };
                     static void erase(AnimationId id) { _animations.erase(id); };
                     static Animation& getRef(AnimationId id) { return _animations.getRef(id); }

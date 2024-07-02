@@ -9,6 +9,7 @@
 #include <glm/glm.hpp>
 #include <string>
 #include <vector>
+#include <filesystem>
 
 namespace Eendgine {
     class Model {
@@ -45,7 +46,7 @@ namespace Eendgine {
 
     class Animation {
         public:
-            Animation(std::vector<std::string> modelPaths);
+            Animation(std::filesystem::path modelsDir);
 
             void setPosition(glm::vec3 position) { _position = position; };
             void setScale(glm::vec3 scale) { _scale = scale; };

@@ -16,6 +16,7 @@
 
 #include <vector>
 #include <numbers>
+#include <filesystem>
 
 #include "player.hpp"
 #include "ball.hpp"
@@ -44,33 +45,18 @@ int main(){
     Eend::Camera3D sceneCamera((float)screenWidth / (float)screenHeight,
             glm::vec3(20.0f, 15.0f, 20.0f), glm::vec3(0.0f, 0.0f, 0.0f));
 
+
+    auto courtDir = std::filesystem::path("resources/court");
     
-    //Eend::Sprite2D mySprite(myTextureCache.getTexture("resources/ost/diffuse.png"), myCamera);
-    //mySprite.setPosition(300.0f, 300.0f);
-    //mySprite.setSize(100.0f, 100.0f);
-    
-    std::vector<std::string> courtAnim;
-    for (int i = 1; i <= 4; i++) {
-        courtAnim.emplace_back("resources/court/court" + std::to_string(i) + ".obj");
-    }
-    
-    Eend::AnimationId courtId = Eend::Entities::AnimationBatch::insert(courtAnim);
+    Eend::AnimationId courtId = Eend::Entities::AnimationBatch::insert(courtDir);
     Eend::Animation& courtAnimation = Eend::Entities::AnimationBatch::getRef(courtId);
     courtAnimation.setPosition(glm::vec3(0.0f, -5.0f, 0.0f));
     courtAnimation.setScale(glm::vec3(4.0f));
 
-    Eend::Animation myAnimatedCourt(courtAnim);
-    myAnimatedCourt.setPosition(glm::vec3(0.0f, -5.0f, 0.0f));
-    myAnimatedCourt.setScale(glm::vec3(4.0f));
-    myAnimatedCourt.setAnim(0.0f);
-    
-    //myRenderBatch.insertModel(&myAnimatedCourt);
-    //drawBatches.insertAnimation(&myAnimatedCourt); 
-
     Eend::EntityBatch<Eend::Sprite> newSpriteBatch;
     unsigned int newSpriteId = newSpriteBatch.insert("resources/ost/diffuse.png");
     Eend::EntityBatch<Eend::Animation> newBatch;
-    unsigned int newAnimationId = newBatch.insert(courtAnim);
+    unsigned int newAnimationId = newBatch.insert(courtDir);
 
     Eend::CollisionModel myColCourt("resources/courtCol/courtHitbox.obj");
     myColCourt.setPosition(glm::vec3(0.0f, -5.0f, 0.0f));
@@ -96,7 +82,6 @@ int main(){
 
         float dt = Eend::FrameLimiter::deltaTime / 4;
         if (dt > 1.0f / 60.0f) dt = 1.0f / 60.0f;
-        myAnimatedCourt.setAnim(myAnimatedCourt.getAnim() + (0.2f * dt));
         
         glm::vec3 debugPlayerStrike = player.getStrikeCollision().getPosition();
         glm::vec3 debugBallStrike = player.getPosition();
