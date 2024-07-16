@@ -28,7 +28,7 @@ namespace Eendgine {
 
             void draw(uint shaderId, Camera2D &camera); 
             void draw(uint shaderId, Camera3D &camera); 
-        protected:
+        private:
             void setup(std::vector<std::filesystem::path> &texturePaths);
             glm::vec3 _position;
             glm::vec3 _size;
