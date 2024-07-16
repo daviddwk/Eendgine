@@ -25,3 +25,4 @@ set_target_properties(
         RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}"
 )
 target_link_libraries(game eendgine SDL2 assimp stb glad)
+target_compile_options(game PRIVATE -Wall)
