@@ -6,6 +6,7 @@
 #include <tuple>
 #include <numeric>
 #include <filesystem>
+#include <omp.h>
 
 
 float sign (glm::vec3 p1, glm::vec3 p2, glm::vec3 p3);
@@ -107,7 +108,6 @@ namespace Eendgine {
 
     std::optional<glm::vec3> pushCylinderFromWall(CollisionCylinder &c, CollisionTriangle &t) {
         glm::vec3 cylinderPos = c.getPosition();
-        bool collision = false;
         glm::vec3 triNormal = t.getNormal();
         std::array<glm::vec3, 3> triVerts = t.getVerts();
         // vector from cylinder to any point on triangle
@@ -151,11 +151,12 @@ namespace Eendgine {
         float floorHeight = cylinderHeight; 
 
         for (auto m : models) {
+            #pragma omp parallel for
             for (auto& t : m->getTris()) {
                 switch (t.getSurface()) {
                     case CollisionTriangle::surface::floor:
-                        // TODO FIX MAKE RETURN BOOL AND HEIGHT POINTER
                         if (auto tmpFloorHeight = snapCylinderToFloor(c, t)) {
+                            #pragma omp critical
                             if (*tmpFloorHeight > floorHeight) {
                                 hitFloor = *tmpFloorHeight;
                             }
@@ -163,17 +164,20 @@ namespace Eendgine {
                         break;
                     case CollisionTriangle::surface::wall:
                         if (auto tmpWallOffset = pushCylinderFromWall(c, t)) {
-                            numWalls++;
-                            if (hitWall) {
-                                hitWall = (*tmpWallOffset + hitWall.value());
-                            } else {
-                                hitWall = *tmpWallOffset;
+                            #pragma omp critical 
+                            {
+                                numWalls++;
+                                if (hitWall) {
+                                    hitWall = (*tmpWallOffset + hitWall.value());
+                                } else {
+                                    hitWall = *tmpWallOffset;
+                                }
                             }
-                            //
                         }
                         break;
                     case CollisionTriangle::surface::ceiling:
                         if (auto tmpCeilingHeight = pushCylinderFromCeiling(c, t)) {
+                            #pragma omp critical
                             if (*tmpCeilingHeight < ceilingHeight) {
                                 hitCeiling = *tmpCeilingHeight;
                             }

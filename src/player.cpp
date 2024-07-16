@@ -1,6 +1,8 @@
 #include "player.hpp"
 #include <eendgine/inputManager.hpp>
-
+// DEBUG
+#include <chrono>
+#include <numeric>
 namespace Eend = Eendgine;
 
 Player::Player(std::vector<Eend::CollisionModel*>& collisionModels,
@@ -96,10 +98,23 @@ void Player::update(float dt) {
         _position.y += _fallVelocity * dt;
         // adjust for collisions
         _hitBox.setPosition(glm::vec3(_position.x, _position.y, _position.z));
-        bool hitWall = false;
-        bool hitCeiling = false;
-        bool hitFloor = false;
+        // DEBUG
+        /*
+        auto begin_col = std::chrono::high_resolution_clock::now();
+        */
         Eend::CollisionResults colResults = Eend::adjustToCollision(_hitBox, _collisionModels);
+        /*
+        auto end_col = std::chrono::high_resolution_clock::now();
+        static int avg_iter = 0;
+        static std::array<int, 1000> avg_array;
+        avg_array[avg_iter] = std::chrono::duration_cast<std::chrono::nanoseconds>(end_col - begin_col).count();  
+        avg_iter++;
+        if (avg_iter == avg_array.size()) avg_iter = 0;
+        std::cout << std::chrono::duration_cast<std::chrono::nanoseconds>(end_col - begin_col).count() << std::endl;
+        std::cout << std::accumulate(avg_array.begin(), avg_array.end(), 0) / avg_array.size() << "ns" << std::endl;
+        */
+        // DEBUG
+
         if (auto floorHeight = colResults.floor) {
             _position.y = *floorHeight;
             if(_fallVelocity < 0) _fallVelocity = 0;
