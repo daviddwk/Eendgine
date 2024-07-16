@@ -32,7 +32,8 @@
 - cmake
 - SDL2
 - assimp
-- glad 
+- glad
+- OpenMP
 
 Glad files need to be generated for your system. See lib/glad/README.txt
 
