@@ -105,8 +105,8 @@ namespace Eendgine {
     bool colliding(CollisionSphere s1, CollisionSphere s2, glm::vec3 *penetration);
     bool colliding(CollisionSphere s, CollisionPlane p, glm::vec3 *penetration);
     
-    std::optional<float> snapCylinderToFloor(CollisionCylinder &c, CollisionTriangle &t);
-    std::optional<glm::vec3> pushCylinderFromWall(CollisionCylinder &c, CollisionTriangle &t);
+    float snapCylinderToFloor(CollisionCylinder &c, CollisionTriangle &t);
+    glm::vec3 pushCylinderFromWall(CollisionCylinder &c, CollisionTriangle &t);
     std::optional<float> pushCylinderFromCeiling(CollisionCylinder &c, CollisionTriangle &t);
     CollisionResults adjustToCollision(CollisionCylinder &c, std::vector<CollisionModel*> &models);
 }

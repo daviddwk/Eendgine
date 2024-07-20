@@ -7,6 +7,7 @@
 #include <numeric>
 #include <filesystem>
 #include <omp.h>
+#include <iostream>
 
 
 float sign (glm::vec3 p1, glm::vec3 p2, glm::vec3 p3);
@@ -91,7 +92,7 @@ namespace Eendgine {
     } 
     
 
-    std::optional<float> snapCylinderToFloor(CollisionCylinder &c, CollisionTriangle &t) {
+    float snapCylinderToFloor(CollisionCylinder &c, CollisionTriangle &t) {
         glm::vec3 cylinderPos = c.getPosition();
         std::array<glm::vec3, 3> triVerts = t.getVerts();
         //TODO make not hardcoded like this
@@ -100,13 +101,13 @@ namespace Eendgine {
             float triHeight = pointHeightOnTri(triVerts[0], triVerts[1], triVerts[2], cylinderPos.x, cylinderPos.z);
             // if slightly above floor OR clipping into floor
             if (cylinderPos.y - triHeight <= snapDistance) {
-                return { triHeight + snapDistance };
+                return (triHeight + snapDistance) - cylinderPos.y;
             }
         }
-        return {};
+        return -1000000.0f;
     }
 
-    std::optional<glm::vec3> pushCylinderFromWall(CollisionCylinder &c, CollisionTriangle &t) {
+    glm::vec3 pushCylinderFromWall(CollisionCylinder &c, CollisionTriangle &t) {
         glm::vec3 cylinderPos = c.getPosition();
         glm::vec3 triNormal = t.getNormal();
         std::array<glm::vec3, 3> triVerts = t.getVerts();
@@ -119,9 +120,9 @@ namespace Eendgine {
         // move to the face which the normal vector points toward
         if (vertOnTri(projection + cylinderPos, t.getVerts()) && glm::length(projection) < c.getRadius()) {
             float pushLength = c.getRadius() - glm::length(projection);
-            return {cylinderPos + (pushLength * triNormal)};
+            return pushLength * triNormal;
         }
-        return {};
+        return glm::vec3(0.0f);
     }
     
     std::optional<float> pushCylinderFromCeiling(CollisionCylinder &c, CollisionTriangle &t) {
@@ -140,8 +141,9 @@ namespace Eendgine {
     }
 
     CollisionResults adjustToCollision(CollisionCylinder &c, std::vector<CollisionModel*> &models) {
-        std::optional<float> hitFloor = {};
-        std::optional<glm::vec3> hitWall = {}; 
+        float hitFloor = -1000000.0f;
+        float hitWallX = 0.0f; 
+        float hitWallZ = 0.0f; 
         std::optional<float> hitCeiling = {}; 
 
         int numWalls = 0;
@@ -149,35 +151,34 @@ namespace Eendgine {
         float cylinderHeight = c.getPosition().y;
         float ceilingHeight = cylinderHeight;
         float floorHeight = cylinderHeight; 
+        
+        float tmpFloorHeight = 0.0f;
+        glm::vec3 tmpWallOffset(0.0f);
 
         for (auto m : models) {
-            #pragma omp parallel for
+            #pragma omp parallel for private(tmpFloorHeight, tmpWallOffset) \
+            reduction(+:numWalls, hitWallX, hitWallZ) reduction(max: hitFloor)
             for (auto& t : m->getTris()) {
                 switch (t.getSurface()) {
                     case CollisionTriangle::surface::floor:
-                        if (auto tmpFloorHeight = snapCylinderToFloor(c, t)) {
-                            #pragma omp critical
-                            if (*tmpFloorHeight > floorHeight) {
-                                hitFloor = *tmpFloorHeight;
-                            }
-                        };
+                        tmpFloorHeight = snapCylinderToFloor(c, t);
+                        if (tmpFloorHeight > floorHeight) {
+                            hitFloor = tmpFloorHeight;
+                        }
                         break;
                     case CollisionTriangle::surface::wall:
-                        if (auto tmpWallOffset = pushCylinderFromWall(c, t)) {
-                            #pragma omp critical 
-                            {
-                                numWalls++;
-                                if (hitWall) {
-                                    hitWall = (*tmpWallOffset + hitWall.value());
-                                } else {
-                                    hitWall = *tmpWallOffset;
-                                }
-                            }
+                        tmpWallOffset = pushCylinderFromWall(c, t);
+                        if (tmpWallOffset != glm::vec3(0.0f)) {
+                            numWalls++;
+                        } else {
+                            numWalls += 0;
                         }
+                        hitWallX += tmpWallOffset.x;
+                        hitWallZ += tmpWallOffset.z;
                         break;
                     case CollisionTriangle::surface::ceiling:
                         if (auto tmpCeilingHeight = pushCylinderFromCeiling(c, t)) {
-                            #pragma omp critical
+                            //#pragma omp critical
                             if (*tmpCeilingHeight < ceilingHeight) {
                                 hitCeiling = *tmpCeilingHeight;
                             }
@@ -186,12 +187,14 @@ namespace Eendgine {
                 }
             }
         }
-        if (hitWall) {
-            hitWall = hitWall.value() / (float)numWalls;
+        if (numWalls){
+            hitWallX /= (float)numWalls;
+            hitWallZ /= (float)numWalls;
         }
+        std::cout << numWalls << std::endl;
         return CollisionResults{
-            hitFloor,
-            hitWall,
+            hitFloor == -1000000.0f ? std::nullopt : std::optional(hitFloor),
+            std::optional(glm::vec3(hitWallX, 0.0f, hitWallZ)),
             hitCeiling
         }; 
     }

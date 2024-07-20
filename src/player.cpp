@@ -99,11 +99,11 @@ void Player::update(float dt) {
         // adjust for collisions
         _hitBox.setPosition(glm::vec3(_position.x, _position.y, _position.z));
         // DEBUG
-        /*
+        
         auto begin_col = std::chrono::high_resolution_clock::now();
-        */
+        
         Eend::CollisionResults colResults = Eend::adjustToCollision(_hitBox, _collisionModels);
-        /*
+        
         auto end_col = std::chrono::high_resolution_clock::now();
         static int avg_iter = 0;
         static std::array<int, 1000> avg_array;
@@ -112,11 +112,11 @@ void Player::update(float dt) {
         if (avg_iter == avg_array.size()) avg_iter = 0;
         std::cout << std::chrono::duration_cast<std::chrono::nanoseconds>(end_col - begin_col).count() << std::endl;
         std::cout << std::accumulate(avg_array.begin(), avg_array.end(), 0) / avg_array.size() << "ns" << std::endl;
-        */
+        
         // DEBUG
 
         if (auto floorHeight = colResults.floor) {
-            _position.y = *floorHeight;
+            _position.y += *floorHeight;
             if(_fallVelocity < 0) _fallVelocity = 0;
         } else if (auto ceilingHeight = colResults.ceiling) {
             _position.y = *ceilingHeight;
@@ -124,8 +124,8 @@ void Player::update(float dt) {
         } else {
         }
         if (auto wallOffset = colResults.wall) {
-            _position.x = wallOffset->x;
-            _position.z = wallOffset->z;
+            _position.x += wallOffset->x;
+            _position.z += wallOffset->z;
         }
         setPosition(glm::vec3(_position.x, _position.y, _position.z));
     }  
