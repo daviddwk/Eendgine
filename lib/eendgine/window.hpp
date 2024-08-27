@@ -19,6 +19,8 @@ namespace Eendgine {
             inline static int deltaMouseX = 0;
             inline static int deltaMouseY = 0;
         private:
+            static void framebuffer_size_callback(GLFWwindow* window, int width, int height);
+            static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
             inline static int _width = 0;
             inline static int _height = 0;
             inline static GLFWwindow* _window = nullptr;

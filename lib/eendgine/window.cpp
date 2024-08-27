@@ -2,9 +2,9 @@
 #include <GLFW/glfw3.h>
 #include <iostream>
 
-void framebuffer_size_callback(GLFWwindow* window, int width, int height);
-
 namespace Eendgine {
+    void framebuffer_size_callback(GLFWwindow* window, int width, int height);
+    //void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
 
     void Window::init(int width, int height, std::string name) {
         _width = width;
@@ -32,6 +32,7 @@ namespace Eendgine {
             std::cout << "Failed to initialize GLAD" << std::endl;
         }  
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+        //glfwSetKeyCallback(window, key_callback);
     }
 
     void Window::swapBuffers() {
@@ -50,6 +51,8 @@ namespace Eendgine {
         downPress  = glfwGetKey(_window, GLFW_KEY_DOWN);
         spacePress = glfwGetKey(_window, GLFW_KEY_SPACE);
 
+        shouldClose = glfwGetKey(_window, GLFW_KEY_Q);
+
         double posMouseX, posMouseY;
         glfwGetCursorPos(_window, &posMouseX, &posMouseY);
 
@@ -58,8 +61,17 @@ namespace Eendgine {
         _posMouseX = posMouseX;
         _posMouseY = posMouseY;
     }
+    
+    void Window::framebuffer_size_callback(GLFWwindow* window, int width, int height) {
+        glViewport(0, 0, width, height);
+    }
+
+    /*
+    void Window::key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+        if (key == GLFW_KEY_Q) {
+             shouldClose = true;
+        }
+    }
+    */
 }
 
-void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
-    glViewport(0, 0, width, height);
-}
