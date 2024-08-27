@@ -1,5 +1,5 @@
 #include "player.hpp"
-#include <eendgine/inputManager.hpp>
+#include <eendgine/window.hpp>
 // DEBUG
 #include <chrono>
 #include <numeric>
@@ -48,8 +48,8 @@ void Player::update(float dt) {
     for(int i = 0; i < 4; i++) {
         float speed = 20.000f;
         // move based on input and gravity
-        _cameraRotation.x += Eend::InputManager::deltaMouseX / 100.0f;
-        _cameraRotation.y += Eend::InputManager::deltaMouseY / 100.0f;
+        _cameraRotation.x += Eend::Window::deltaMouseX / 100.0f;
+        _cameraRotation.y += Eend::Window::deltaMouseY / 100.0f;
 
         // so that this number doesn't grow out of control and lose accuracy it loops at 2pi
         while (_cameraRotation.x > std::numbers::pi) {
@@ -70,25 +70,25 @@ void Player::update(float dt) {
             _fallVelocity -= 1.0f;
         }
         
-        if (Eendgine::InputManager::upPress) {
+        if (Eendgine::Window::upPress) {
             // TODO fix adjustment and find out where forward actually is
             modelRef.setRadians(_cameraRotation.x + (std::numbers::pi / 2), 0.0f);
             _position.x -= (speed * cos(_cameraRotation.x)) * dt;
             _position.z -= (speed * sin(_cameraRotation.x)) * dt;
         }
-        if (Eendgine::InputManager::downPress) {
+        if (Eendgine::Window::downPress) {
             _position.x += (speed * cos(_cameraRotation.x)) * dt;
             _position.z += (speed * sin(_cameraRotation.x)) * dt;
         }
-        if (Eendgine::InputManager::leftPress) {
+        if (Eendgine::Window::leftPress) {
             _position.x -= (speed * sin(_cameraRotation.x)) * dt;
             _position.z += (speed * cos(_cameraRotation.x)) * dt;
         }
-        if (Eendgine::InputManager::rightPress) {
+        if (Eendgine::Window::rightPress) {
             _position.x += (speed * sin(_cameraRotation.x)) * dt;
             _position.z -= (speed * cos(_cameraRotation.x)) * dt;
         }
-        if (Eendgine::InputManager::spacePress) {
+        if (Eendgine::Window::spacePress) {
             _fallVelocity = 25;
             _strike = true;
         } else {

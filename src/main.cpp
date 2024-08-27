@@ -32,8 +32,7 @@ int main(){
     Eend::Screen::init(screenWidth, screenHeight);
     Eend::FrameLimiter::setFPS(30.0f);
     glEnable(GL_DEPTH_TEST);
-
-    
+ 
     Eend::ShaderProgram newShader("shaders/shader3D.vert", "shaders/shader3D.frag");
     Eend::Shaders shaders(
             Eend::ShaderProgram("shaders/shader.vert", "shaders/shader.frag"),
@@ -44,7 +43,7 @@ int main(){
     Eend::Camera2D hudCamera(screenWidth, screenHeight);
     Eend::Camera3D sceneCamera((float)screenWidth / (float)screenHeight,
             glm::vec3(20.0f, 15.0f, 20.0f), glm::vec3(0.0f, 0.0f, 0.0f));
-
+    
     std::vector<Eend::CollisionModel*> myColModels;
     
     Court court(
@@ -61,7 +60,7 @@ int main(){
 
     Ball ball("resources/ost/diffuse_noeyes.png", glm::vec3(0.0f, 10.0f, 0.0f), 10.0f);
 
-    while(!Eend::InputManager::shouldClose){
+    while(!Eend::Window::shouldClose){
         Eend::FrameLimiter::startInterval(); 
         Eend::Screen::bind();
 
@@ -83,7 +82,7 @@ int main(){
         Eend::Entities::draw(shaders, hudCamera, sceneCamera);
         
         Eend::Screen::render(shaders.getShader(Eend::Shader::screen));
-        Eend::InputManager::processInput();
+        Eend::Window::processInput();
         Eend::Window::swapBuffers(); 
         Eend::FrameLimiter::stopInterval();
     }

@@ -9,5 +9,5 @@ file(GLOB_RECURSE SOURCES "*.cpp" "*.hpp")
 add_library(eendgine ${SOURCES})
 
 
-target_compile_options(eendgine PRIVATE -Wall ${OpenMP_CXX_FLAGS})
-target_link_libraries(eendgine PRIVATE ${OpenMP_CXX_FLAGS})
+target_compile_options(eendgine PRIVATE -Wall -lglfw -lGL  ${OpenMP_CXX_FLAGS})
+target_link_libraries(eendgine PRIVATE -lglfw -lGL  ${OpenMP_CXX_FLAGS})

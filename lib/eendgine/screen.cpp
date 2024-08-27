@@ -1,6 +1,6 @@
 #include "screen.hpp"
 #include "shader.hpp"
-#include <glad/glad.h>
+#include <GLFW/glfw3.h>
 #include <iostream>
 
 namespace Eendgine {

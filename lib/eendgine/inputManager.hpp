@@ -1,7 +1,7 @@
 #pragma once
-#include <SDL2/SDL.h>
 
 namespace Eendgine {
+    /*
     class InputManager {
         public:
             static void processInput();
@@ -16,4 +16,5 @@ namespace Eendgine {
             inline static int deltaMouseY = 0;
         private:
     };
+    */
 }
