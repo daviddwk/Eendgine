@@ -14,6 +14,10 @@ namespace Eendgine {
         _startTime = glfwGetTime();
     }
 
+    float FrameLimiter::getIntervalTime() {
+        return glfwGetTime() - _startTime;
+    }
+
     float FrameLimiter::stopInterval() {
         const float intervalTime = glfwGetTime() - _startTime;
         const float frameTime = 1.0f / _fps;

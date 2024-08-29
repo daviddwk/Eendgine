@@ -12,6 +12,7 @@ namespace Eendgine {
     }
     
     void Info::registerInt(const std::string& name, const std::uint32_t options) {
+        if (_registeredInts.contains(name)) return;
         _registeredInts[name] = registeredInt {
             0,       // value
             options, // options
@@ -21,6 +22,7 @@ namespace Eendgine {
     }
     
     void Info::registerFloat(const std::string& name, const std::uint32_t options) {
+        if (_registeredFloats.contains(name)) return;
         _registeredFloats[name] = registeredFloat {
             0.0f,    // value
             options, // options
@@ -30,6 +32,7 @@ namespace Eendgine {
     }    
     
     void Info::updateInt(const std::string& name, int updatedValue) {
+        if (!_registeredInts.contains(name)) return;
         auto tmp_reg = _registeredInts[name];
         if (tmp_reg.options & INFO_OPTION_AVERAGE) {
             if (tmp_reg.count != 0) {
@@ -44,6 +47,7 @@ namespace Eendgine {
     }
     
     void Info::updateFloat(const std::string& name, float updatedValue) {
+        if (!_registeredFloats.contains(name)) return;
         auto tmp_reg = _registeredFloats[name];
         if (tmp_reg.options & INFO_OPTION_AVERAGE) {
             if (tmp_reg.count != 0) {

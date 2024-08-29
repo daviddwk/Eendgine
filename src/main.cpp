@@ -29,6 +29,17 @@ const unsigned int screenHeight = 750;
 const unsigned int screenWidth = 1000; 
 
 int main(){
+    // DEBUG
+    Eend::Info::registerFloat("dt", INFO_OPTION_AVERAGE);
+    Eend::Info::registerFloat("frame time", 0);
+    Eend::Info::registerFloat("strike time", 0);
+    Eend::Info::registerFloat("player time", 0);
+    Eend::Info::registerFloat("court time", 0);
+    Eend::Info::registerFloat("ball time", 0);
+    Eend::Info::registerFloat("draw time", 0);
+    Eend::Info::registerFloat("render time", 0);
+    //
+    
     Eend::Window::init(screenWidth, screenHeight, "Quack"); 
     Eend::Screen::init(screenWidth, screenHeight);
     Eend::Info::init();
@@ -62,9 +73,8 @@ int main(){
 
     Ball ball("resources/ost/diffuse_noeyes.png", glm::vec3(0.0f, 10.0f, 0.0f), 10.0f);
 
-    Eend::Info::registerFloat("dt", INFO_OPTION_AVERAGE);
-    Eend::Info::registerFloat("frame time", 0);
-    
+    float tmpTime = Eend::FrameLimiter::getIntervalTime();
+
     while(!Eend::Window::shouldClose){
         Eend::FrameLimiter::startInterval(); 
         Eend::Screen::bind();
@@ -75,23 +85,40 @@ int main(){
         if (dt > 1.0f / 30.0f) dt = 1.0f / 30.0f;
 
         
+        tmpTime = Eend::FrameLimiter::getIntervalTime();
         glm::vec3 debugPlayerStrike = player.getStrikeCollision().getPosition();
         glm::vec3 debugBallStrike = player.getPosition();
         if (player.getStrike() && Eend::colliding(player.getStrikeCollision(), ball.getCollision(), nullptr)) {
             ball.hit();
         }
+        Eend::Info::updateFloat("strike time", Eend::FrameLimiter::getIntervalTime() - tmpTime);
 
+        tmpTime = Eend::FrameLimiter::getIntervalTime();
         player.update(dt);
+        Eend::Info::updateFloat("player time", Eend::FrameLimiter::getIntervalTime() - tmpTime);
+        
+        tmpTime = Eend::FrameLimiter::getIntervalTime();
         ball.update(dt);
+        Eend::Info::updateFloat("ball time", Eend::FrameLimiter::getIntervalTime() - tmpTime);
+        
+        tmpTime = Eend::FrameLimiter::getIntervalTime();
         court.update(dt);
+        Eend::Info::updateFloat("court time", Eend::FrameLimiter::getIntervalTime() - tmpTime);
         
+        tmpTime = Eend::FrameLimiter::getIntervalTime();
         Eend::Entities::draw(shaders, hudCamera, sceneCamera);
-        
+        Eend::Info::updateFloat("draw time", Eend::FrameLimiter::getIntervalTime() - tmpTime);
+         
+        tmpTime = Eend::FrameLimiter::getIntervalTime();
         Eend::Screen::render(shaders.getShader(Eend::Shader::screen));
+        Eend::Info::updateFloat("render time", Eend::FrameLimiter::getIntervalTime() - tmpTime);
+        
         Eend::Window::processInput();
+
         Eend::Window::swapBuffers(); 
+        Eend::Info::updateFloat("frame time", Eend::FrameLimiter::getIntervalTime());
         Eend::Info::print();
-        Eend::Info::updateFloat("frame time", Eend::FrameLimiter::stopInterval());
+        Eend::FrameLimiter::stopInterval();
     }
     Eend::Info::end();
     return 0;
