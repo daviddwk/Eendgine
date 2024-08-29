@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.18.1)
 project(game)
+set(CMAKE_CXX_FLAGS_DEBUG_INIT "-ggdb")
+set(CMAKE_CXX_FLAGS_RELEASE_INIT "-03")
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 

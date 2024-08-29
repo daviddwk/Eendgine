@@ -43,7 +43,7 @@ void Player::setRadians(glm::vec2 rotation) {
     modelRef.setRadians(rotation.x, rotation.y); 
 }
 
-void Player::update(float dt) {
+void Player::update(const float dt) {
     Eend::Model& modelRef = Eend::Entities::ModelBatch::getRef(_modelId);
     for(int i = 0; i < 4; i++) {
         float speed = 20.000f;
@@ -110,10 +110,6 @@ void Player::update(float dt) {
         avg_array[avg_iter] = std::chrono::duration_cast<std::chrono::nanoseconds>(end_col - begin_col).count();  
         avg_iter++;
         if (avg_iter == avg_array.size()) avg_iter = 0;
-        std::cout << std::chrono::duration_cast<std::chrono::nanoseconds>(end_col - begin_col).count() << std::endl;
-        std::cout << std::accumulate(avg_array.begin(), avg_array.end(), 0) / avg_array.size() << "ns" << std::endl;
-        
-        // DEBUG
 
         if (auto floorHeight = colResults.floor) {
             _position.y += *floorHeight;

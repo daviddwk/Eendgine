@@ -2,13 +2,14 @@
 #include "vertex.hpp"
 #include "loadModel.hpp"
 #include "fatalError.hpp"
+#include "info.hpp"
 #include <cmath>
 #include <tuple>
 #include <numeric>
 #include <filesystem>
 #include <omp.h>
 #include <iostream>
-
+#include <limits>
 
 float sign (glm::vec3 p1, glm::vec3 p2, glm::vec3 p3);
 glm::vec3 triNormal(glm::vec3 p1, glm::vec3 p2, glm::vec3 p3);
@@ -141,7 +142,7 @@ namespace Eendgine {
     }
 
     CollisionResults adjustToCollision(CollisionCylinder &c, std::vector<CollisionModel*> &models) {
-        float hitFloor = -1000000.0f;
+        float hitFloor = -1 * std::numeric_limits<float>::infinity();
         float hitWallX = 0.0f; 
         float hitWallZ = 0.0f; 
         std::optional<float> hitCeiling = {}; 
@@ -164,6 +165,7 @@ namespace Eendgine {
                         tmpFloorHeight = snapCylinderToFloor(c, t);
                         if (tmpFloorHeight > floorHeight) {
                             hitFloor = tmpFloorHeight;
+                            Info::updateFloat("floor", tmpFloorHeight);
                         }
                         break;
                     case CollisionTriangle::surface::wall:
@@ -191,9 +193,8 @@ namespace Eendgine {
             hitWallX /= (float)numWalls;
             hitWallZ /= (float)numWalls;
         }
-        std::cout << numWalls << std::endl;
         return CollisionResults{
-            hitFloor == -1000000.0f ? std::nullopt : std::optional(hitFloor),
+            hitFloor == (-1 * std::numeric_limits<float>::infinity()) ? std::nullopt : std::optional(hitFloor),
             std::optional(glm::vec3(hitWallX, 0.0f, hitWallZ)),
             hitCeiling
         }; 

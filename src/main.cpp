@@ -11,6 +11,7 @@
 #include <eendgine/entityBatch.hpp>
 #include <eendgine/entityBatches.hpp>
 #include <eendgine/shaders.hpp>
+#include <eendgine/info.hpp>
 
 #include <stb/stb_image.h>
 
@@ -30,6 +31,7 @@ const unsigned int screenWidth = 1000;
 int main(){
     Eend::Window::init(screenWidth, screenHeight, "Quack"); 
     Eend::Screen::init(screenWidth, screenHeight);
+    Eend::Info::init();
     Eend::FrameLimiter::setFPS(30.0f);
     glEnable(GL_DEPTH_TEST);
  
@@ -60,6 +62,10 @@ int main(){
 
     Ball ball("resources/ost/diffuse_noeyes.png", glm::vec3(0.0f, 10.0f, 0.0f), 10.0f);
 
+    Eend::Info::registerFloat("dt", INFO_OPTION_AVERAGE);
+    Eend::Info::registerFloat("floor", 0);
+
+    
     while(!Eend::Window::shouldClose){
         Eend::FrameLimiter::startInterval(); 
         Eend::Screen::bind();
@@ -68,6 +74,8 @@ int main(){
 
         float dt = Eend::FrameLimiter::deltaTime / 4;
         if (dt > 1.0f / 60.0f) dt = 1.0f / 60.0f;
+
+        Eend::Info::updateFloat("dt", dt);
         
         glm::vec3 debugPlayerStrike = player.getStrikeCollision().getPosition();
         glm::vec3 debugBallStrike = player.getPosition();
@@ -84,7 +92,9 @@ int main(){
         Eend::Screen::render(shaders.getShader(Eend::Shader::screen));
         Eend::Window::processInput();
         Eend::Window::swapBuffers(); 
+        Eend::Info::print();
         Eend::FrameLimiter::stopInterval();
     }
+    Eend::Info::end();
     return 0;
 }

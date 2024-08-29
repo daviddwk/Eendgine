@@ -15,9 +15,9 @@ class Player {
                 float hitHeight, float hitRadius, float hitOffset, 
                 float strikeRadius, float strikeOffset);
         ~Player();
-        void update(float dt);
-        void setPosition(glm::vec3 position);
-        void setRadians(glm::vec2 rotation);
+        void update(const float dt);
+        void setPosition(const glm::vec3 position);
+        void setRadians(const glm::vec2 rotation);
         glm::vec3 getPosition() { return _position; };
         bool getStrike() { return _strike; };
         Eend::CollisionSphere getStrikeCollision() { return _strikeCollision; };
