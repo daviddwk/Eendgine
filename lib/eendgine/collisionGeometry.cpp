@@ -157,8 +157,8 @@ namespace Eendgine {
         glm::vec3 tmpWallOffset(0.0f);
 
         for (auto m : models) {
-            #pragma omp parallel for private(tmpFloorHeight, tmpWallOffset) \
-            reduction(+:numWalls, hitWallX, hitWallZ) reduction(max: hitFloor)
+            //#pragma omp parallel for private(tmpFloorHeight, tmpWallOffset) \
+            //reduction(+:numWalls, hitWallX, hitWallZ) reduction(max: hitFloor)
             for (auto& t : m->getTris()) {
                 switch (t.getSurface()) {
                     case CollisionTriangle::surface::floor:

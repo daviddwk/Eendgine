@@ -63,8 +63,7 @@ int main(){
     Ball ball("resources/ost/diffuse_noeyes.png", glm::vec3(0.0f, 10.0f, 0.0f), 10.0f);
 
     Eend::Info::registerFloat("dt", INFO_OPTION_AVERAGE);
-    Eend::Info::registerFloat("floor", 0);
-
+    Eend::Info::registerFloat("frame time", 0);
     
     while(!Eend::Window::shouldClose){
         Eend::FrameLimiter::startInterval(); 
@@ -72,10 +71,9 @@ int main(){
 
         shaders.setPixelSize(5);
 
-        float dt = Eend::FrameLimiter::deltaTime / 4;
-        if (dt > 1.0f / 60.0f) dt = 1.0f / 60.0f;
+        float dt = Eend::FrameLimiter::deltaTime;
+        if (dt > 1.0f / 30.0f) dt = 1.0f / 30.0f;
 
-        Eend::Info::updateFloat("dt", dt);
         
         glm::vec3 debugPlayerStrike = player.getStrikeCollision().getPosition();
         glm::vec3 debugBallStrike = player.getPosition();
@@ -93,7 +91,7 @@ int main(){
         Eend::Window::processInput();
         Eend::Window::swapBuffers(); 
         Eend::Info::print();
-        Eend::FrameLimiter::stopInterval();
+        Eend::Info::updateFloat("frame time", Eend::FrameLimiter::stopInterval());
     }
     Eend::Info::end();
     return 0;

@@ -1,3 +1,7 @@
+#include <GLFW/glfw3.h>
+#include <chrono>
+#include <thread>
+#include <cmath>
 #include "frameLimiter.hpp"
 
 namespace Eendgine {
@@ -7,17 +11,21 @@ namespace Eendgine {
     }
 
     void FrameLimiter::startInterval() {
-        _startTicks = SDL_GetTicks();
+        _startTime = glfwGetTime();
     }
 
-    void FrameLimiter::stopInterval() {
-        float intervalTicks = (float)(SDL_GetTicks() - _startTicks);
-        float frameTicks = 1000.0f / _fps;
-        if (intervalTicks < frameTicks){
-            SDL_Delay((Uint32)(frameTicks - intervalTicks));
-            deltaTime = frameTicks / 1000.0f;
+    float FrameLimiter::stopInterval() {
+        const float intervalTime = glfwGetTime() - _startTime;
+        const float frameTime = 1.0f / _fps;
+        if (intervalTime < frameTime){
+            std::this_thread::sleep_for(
+                    std::chrono::round<std::chrono::nanoseconds>(std::chrono::duration<float>{
+                        frameTime - intervalTime
+                    }));
+            deltaTime = frameTime;
         } else {
-            deltaTime = intervalTicks / 1000.0f;
+            deltaTime = intervalTime;
         } 
+        return (float)intervalTime;
     }
 }
