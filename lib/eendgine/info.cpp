@@ -1,5 +1,6 @@
 #include "info.hpp"
 #include <iostream>
+#include <GLFW/glfw3.h>
 
 namespace Eendgine {
 
@@ -25,6 +26,17 @@ namespace Eendgine {
         if (_registeredFloats.contains(name)) return;
         _registeredFloats[name] = registeredFloat {
             0.0f,    // value
+            options, // options
+            0,       // count
+            0.0f     // average 
+        };
+    }    
+    
+    void Info::registerTime(const std::string& name, const std::uint32_t options) {
+        if (_registeredTimes.contains(name)) return;
+        _registeredTimes[name] = registeredTime {
+            0.0f,    // value
+            0.0f,    // start
             options, // options
             0,       // count
             0.0f     // average 
@@ -61,6 +73,28 @@ namespace Eendgine {
         _registeredFloats[name] = tmp_reg;
     }
 
+    void Info::startTime(const std::string& name) {
+        if (!_registeredTimes.contains(name)) return;
+        _registeredTimes[name].start = glfwGetTime();
+    }
+    
+    void Info::stopTime(const std::string& name) {
+        if (!_registeredTimes.contains(name)) return;
+        float updatedValue = glfwGetTime() - _registeredTimes[name].start;
+        auto tmp_reg = _registeredTimes[name];
+        if (tmp_reg.options & INFO_OPTION_AVERAGE) {
+            if (tmp_reg.count != 0) {
+                tmp_reg.average = (updatedValue + (tmp_reg.value * tmp_reg.count)) / (tmp_reg.count + 1); 
+            } else {
+                tmp_reg.average = updatedValue;
+            }
+        }
+        tmp_reg.value = updatedValue;
+        tmp_reg.count++;
+        _registeredTimes[name] = tmp_reg;
+    }
+        
+
     template <typename T>
     void printInfoMap(const T& map) {
         for (auto const& iter : map) {
@@ -80,5 +114,6 @@ namespace Eendgine {
         std::system("clear");
         printInfoMap(_registeredInts);
         printInfoMap(_registeredFloats);
+        printInfoMap(_registeredTimes);
     }
 }

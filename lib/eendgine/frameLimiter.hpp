@@ -8,7 +8,6 @@ namespace Eendgine {
             static void close();
             static void startInterval();
             static float stopInterval();
-            static float getIntervalTime();
             inline static float deltaTime = 0; // sec 
         private:
             inline static float _startTime = 0;
