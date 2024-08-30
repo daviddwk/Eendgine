@@ -4,7 +4,8 @@
 namespace Eendgine {
     class FrameLimiter {
         public:
-            static void setFPS(float fps);
+            static void init(float fps);
+            static void close();
             static void startInterval();
             static float stopInterval();
             static float getIntervalTime();

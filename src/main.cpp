@@ -43,7 +43,8 @@ int main(){
     Eend::Window::init(screenWidth, screenHeight, "Quack"); 
     Eend::Screen::init(screenWidth, screenHeight);
     Eend::Info::init();
-    Eend::FrameLimiter::setFPS(30.0f);
+    Eend::FrameLimiter::init(30.0f);
+
     glEnable(GL_DEPTH_TEST);
  
     Eend::ShaderProgram newShader("shaders/shader3D.vert", "shaders/shader3D.frag");
@@ -120,6 +121,9 @@ int main(){
         Eend::Info::print();
         Eend::FrameLimiter::stopInterval();
     }
-    Eend::Info::end();
+    Eend::Window::close();
+    Eend::Screen::close();
+    Eend::Info::close();
+    Eend::FrameLimiter::close();
     return 0;
 }

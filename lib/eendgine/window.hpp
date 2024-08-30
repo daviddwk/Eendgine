@@ -8,6 +8,7 @@ namespace Eendgine {
     class Window {
         public:
             static void init(int width, int height, std::string name);
+            static void close();
             static void swapBuffers();
             static void processInput();
             inline static bool leftPress = false;

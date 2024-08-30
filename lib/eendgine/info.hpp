@@ -9,7 +9,7 @@ namespace Eendgine {
     class Info {
         public:
             static void init();
-            static void end();
+            static void close();
             
             static void registerInt(const std::string& name, const std::uint32_t options);
             static void registerFloat(const std::string& name, const std::uint32_t options);

@@ -14,8 +14,9 @@ namespace Eendgine {
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+        glfwWindowHint(GLFW_DECORATED, GLFW_TRUE);
         
-        GLFWwindow* window = glfwCreateWindow(width, height, "LearnOpenGL", NULL, NULL);
+        GLFWwindow* window = glfwCreateWindow(width, height, name.c_str(), NULL, NULL);
         _window = window;
         if (window == NULL)
         {
@@ -33,6 +34,10 @@ namespace Eendgine {
         }  
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
         //glfwSetKeyCallback(window, key_callback);
+    }
+
+    void Window::close() {
+        glfwDestroyWindow(_window);
     }
 
     void Window::swapBuffers() {

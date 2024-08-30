@@ -7,7 +7,7 @@ namespace Eendgine {
     void Info::init() {
     
     }
-    void Info::end() {
+    void Info::close() {
     
     }
     

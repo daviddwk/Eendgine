@@ -8,6 +8,7 @@ namespace Eendgine {
     class Screen {
         public:
             static void init(int width, int height);
+            static void close();
             static void bind();
             static void render(ShaderProgram shader);
         private:

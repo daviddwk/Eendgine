@@ -6,8 +6,11 @@
 
 namespace Eendgine {
     
-    void FrameLimiter::setFPS(float fps) {
+    void FrameLimiter::init(float fps) {
         _fps = fps;
+    }
+
+    void FrameLimiter::close() {
     }
 
     void FrameLimiter::startInterval() {

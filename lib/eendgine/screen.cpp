@@ -39,6 +39,10 @@ namespace Eendgine {
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
 
+    void Screen::close() {
+        // TODO somthing here I'm sure
+    }
+
     void Screen::bind() {
         glBindFramebuffer(GL_FRAMEBUFFER, _FB);
         glEnable(GL_DEPTH_TEST); 
