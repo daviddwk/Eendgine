@@ -1,5 +1,5 @@
 #include <random>
-#include "eendgine/random.hpp"
+#include "random.hpp"
 
 namespace Eendgine {
     float randomRange(float min, float max) {
