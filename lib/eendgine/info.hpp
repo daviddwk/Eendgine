@@ -2,6 +2,7 @@
 #include <string>
 #include <map>
 #include <optional>
+#include <stdint.h>
 
 #define INFO_OPTION_AVERAGE ((0x00000001))
 
@@ -11,9 +12,9 @@ namespace Eendgine {
             static void init();
             static void close();
             
-            static void registerInt(const std::string& name, const std::uint32_t options);
-            static void registerFloat(const std::string& name, const std::uint32_t options);
-            static void registerTime(const std::string& name, const std::uint32_t options);
+            static void registerInt(const std::string& name, const uint32_t options);
+            static void registerFloat(const std::string& name, const uint32_t options);
+            static void registerTime(const std::string& name, const uint32_t options);
             
             static void updateInt(const std::string& name, const int update);
             static void updateFloat(const std::string& name, const float update);

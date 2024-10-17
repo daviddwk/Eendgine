@@ -12,7 +12,7 @@ namespace Eendgine {
     
     }
     
-    void Info::registerInt(const std::string& name, const std::uint32_t options) {
+    void Info::registerInt(const std::string& name, const uint32_t options) {
         if (_registeredInts.contains(name)) return;
         _registeredInts[name] = registeredInt {
             0,       // value
@@ -22,7 +22,7 @@ namespace Eendgine {
         };
     }
     
-    void Info::registerFloat(const std::string& name, const std::uint32_t options) {
+    void Info::registerFloat(const std::string& name, const uint32_t options) {
         if (_registeredFloats.contains(name)) return;
         _registeredFloats[name] = registeredFloat {
             0.0f,    // value
@@ -32,7 +32,7 @@ namespace Eendgine {
         };
     }    
     
-    void Info::registerTime(const std::string& name, const std::uint32_t options) {
+    void Info::registerTime(const std::string& name, const uint32_t options) {
         if (_registeredTimes.contains(name)) return;
         _registeredTimes[name] = registeredTime {
             0.0f,    // value

@@ -42,6 +42,7 @@ int main(){
     
     Eend::Window::init(screenWidth, screenHeight, "Quack"); 
     Eend::Screen::init(screenWidth, screenHeight);
+    Eend::InputManager::init();
     Eend::Info::init();
     Eend::FrameLimiter::init(30.0f);
 
@@ -74,7 +75,7 @@ int main(){
 
     Ball ball("resources/ost/diffuse_noeyes.png", glm::vec3(0.0f, 10.0f, 0.0f), 10.0f);
 
-    while(!Eend::Window::shouldClose){
+    while(!Eend::InputManager::shouldClose){
         Eend::FrameLimiter::startInterval(); 
         Eend::Info::startTime("frame time");
         Eend::Screen::bind();
@@ -113,14 +114,13 @@ int main(){
         Eend::Screen::render(shaders.getShader(Eend::Shader::screen));
         Eend::Info::stopTime("player time");
         
-        Eend::Window::processInput();
+        Eend::InputManager::processInput();
 
         Eend::Window::swapBuffers(); 
         Eend::Info::print();
         Eend::Info::stopTime("frame time");
         Eend::FrameLimiter::stopInterval();
     }
-    Eend::Window::close();
     Eend::Screen::close();
     Eend::Info::close();
     Eend::FrameLimiter::close();

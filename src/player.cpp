@@ -1,8 +1,7 @@
 #include "player.hpp"
-#include <eendgine/window.hpp>
+#include <eendgine/inputManager.hpp>
 // DEBUG
 #include <chrono>
-#include <numeric>
 namespace Eend = Eendgine;
 
 Player::Player(std::vector<Eend::CollisionModel*>& collisionModels,
@@ -48,8 +47,8 @@ void Player::update(const float dt) {
     for(int i = 0; i < 4; i++) {
         float speed = 20.000f;
         // move based on input and gravity
-        _cameraRotation.x += Eend::Window::deltaMouseX / 100.0f;
-        _cameraRotation.y += Eend::Window::deltaMouseY / 100.0f;
+        _cameraRotation.x += Eend::InputManager::deltaMouseX / 100.0f;
+        _cameraRotation.y += Eend::InputManager::deltaMouseY / 100.0f;
 
         // so that this number doesn't grow out of control and lose accuracy it loops at 2pi
         while (_cameraRotation.x > std::numbers::pi) {
@@ -70,25 +69,25 @@ void Player::update(const float dt) {
             _fallVelocity -= 1.0f;
         }
         
-        if (Eendgine::Window::upPress) {
+        if (Eendgine::InputManager::upPress) {
             // TODO fix adjustment and find out where forward actually is
             modelRef.setRadians(_cameraRotation.x + (std::numbers::pi / 2), 0.0f);
             _position.x -= (speed * cos(_cameraRotation.x)) * dt;
             _position.z -= (speed * sin(_cameraRotation.x)) * dt;
         }
-        if (Eendgine::Window::downPress) {
+        if (Eendgine::InputManager::downPress) {
             _position.x += (speed * cos(_cameraRotation.x)) * dt;
             _position.z += (speed * sin(_cameraRotation.x)) * dt;
         }
-        if (Eendgine::Window::leftPress) {
+        if (Eendgine::InputManager::leftPress) {
             _position.x -= (speed * sin(_cameraRotation.x)) * dt;
             _position.z += (speed * cos(_cameraRotation.x)) * dt;
         }
-        if (Eendgine::Window::rightPress) {
+        if (Eendgine::InputManager::rightPress) {
             _position.x += (speed * sin(_cameraRotation.x)) * dt;
             _position.z -= (speed * cos(_cameraRotation.x)) * dt;
         }
-        if (Eendgine::Window::spacePress) {
+        if (Eendgine::InputManager::spacePress) {
             _fallVelocity = 25;
             _strike = true;
         } else {
