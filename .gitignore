@@ -39,3 +39,4 @@ lib/stb/stb_image.h
 compile_flags.txt
 CMakeFiles/
 cmake_install.cmake
+Makefile
