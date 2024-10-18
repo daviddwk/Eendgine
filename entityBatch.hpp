@@ -20,7 +20,7 @@ namespace Eendgine {
             entityLabeled<E>& el1, 
             entityLabeled<E>& el2)
     {
-        return el1.entity.getTexture() > el2.entity.getTexture();
+        return el1.entity.getTexture().id > el2.entity.getTexture().id;
     }
 
     template<class E>
@@ -32,10 +32,9 @@ namespace Eendgine {
                 unsigned int _entitiesIdx = _entities.size();
                 // check if already in map
                 _indexMap[_nextIdx] = _entitiesIdx;
-                _nextIdx += 1;
                 _entities.emplace_back(_nextIdx, E(std::forward<Args>(args)...));
                 // just in case these are evaluated out of order
-                return _nextIdx;
+                return _nextIdx++;
             }
 
             void erase(unsigned int id) {
@@ -61,7 +60,7 @@ namespace Eendgine {
                 unsigned int lastTexture = 0;
                 unsigned int thisTexture = 0; 
                 for (auto ewi : EntityBatch<E>::_entities) {
-                    thisTexture = ewi.entity.getTexture(); 
+                    thisTexture = ewi.entity.getTexture().id; 
                     if (lastTexture != thisTexture) {
                         glBindTexture(GL_TEXTURE_2D, thisTexture);
                     }

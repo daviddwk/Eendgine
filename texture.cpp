@@ -23,7 +23,7 @@ namespace Eendgine {
                     0, GL_RGB, texture.width, texture.height, 
                     0, GL_RGB, GL_UNSIGNED_BYTE, imageData);
         } else {
-            fatalError("Failed to load image" + filePath.string());
+            fatalError("Failed to load image: " + filePath.string());
         }
         stbi_image_free(imageData);
         return texture;

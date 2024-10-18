@@ -24,7 +24,7 @@ namespace Eendgine {
             glm::vec3 getPosition() { return _position; };
             glm::vec3 getSize() { return _size; };
             float getRotation() { return _rotation; };
-            unsigned int getTexture() { return _textures[_textureIdx].id; };
+            Texture getTexture() { return _textures[_textureIdx]; };
 
             void draw(uint shaderId, Camera2D &camera); 
             void draw(uint shaderId, Camera3D &camera); 

@@ -29,7 +29,7 @@ namespace Eendgine {
             glm::vec3 getScale() { return _scale; };
             glm::vec2 getRotation() { return _rotation; };
             
-            unsigned int getTexture() { return _textures[_textureIdx].id; };
+            Texture getTexture() { return _textures[_textureIdx]; };
             unsigned int getTextureIdx() { return _textureIdx; };
             
             void draw(uint shaderId, Camera3D &camera);
@@ -61,7 +61,7 @@ namespace Eendgine {
             glm::vec3 getScale() { return _scale; };
             glm::vec2 getRotation() { return _rotation; };
 
-            unsigned int getTexture() { return _textures[_textureIdx].id; };
+            Texture getTexture() { return _textures[_textureIdx]; };
             unsigned int getTextureIdx() { return _textureIdx; };
             float getAnim() { return _animScale; };
             
