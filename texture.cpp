@@ -1,5 +1,5 @@
-#include "fatalError.hpp"
 #include "texture.hpp"
+#include "fatalError.hpp"
 #include <GLES3/gl3.h>
 #include <stb/stb_image.h>
 

@@ -1,9 +1,9 @@
 #include <random>
 
 namespace Eendgine {
-    static std::random_device rng;
-    static std::minstd_rand gen(rng());
+static std::random_device rng;
+static std::minstd_rand gen(rng());
 
-    float randomRange(float min, float max);
-    int randomRange(int min, int max);
-}
+float randomRange(float min, float max);
+int randomRange(int min, int max);
+} // namespace Eendgine

@@ -2,5 +2,5 @@
 #include <string>
 
 namespace Eendgine {
-    void fatalError(std::string errorMessage);
+void fatalError(std::string errorMessage);
 }

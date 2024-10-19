@@ -1,6 +1,6 @@
+#include "model.hpp"
 #include "fatalError.hpp"
 #include "loadModel.hpp"
-#include "model.hpp"
 #include "shader.hpp"
 #include <GLES3/gl3.h>
 #include <glm/gtc/matrix_transform.hpp>
