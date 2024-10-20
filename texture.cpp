@@ -1,5 +1,5 @@
-#include "texture.hpp"
 #include "fatalError.hpp"
+#include "texture.hpp"
 #include <GLES3/gl3.h>
 #include <stb/stb_image.h>
 
@@ -17,10 +17,14 @@ Texture loadTexture(std::filesystem::path filePath) {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
     unsigned char *imageData =
-        stbi_load(filePath.c_str(), &texture.width, &texture.height, &numChannels, 0);
+        stbi_load(filePath.c_str(), &texture.width, &texture.height, &numChannels, 3);
     if (imageData) {
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, texture.width, texture.height, 0, GL_RGB,
-            GL_UNSIGNED_BYTE, imageData);
+        if (numChannels >= 3) {
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, texture.width, texture.height, 0, GL_RGB,
+                GL_UNSIGNED_BYTE, imageData);
+        } else {
+            fatalError("Image " + std::to_string(numChannels) + " channels: " + filePath.string());
+        }
     } else {
         fatalError("Failed to load image: " + filePath.string());
     }
