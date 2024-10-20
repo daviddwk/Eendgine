@@ -24,7 +24,7 @@ Text::Text(std::filesystem::path fontName, unsigned int scale, std::string strin
         Info::updateInt("char" + std::to_string(string[i]), id);
         // set the width of the char appropriately
         // we assume all chars have the same height, but width can vary
-        Sprite &charSprite = Entities::PanelBatch::getRef(id);
+        Sprite& charSprite = Entities::PanelBatch::getRef(id);
         Texture charTexture = charSprite.getTexture();
         float charRelativeWidth = ((float)charTexture.width / (float)charTexture.height);
         charSprite.setScale(scale * charRelativeWidth, scale * 1);
@@ -36,7 +36,7 @@ Text::Text(std::filesystem::path fontName, unsigned int scale, std::string strin
 }
 
 Text::~Text() {
-    for (const PanelId &id : _panelIds) {
+    for (const PanelId& id : _panelIds) {
         Entities::PanelBatch::erase(id);
     }
 }

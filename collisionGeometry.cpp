@@ -59,7 +59,7 @@ CollisionModel::CollisionModel(std::filesystem::path modelPath) {
     }
 }
 
-bool colliding(CollisionSphere s1, CollisionSphere s2, glm::vec3 *penetration) {
+bool colliding(CollisionSphere s1, CollisionSphere s2, glm::vec3* penetration) {
     glm::vec3 distance = s2.getPosition() - s1.getPosition();
     float depth = (s1.getRadius() + s2.getRadius()) - glm::length(distance);
     if (penetration != nullptr) {
@@ -68,7 +68,7 @@ bool colliding(CollisionSphere s1, CollisionSphere s2, glm::vec3 *penetration) {
     return depth > 0.0f;
 }
 
-bool colliding(CollisionSphere s, CollisionPlane p, glm::vec3 *penetration) {
+bool colliding(CollisionSphere s, CollisionPlane p, glm::vec3* penetration) {
     float distance = glm::dot(p.getNormal(), (s.getPosition() - p.getPosition()));
     float depth = s.getRadius() - distance;
     if (penetration != nullptr) {
@@ -78,7 +78,7 @@ bool colliding(CollisionSphere s, CollisionPlane p, glm::vec3 *penetration) {
     return depth > 0.0f;
 }
 
-float snapCylinderToFloor(CollisionCylinder &c, CollisionTriangle &t) {
+float snapCylinderToFloor(CollisionCylinder& c, CollisionTriangle& t) {
     glm::vec3 cylinderPos = c.getPosition();
     std::array<glm::vec3, 3> triVerts = t.getVerts();
     // TODO make not hardcoded like this
@@ -94,7 +94,7 @@ float snapCylinderToFloor(CollisionCylinder &c, CollisionTriangle &t) {
     return -1000000.0f;
 }
 
-glm::vec3 pushCylinderFromWall(CollisionCylinder &c, CollisionTriangle &t) {
+glm::vec3 pushCylinderFromWall(CollisionCylinder& c, CollisionTriangle& t) {
     glm::vec3 cylinderPos = c.getPosition();
     glm::vec3 triNormal = t.getNormal();
     std::array<glm::vec3, 3> triVerts = t.getVerts();
@@ -113,7 +113,7 @@ glm::vec3 pushCylinderFromWall(CollisionCylinder &c, CollisionTriangle &t) {
     return glm::vec3(0.0f);
 }
 
-std::optional<float> pushCylinderFromCeiling(CollisionCylinder &c, CollisionTriangle &t) {
+std::optional<float> pushCylinderFromCeiling(CollisionCylinder& c, CollisionTriangle& t) {
     glm::vec3 cylinderPos = c.getPosition() + c.getHeight();
     std::array<glm::vec3, 3> triVerts = t.getVerts();
     // TODO make not hardcoded like this
@@ -129,7 +129,7 @@ std::optional<float> pushCylinderFromCeiling(CollisionCylinder &c, CollisionTria
     return {};
 }
 
-CollisionResults adjustToCollision(CollisionCylinder &c, std::vector<CollisionModel *> &models) {
+CollisionResults adjustToCollision(CollisionCylinder& c, std::vector<CollisionModel*>& models) {
     float hitFloor = -1 * std::numeric_limits<float>::infinity();
     float hitWallX = 0.0f;
     float hitWallZ = 0.0f;
@@ -147,7 +147,7 @@ CollisionResults adjustToCollision(CollisionCylinder &c, std::vector<CollisionMo
     for (auto m : models) {
         //#pragma omp parallel for private(tmpFloorHeight, tmpWallOffset) \
             //reduction(+:numWalls, hitWallX, hitWallZ) reduction(max: hitFloor)
-        for (auto &t : m->getTris()) {
+        for (auto& t : m->getTris()) {
             switch (t.getSurface()) {
             case CollisionTriangle::surface::floor:
                 tmpFloorHeight = snapCylinderToFloor(c, t);

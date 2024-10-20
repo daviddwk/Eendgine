@@ -3,3 +3,5 @@ IndentWidth: 4
 ContinuationIndentWidth: 4
 AlignAfterOpenBracket: false
 ColumnLimit: 100
+IndentAccessModifiers: true
+PointerAlignment: Left

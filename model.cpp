@@ -26,19 +26,18 @@ Model::Model(std::string modelPath)
         GL_STATIC_DRAW);
 
     glVertexAttribPointer(
-        0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, position));
+        0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, position));
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(
-        1, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, color));
+    glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, color));
     glEnableVertexAttribArray(1);
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, uv));
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, uv));
     glEnableVertexAttribArray(2);
     glVertexAttribPointer(
-        3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, normal));
+        3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, normal));
     glEnableVertexAttribArray(3);
 }
 
-void Model::draw(uint shaderId, Camera3D &camera) {
+void Model::draw(uint shaderId, Camera3D& camera) {
     // using RGB(1,0,1) for transparent
     // parts of the texture using shaders
 
@@ -106,27 +105,27 @@ Animation::Animation(std::filesystem::path modelsDir)
             &_indices[i][0], GL_STATIC_DRAW);
 
         glVertexAttribPointer(
-            0, 3, GL_FLOAT, GL_FALSE, sizeof(InpolVertex), (void *)offsetof(InpolVertex, position));
+            0, 3, GL_FLOAT, GL_FALSE, sizeof(InpolVertex), (void*)offsetof(InpolVertex, position));
         glEnableVertexAttribArray(0);
         glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(InpolVertex),
-            (void *)offsetof(InpolVertex, nextPosition));
+            (void*)offsetof(InpolVertex, nextPosition));
         glEnableVertexAttribArray(1);
         glVertexAttribPointer(
-            2, 4, GL_FLOAT, GL_FALSE, sizeof(InpolVertex), (void *)offsetof(InpolVertex, color));
+            2, 4, GL_FLOAT, GL_FALSE, sizeof(InpolVertex), (void*)offsetof(InpolVertex, color));
         glEnableVertexAttribArray(2);
         glVertexAttribPointer(
-            3, 2, GL_FLOAT, GL_FALSE, sizeof(InpolVertex), (void *)offsetof(InpolVertex, uv));
+            3, 2, GL_FLOAT, GL_FALSE, sizeof(InpolVertex), (void*)offsetof(InpolVertex, uv));
         glEnableVertexAttribArray(3);
         glVertexAttribPointer(
-            4, 3, GL_FLOAT, GL_FALSE, sizeof(InpolVertex), (void *)offsetof(InpolVertex, normal));
+            4, 3, GL_FLOAT, GL_FALSE, sizeof(InpolVertex), (void*)offsetof(InpolVertex, normal));
         glEnableVertexAttribArray(4);
         glVertexAttribPointer(5, 3, GL_FLOAT, GL_FALSE, sizeof(InpolVertex),
-            (void *)offsetof(InpolVertex, nextNormal));
+            (void*)offsetof(InpolVertex, nextNormal));
         glEnableVertexAttribArray(5);
     }
 }
 
-void Animation::draw(uint shaderId, Camera3D &camera) {
+void Animation::draw(uint shaderId, Camera3D& camera) {
     // using RGB(1,0,1) for transparent
     // parts of the texture using shaders
     glm::mat4 transform = glm::mat4(1.0f);

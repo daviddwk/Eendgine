@@ -5,53 +5,53 @@
 
 namespace Eendgine {
 
-void loadModel(std::filesystem::path modelPath, std::vector<Vertex> &vertices,
-    std::vector<unsigned int> &indices, std::vector<Texture> &textures) {
+void loadModel(std::filesystem::path modelPath, std::vector<Vertex>& vertices,
+    std::vector<unsigned int>& indices, std::vector<Texture>& textures) {
     Assimp::Importer importer;
-    const aiScene *scene =
+    const aiScene* scene =
         importer.ReadFile(modelPath, aiProcess_Triangulate | aiProcess_GenNormals);
     if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
         fatalError("failed to load model");
         return;
     }
     std::filesystem::path modelDir = modelPath.parent_path();
-    std::vector<aiMesh *> aiMeshes;
+    std::vector<aiMesh*> aiMeshes;
     processNode(scene->mRootNode, scene, aiMeshes);
     unsigned int startIdx = 0;
-    for (aiMesh *m : aiMeshes) {
+    for (aiMesh* m : aiMeshes) {
         processMesh(m, scene, vertices, indices, startIdx);
         startIdx += m->mNumVertices;
     }
     processTextures(modelDir, scene, textures);
 }
 
-void loadModel(std::filesystem::path modelPath, std::vector<Vertex> &vertices,
-    std::vector<unsigned int> &indices) {
+void loadModel(std::filesystem::path modelPath, std::vector<Vertex>& vertices,
+    std::vector<unsigned int>& indices) {
     Assimp::Importer importer;
-    const aiScene *scene =
+    const aiScene* scene =
         importer.ReadFile(modelPath, aiProcess_Triangulate | aiProcess_GenNormals);
     if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
         fatalError("failed to load model");
         return;
     }
     std::string modelDir = modelPath.filename().string();
-    std::vector<aiMesh *> aiMeshes;
+    std::vector<aiMesh*> aiMeshes;
     processNode(scene->mRootNode, scene, aiMeshes);
     unsigned int startIdx = 0;
-    for (aiMesh *m : aiMeshes) {
+    for (aiMesh* m : aiMeshes) {
         processMesh(m, scene, vertices, indices, startIdx);
         startIdx += m->mNumVertices;
     }
 }
 
 void loadModel(std::filesystem::path modelPath, std::filesystem::path nextModelPath,
-    std::vector<InpolVertex> &vertices, std::vector<unsigned int> &indices,
-    std::vector<Texture> &textures) {
+    std::vector<InpolVertex>& vertices, std::vector<unsigned int>& indices,
+    std::vector<Texture>& textures) {
     Assimp::Importer importer;
     Assimp::Importer nextImporter;
-    const aiScene *scene =
+    const aiScene* scene =
         importer.ReadFile(modelPath, aiProcess_Triangulate | aiProcess_GenNormals);
-    const aiScene *nextScene =
+    const aiScene* nextScene =
         nextImporter.ReadFile(nextModelPath, aiProcess_Triangulate | aiProcess_GenNormals);
     if (!scene)
         fatalError("failed to load model: could not load file " + modelPath.string());
@@ -68,15 +68,15 @@ void loadModel(std::filesystem::path modelPath, std::filesystem::path nextModelP
 
     // assuming they are in the same directory here
     std::filesystem::path modelDir = modelPath.parent_path();
-    std::vector<aiMesh *> aiMeshes;
-    std::vector<aiMesh *> nextAiMeshes;
+    std::vector<aiMesh*> aiMeshes;
+    std::vector<aiMesh*> nextAiMeshes;
     processNode(scene->mRootNode, scene, aiMeshes);
     processNode(nextScene->mRootNode, nextScene, nextAiMeshes);
 
     std::vector<Vertex> tmpVertices;
     std::vector<unsigned int> tmpIndices;
     unsigned int startIdx = 0;
-    for (aiMesh *m : aiMeshes) {
+    for (aiMesh* m : aiMeshes) {
         processMesh(m, scene, tmpVertices, tmpIndices, startIdx);
         startIdx += m->mNumVertices;
     }
@@ -91,7 +91,7 @@ void loadModel(std::filesystem::path modelPath, std::filesystem::path nextModelP
     tmpVertices.clear();
     tmpIndices.clear();
     startIdx = 0;
-    for (aiMesh *m : nextAiMeshes) {
+    for (aiMesh* m : nextAiMeshes) {
         processMesh(m, nextScene, tmpVertices, indices, startIdx);
         startIdx += m->mNumVertices;
     }
@@ -102,7 +102,7 @@ void loadModel(std::filesystem::path modelPath, std::filesystem::path nextModelP
     processTextures(modelDir, scene, textures);
 }
 
-void processNode(aiNode *node, const aiScene *scene, std::vector<aiMesh *> &aiMeshes) {
+void processNode(aiNode* node, const aiScene* scene, std::vector<aiMesh*>& aiMeshes) {
     for (unsigned int i = 0; i < node->mNumMeshes; i++) {
         aiMeshes.push_back(scene->mMeshes[node->mMeshes[i]]);
     }
@@ -111,8 +111,8 @@ void processNode(aiNode *node, const aiScene *scene, std::vector<aiMesh *> &aiMe
     }
 }
 
-void processMesh(aiMesh *mesh, const aiScene *scene, std::vector<Vertex> &vertices,
-    std::vector<unsigned int> &indices, unsigned int startIdx) {
+void processMesh(aiMesh* mesh, const aiScene* scene, std::vector<Vertex>& vertices,
+    std::vector<unsigned int>& indices, unsigned int startIdx) {
     for (unsigned int i = 0; i < mesh->mNumVertices; i++) {
         Vertex vertex;
         vertex.position =
@@ -142,9 +142,9 @@ void processMesh(aiMesh *mesh, const aiScene *scene, std::vector<Vertex> &vertic
 }
 
 void processTextures(
-    std::filesystem::path textureDir, const aiScene *scene, std::vector<Texture> &textures) {
+    std::filesystem::path textureDir, const aiScene* scene, std::vector<Texture>& textures) {
     for (unsigned int i = 0; i < scene->mNumMaterials; i++) {
-        aiMaterial *material = scene->mMaterials[i];
+        aiMaterial* material = scene->mMaterials[i];
         for (unsigned int i = 0; i < material->GetTextureCount(aiTextureType_DIFFUSE); i++) {
             aiString str;
             material->GetTexture(aiTextureType_DIFFUSE, i, &str);

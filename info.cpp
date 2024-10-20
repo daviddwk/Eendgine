@@ -7,7 +7,7 @@ namespace Eendgine {
 void Info::init() {}
 void Info::close() {}
 
-void Info::registerInt(const std::string &name, const uint32_t options) {
+void Info::registerInt(const std::string& name, const uint32_t options) {
     if (_registeredInts.contains(name))
         return;
     _registeredInts[name] = registeredInt{
@@ -18,7 +18,7 @@ void Info::registerInt(const std::string &name, const uint32_t options) {
     };
 }
 
-void Info::registerFloat(const std::string &name, const uint32_t options) {
+void Info::registerFloat(const std::string& name, const uint32_t options) {
     if (_registeredFloats.contains(name))
         return;
     _registeredFloats[name] = registeredFloat{
@@ -29,7 +29,7 @@ void Info::registerFloat(const std::string &name, const uint32_t options) {
     };
 }
 
-void Info::registerTime(const std::string &name, const uint32_t options) {
+void Info::registerTime(const std::string& name, const uint32_t options) {
     if (_registeredTimes.contains(name))
         return;
     _registeredTimes[name] = registeredTime{
@@ -41,7 +41,7 @@ void Info::registerTime(const std::string &name, const uint32_t options) {
     };
 }
 
-void Info::updateInt(const std::string &name, int updatedValue) {
+void Info::updateInt(const std::string& name, int updatedValue) {
     if (!_registeredInts.contains(name))
         return;
     auto tmp_reg = _registeredInts[name];
@@ -58,7 +58,7 @@ void Info::updateInt(const std::string &name, int updatedValue) {
     _registeredInts[name] = tmp_reg;
 }
 
-void Info::updateFloat(const std::string &name, float updatedValue) {
+void Info::updateFloat(const std::string& name, float updatedValue) {
     if (!_registeredFloats.contains(name))
         return;
     auto tmp_reg = _registeredFloats[name];
@@ -75,13 +75,13 @@ void Info::updateFloat(const std::string &name, float updatedValue) {
     _registeredFloats[name] = tmp_reg;
 }
 
-void Info::startTime(const std::string &name) {
+void Info::startTime(const std::string& name) {
     if (!_registeredTimes.contains(name))
         return;
     _registeredTimes[name].start = SDL_GetTicks();
 }
 
-void Info::stopTime(const std::string &name) {
+void Info::stopTime(const std::string& name) {
     if (!_registeredTimes.contains(name))
         return;
     float updatedValue = SDL_GetTicks() - _registeredTimes[name].start;
@@ -99,8 +99,8 @@ void Info::stopTime(const std::string &name) {
     _registeredTimes[name] = tmp_reg;
 }
 
-template <typename T> void printInfoMap(const T &map) {
-    for (auto const &iter : map) {
+template <typename T> void printInfoMap(const T& map) {
+    for (auto const& iter : map) {
         if (iter.second.count != 0) {
             std::cout << iter.first << ":\t" // key
                       << iter.second.value;

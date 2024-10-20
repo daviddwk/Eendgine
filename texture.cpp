@@ -1,5 +1,5 @@
-#include "fatalError.hpp"
 #include "texture.hpp"
+#include "fatalError.hpp"
 #include <GLES3/gl3.h>
 #include <stb/stb_image.h>
 
@@ -16,7 +16,7 @@ Texture loadTexture(std::filesystem::path filePath) {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-    unsigned char *imageData =
+    unsigned char* imageData =
         stbi_load(filePath.c_str(), &texture.width, &texture.height, &numChannels, 3);
     if (imageData) {
         if (numChannels >= 3) {

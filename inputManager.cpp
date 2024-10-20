@@ -11,7 +11,7 @@ void InputManager::init() {}
 void InputManager::processInput() {
     // const unsigned char *keyState = SDL_GetKeyboardState(nullptr);
 
-    const unsigned char *keyState = SDL_GetKeyboardState(nullptr);
+    const unsigned char* keyState = SDL_GetKeyboardState(nullptr);
 
     leftPress = keyState[SDL_SCANCODE_LEFT];
     rightPress = keyState[SDL_SCANCODE_RIGHT];

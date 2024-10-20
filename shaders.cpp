@@ -7,7 +7,7 @@ Shaders::Shaders(ShaderProgram spriteShader, ShaderProgram modelShader,
     : _spriteShader(spriteShader), _modelShader(modelShader), _animationShader(animationShader),
       _screenShader(screenShader) {}
 
-ShaderProgram &Shaders::getShader(Shader shader) {
+ShaderProgram& Shaders::getShader(Shader shader) {
     switch (shader) {
     default:
     case sprite:

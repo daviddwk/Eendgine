@@ -39,7 +39,7 @@ void ShaderProgram::compileShader(unsigned int shaderId, std::string shaderPath)
 
     shaderFile.close();
 
-    const char *contentsPtr = fileContents.c_str();
+    const char* contentsPtr = fileContents.c_str();
 
     glShaderSource(shaderId, 1, &contentsPtr, nullptr);
     glCompileShader(shaderId);
