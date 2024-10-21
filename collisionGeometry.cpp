@@ -13,8 +13,9 @@
 
 float sign(glm::vec3 p1, glm::vec3 p2, glm::vec3 p3);
 glm::vec3 triNormal(glm::vec3 p1, glm::vec3 p2, glm::vec3 p3);
-float pointHeightOnTri(glm::vec3 p1, glm::vec3 p2, glm::vec3 p3, float x, float z);
 bool vertOnTri(glm::vec3 vert, std::array<glm::vec3, 3> tri);
+float pointHeightOnTri(
+    const glm::vec3& p1, const glm::vec3& p2, const glm::vec3& p3, float x, float z);
 
 namespace Eendgine {
 
@@ -271,7 +272,8 @@ glm::vec3 closestTriPoint(glm::vec3 p, CollisionTriangle t, glm::vec3 position, 
 float sign(glm::vec3 p1, glm::vec3 p2, glm::vec3 p3) {
     return ((p1.x - p3.x) * (p2.z - p3.z)) - ((p2.x - p3.x) * (p1.z - p3.z));
 }
-float pointHeightOnTri(glm::vec3 p1, glm::vec3 p2, glm::vec3 p3, float x, float z) {
+float pointHeightOnTri(
+    const glm::vec3& p1, const glm::vec3& p2, const glm::vec3& p3, float x, float z) {
     // undefined behavior if plane is parallel
     // WHAT?
     // https://math.stackexchange.com/questions/1154340/how-to-find-the-height-of-a-2d-coordinate-on-a-3d-triangle
