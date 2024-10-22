@@ -38,12 +38,12 @@ class Camera3D {
             _aspectRatio = aspectRatio;
             update();
         };
-        void setPosition(float x, float y, float z) {
-            _position = glm::vec3(x, y, z);
+        void setPosition(glm::vec3 position) {
+            _position = position;
             update();
         };
-        void setTarget(float x, float y, float z) {
-            _target = glm::vec3(x, y, z);
+        void setTarget(glm::vec3 target) {
+            _target = target;
             update();
         };
 
