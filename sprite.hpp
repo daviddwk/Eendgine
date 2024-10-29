@@ -2,9 +2,9 @@
 #include "camera.hpp"
 #include "shader.hpp"
 #include "texture.hpp"
+#include "types.hpp"
 #include "vertex.hpp"
 #include <filesystem>
-#include <glm/glm.hpp>
 #include <vector>
 
 namespace Eendgine {
@@ -17,13 +17,13 @@ class Sprite {
         void setTextureIdx(std::vector<Texture>::size_type textureIdx) {
             _textureIdx = (textureIdx < _textures.size()) ? textureIdx : 0;
         };
-        void setPosition(glm::vec3 position) { _position = position; };
-        void setScale(float w, float h) { _size = glm::vec3(w, h, 1.0f); };
+        void setPosition(Point position) { _position = position; };
+        void setScale(float w, float h) { _size = Scale(w, h, 1.0f); };
         void setRotation(float r) { _rotation = r; };
 
         unsigned int getTextureIdx() { return _textureIdx; };
-        glm::vec3 getPosition() { return _position; };
-        glm::vec3 getSize() { return _size; };
+        Point getPosition() { return _position; };
+        Scale getSize() { return _size; };
         float getRotation() { return _rotation; };
         Texture getTexture() { return _textures[_textureIdx]; };
 
@@ -32,8 +32,8 @@ class Sprite {
 
     private:
         void setup(std::vector<std::filesystem::path>& texturePaths);
-        glm::vec3 _position;
-        glm::vec3 _size;
+        Point _position;
+        Scale _size;
         float _rotation;
         unsigned int _VAO;
         unsigned int _textureIdx;

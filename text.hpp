@@ -1,24 +1,29 @@
 #include "entityBatches.hpp"
+#include "types.hpp"
 #include <filesystem>
-#include <glm/glm.hpp>
 #include <string>
 #include <vector>
 
 namespace Eendgine {
 class Text {
     public:
-        Text(std::filesystem::path fontPath, unsigned int scale, std::string string);
+        Text(std::filesystem::path fontName, std::string text, Point position, float scale);
         ~Text();
 
-        void setPosition(glm::vec3 position) { _position = position; };
-        void setScale(float w, float h) { _size = glm::vec3(w, h, 1.0f); };
+        void setText(const std::string& text);
+        void setPosition(Point position);
+        void setScale(float scale);
 
-        glm::vec3 getPosition() { return _position; };
-        glm::vec3 getSize() { return _size; };
+        void clearText();
+
+        Point getPosition() { return _position; };
+        float getScale() { return _scale; };
 
     private:
+        std::string _text;
+        std::filesystem::path _fontPath;
         std::vector<PanelId> _panelIds;
-        glm::vec3 _position;
-        glm::vec3 _size;
+        Point _position;
+        float _scale;
 };
 } // namespace Eendgine

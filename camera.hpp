@@ -1,14 +1,14 @@
 #pragma once
-#include <glm/glm.hpp>
+#include "types.hpp"
 
 namespace Eendgine {
 class Camera2D {
     public:
         Camera2D(int width, int height);
-        glm::vec2 convertScreenToWorld(glm::vec2 screenChoords);
+        Point2D convertScreenToWorld(Point2D screenChoords);
 
         void setPosition(float x, float y) {
-            _position = glm::vec2(x, y);
+            _position = Point2D(x, y);
             update();
         }
         void setScale(float scale) {
@@ -16,50 +16,50 @@ class Camera2D {
             update();
         }
 
-        glm::vec2 getPosition() { return _position; }
+        Point2D getPosition() { return _position; }
         float getScale() { return _scale; }
-        glm::mat4 getCameraMatrix() { return _cameraMatrix; }
+        TransformationMatrix getCameraMatrix() { return _cameraMatrix; }
 
     private:
         void update();
 
         int _width, _height;
         float _scale;
-        glm::vec2 _position;
-        glm::mat4 _orthoMatrix;
-        glm::mat4 _cameraMatrix;
+        Point2D _position;
+        TransformationMatrix _orthoMatrix;
+        TransformationMatrix _cameraMatrix;
 };
 class Camera3D {
     public:
-        Camera3D(float aspectRatio, glm::vec3 position, glm::vec3 target);
+        Camera3D(float aspectRatio, Point position, Point target);
 
         // concider not updating and making do manually
         void setAspectRatio(float aspectRatio) {
             _aspectRatio = aspectRatio;
             update();
         };
-        void setPosition(glm::vec3 position) {
+        void setPosition(Point position) {
             _position = position;
             update();
         };
-        void setTarget(glm::vec3 target) {
+        void setTarget(Point target) {
             _target = target;
             update();
         };
 
         float getAspectRatio() { return _aspectRatio; };
-        glm::vec3 getPosition() { return _position; };
-        glm::vec3 getTarget() { return _target; };
-        glm::mat4 getViewMat() { return _viewMat; };
-        glm::mat4 getProjectionMat() { return _projectionMat; };
+        Point getPosition() { return _position; };
+        Point getTarget() { return _target; };
+        TransformationMatrix getViewMat() { return _viewMat; };
+        TransformationMatrix getProjectionMat() { return _projectionMat; };
 
     private:
         void update();
 
         float _aspectRatio;
-        glm::vec3 _position;
-        glm::vec3 _target;
-        glm::mat4 _viewMat;
-        glm::mat4 _projectionMat;
+        Point _position;
+        Point _target;
+        TransformationMatrix _viewMat;
+        TransformationMatrix _projectionMat;
 };
 } // namespace Eendgine

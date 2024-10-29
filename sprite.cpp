@@ -1,27 +1,27 @@
+#include "Eendgine/camera.hpp"
 #include "sprite.hpp"
 #include "textureCache.hpp"
 #include <GLES3/gl3.h>
-#include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
 namespace Eendgine {
 
 // can remove the need for two different initializers using templating
 Sprite::Sprite(std::filesystem::path texturePath)
-    : _position(glm::vec3(0.0f)), _size(glm::vec3(1.0f)), _rotation(0.0f), _VAO(0), _textureIdx(0) {
+    : _position(Point(0.0f)), _size(Scale(1.0f)), _rotation(0.0f), _VAO(0), _textureIdx(0) {
     std::vector<std::filesystem::path> texturePaths{texturePath};
     setup(texturePaths);
 }
 
 Sprite::Sprite(std::vector<std::filesystem::path> texturePaths)
-    : _position(glm::vec3(0.0f)), _size(glm::vec3(1.0f)), _rotation(0.0f), _VAO(0), _textureIdx(0) {
+    : _position(Point(0.0f)), _size(Scale(1.0f)), _rotation(0.0f), _VAO(0), _textureIdx(0) {
     setup(texturePaths);
 }
 
 void Sprite::setup(std::vector<std::filesystem::path>& texturePaths) {
 
-    _position = glm::vec3(0.0f);
-    _size = glm::vec3(1.0f);
+    _position = Point(0.0f);
+    _size = Scale(1.0f);
     _rotation = 0;
 
     for (auto t : texturePaths) {
@@ -33,20 +33,20 @@ void Sprite::setup(std::vector<std::filesystem::path>& texturePaths) {
 
     // centered on origin
     // with width and height of 1
-    verticies[0].position = glm::vec3(0.5f, 0.5f, 0.0f);
-    verticies[1].position = glm::vec3(0.5f, -0.5f, 0.0f);
-    verticies[2].position = glm::vec3(-0.5f, -0.5f, 0.0f);
-    verticies[3].position = glm::vec3(-0.5f, 0.5f, 0.0f);
+    verticies[0].position = Point(0.5f, 0.5f, 0.0f);
+    verticies[1].position = Point(0.5f, -0.5f, 0.0f);
+    verticies[2].position = Point(-0.5f, -0.5f, 0.0f);
+    verticies[3].position = Point(-0.5f, 0.5f, 0.0f);
 
-    verticies[0].color = glm::vec4(0.0f, 0.0f, 1.0f, 1.0f);
-    verticies[1].color = glm::vec4(0.0f, 1.0f, 0.0f, 1.0f);
-    verticies[2].color = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
-    verticies[3].color = glm::vec4(0.0f, 1.0f, 1.0f, 1.0f);
+    verticies[0].color = Color(0.0f, 0.0f, 1.0f, 1.0f);
+    verticies[1].color = Color(0.0f, 1.0f, 0.0f, 1.0f);
+    verticies[2].color = Color(1.0f, 0.0f, 0.0f, 1.0f);
+    verticies[3].color = Color(0.0f, 1.0f, 1.0f, 1.0f);
 
-    verticies[0].uv = glm::vec2(1.0f, 1.0f);
-    verticies[1].uv = glm::vec2(1.0f, 0.0f);
-    verticies[2].uv = glm::vec2(0.0f, 0.0f);
-    verticies[3].uv = glm::vec2(0.0f, 1.0f);
+    verticies[0].uv = Point2D(1.0f, 1.0f);
+    verticies[1].uv = Point2D(1.0f, 0.0f);
+    verticies[2].uv = Point2D(0.0f, 0.0f);
+    verticies[3].uv = Point2D(0.0f, 1.0f);
 
     unsigned int indices[] = {0, 1, 2, 0, 2, 3};
 
@@ -78,10 +78,10 @@ void Sprite::setup(std::vector<std::filesystem::path>& texturePaths) {
 std::vector<Texture>::size_type Sprite::getNumTextures() { return _textures.size(); }
 
 void Sprite::draw(uint shaderId, Camera2D& camera) {
-    glm::mat4 trans = camera.getCameraMatrix(); // glm::mat4(1.0f);
+    TransformationMatrix trans = camera.getCameraMatrix(); // glm::mat4(1.0f);
 
     trans = glm::translate(trans, _position);
-    trans = glm::rotate(trans, glm::radians(-_rotation), glm::vec3(0.0f, 0.0f, 1.0f));
+    trans = glm::rotate(trans, glm::radians(-_rotation), Point(0.0f, 0.0f, 1.0f));
     trans = glm::scale(trans, _size);
 
     unsigned int transformLoc = glGetUniformLocation(shaderId, "transform");
@@ -93,7 +93,7 @@ void Sprite::draw(uint shaderId, Camera2D& camera) {
 }
 
 void Sprite::draw(uint shaderId, Camera3D& camera) {
-    glm::mat4 transform = glm::mat4(1.0f);
+    TransformationMatrix transform = TransformationMatrix(1.0f);
     transform = glm::translate(transform, _position);
     glm::mat3 rot = glm::inverse(glm::mat3(camera.getViewMat()));
     // there must be a cleaner way to do this

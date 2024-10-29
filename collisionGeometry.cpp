@@ -2,29 +2,26 @@
 #include "fatalError.hpp"
 #include "info.hpp"
 #include "loadModel.hpp"
+#include "types.hpp"
 #include "vertex.hpp"
 #include <cmath>
 #include <filesystem>
-#include <iostream>
 #include <limits>
-#include <numeric>
 #include <omp.h>
-#include <tuple>
-
-float sign(glm::vec3 p1, glm::vec3 p2, glm::vec3 p3);
-glm::vec3 triNormal(glm::vec3 p1, glm::vec3 p2, glm::vec3 p3);
-bool vertOnTri(glm::vec3 vert, std::array<glm::vec3, 3> tri);
-float pointHeightOnTri(
-    const glm::vec3& p1, const glm::vec3& p2, const glm::vec3& p3, float x, float z);
 
 namespace Eendgine {
 
-CollisionSphere::CollisionSphere(glm::vec3 position, float radius)
+float sign(Point p1, Point p2, Point p3);
+Point triNormal(Point p1, Point p2, Point p3);
+bool vertOnTri(Point vert, std::array<Point, 3> tri);
+float pointHeightOnTri(const Point& p1, const Point& p2, const Point& p3, float x, float z);
+
+CollisionSphere::CollisionSphere(Point position, float radius)
     : _position(position), _radius(std::abs(radius)) {}
-CollisionPlane::CollisionPlane(glm::vec3 position, glm::vec3 normal)
+CollisionPlane::CollisionPlane(Point position, Point normal)
     : _position(position), _normal(normal) {}
 CollisionTriangle::CollisionTriangle(
-    std::array<glm::vec3, 3> vertPositions, std::array<glm::vec3, 3> vertNormals)
+    std::array<Point, 3> vertPositions, std::array<Point, 3> vertNormals)
     : _verts(vertPositions) {
     // getting face normal from vertex normals by getting average (I think the math is fine)
     // https://math.stackexchange.com/questions/250165/converting-vertex-normals-to-face-normals
@@ -38,7 +35,7 @@ CollisionTriangle::CollisionTriangle(
         _surface = surface::wall;
     }
 }
-CollisionCylinder::CollisionCylinder(glm::vec3 position, float height, float radius)
+CollisionCylinder::CollisionCylinder(Point position, float height, float radius)
     : _position(position), _height(height), _radius(radius) {}
 CollisionModel::CollisionModel(std::filesystem::path modelPath) {
     std::vector<Vertex> vertices;
@@ -50,9 +47,9 @@ CollisionModel::CollisionModel(std::filesystem::path modelPath) {
     for (int i = 0; i < indices.size(); i += 3) {
         // TODO check for normals
         _collisionTris.emplace_back(
-            std::array<glm::vec3, 3>{vertices[indices[i]].position,
-                vertices[indices[i + 1]].position, vertices[indices[i + 2]].position},
-            std::array<glm::vec3, 3>{
+            std::array<Point, 3>{vertices[indices[i]].position, vertices[indices[i + 1]].position,
+                vertices[indices[i + 2]].position},
+            std::array<Point, 3>{
                 vertices[indices[i]].normal,
                 vertices[indices[i + 1]].normal,
                 vertices[indices[i + 2]].normal,
@@ -60,8 +57,8 @@ CollisionModel::CollisionModel(std::filesystem::path modelPath) {
     }
 }
 
-bool colliding(CollisionSphere s1, CollisionSphere s2, glm::vec3* penetration) {
-    glm::vec3 distance = s2.getPosition() - s1.getPosition();
+bool colliding(CollisionSphere s1, CollisionSphere s2, Point* penetration) {
+    Point distance = s2.getPosition() - s1.getPosition();
     float depth = (s1.getRadius() + s2.getRadius()) - glm::length(distance);
     if (penetration != nullptr) {
         *penetration = depth * glm::normalize(distance);
@@ -69,19 +66,19 @@ bool colliding(CollisionSphere s1, CollisionSphere s2, glm::vec3* penetration) {
     return depth > 0.0f;
 }
 
-bool colliding(CollisionSphere s, CollisionPlane p, glm::vec3* penetration) {
+bool colliding(CollisionSphere s, CollisionPlane p, Point* penetration) {
     float distance = glm::dot(p.getNormal(), (s.getPosition() - p.getPosition()));
     float depth = s.getRadius() - distance;
     if (penetration != nullptr) {
-        glm::vec3 pen = (-p.getNormal()) * depth;
+        Point pen = (-p.getNormal()) * depth;
         *penetration = pen;
     }
     return depth > 0.0f;
 }
 
 float snapCylinderToFloor(CollisionCylinder& c, CollisionTriangle& t) {
-    glm::vec3 cylinderPos = c.getPosition();
-    std::array<glm::vec3, 3> triVerts = t.getVerts();
+    Point cylinderPos = c.getPosition();
+    std::array<Point, 3> triVerts = t.getVerts();
     // TODO make not hardcoded like this
     float snapDistance = 1.0f;
     if (vertOnTri(cylinderPos, triVerts)) {
@@ -95,15 +92,15 @@ float snapCylinderToFloor(CollisionCylinder& c, CollisionTriangle& t) {
     return -1000000.0f;
 }
 
-glm::vec3 pushCylinderFromWall(CollisionCylinder& c, CollisionTriangle& t) {
-    glm::vec3 cylinderPos = c.getPosition();
-    glm::vec3 triNormal = t.getNormal();
-    std::array<glm::vec3, 3> triVerts = t.getVerts();
+Point pushCylinderFromWall(CollisionCylinder& c, CollisionTriangle& t) {
+    Point cylinderPos = c.getPosition();
+    Point triNormal = t.getNormal();
+    std::array<Point, 3> triVerts = t.getVerts();
     // vector from cylinder to any point on triangle
-    glm::vec3 toTri = triVerts[0] - cylinderPos;
+    Point toTri = triVerts[0] - cylinderPos;
     // project vector onto plane of triangle with the tri's normal
     // https://math.stackexchange.com/questions/3481232/projection-of-vector-v-onto-a-plane-with-normal-vector-n
-    glm::vec3 projection = toTri * triNormal;
+    Point projection = toTri * triNormal;
     // if in triangular prisim (triangle with depth of radius)
     // move to the face which the normal vector points toward
     if (vertOnTri(projection + cylinderPos, t.getVerts()) &&
@@ -111,12 +108,12 @@ glm::vec3 pushCylinderFromWall(CollisionCylinder& c, CollisionTriangle& t) {
         float pushLength = c.getRadius() - glm::length(projection);
         return pushLength * triNormal;
     }
-    return glm::vec3(0.0f);
+    return Point(0.0f);
 }
 
 std::optional<float> pushCylinderFromCeiling(CollisionCylinder& c, CollisionTriangle& t) {
-    glm::vec3 cylinderPos = c.getPosition() + c.getHeight();
-    std::array<glm::vec3, 3> triVerts = t.getVerts();
+    Point cylinderPos = c.getPosition() + c.getHeight();
+    std::array<Point, 3> triVerts = t.getVerts();
     // TODO make not hardcoded like this
     float snapDistance = 1.0f;
     if (vertOnTri(cylinderPos, triVerts)) {
@@ -143,7 +140,7 @@ CollisionResults adjustToCollision(CollisionCylinder& c, std::vector<CollisionMo
     float floorHeight = cylinderHeight;
 
     float tmpFloorHeight = 0.0f;
-    glm::vec3 tmpWallOffset(0.0f);
+    Point tmpWallOffset(0.0f);
 
     for (auto m : models) {
         //#pragma omp parallel for private(tmpFloorHeight, tmpWallOffset) \
@@ -159,7 +156,7 @@ CollisionResults adjustToCollision(CollisionCylinder& c, std::vector<CollisionMo
                 break;
             case CollisionTriangle::surface::wall:
                 tmpWallOffset = pushCylinderFromWall(c, t);
-                if (tmpWallOffset != glm::vec3(0.0f)) {
+                if (tmpWallOffset != Point(0.0f)) {
                     numWalls++;
                 } else {
                     numWalls += 0;
@@ -185,13 +182,13 @@ CollisionResults adjustToCollision(CollisionCylinder& c, std::vector<CollisionMo
     return CollisionResults{hitFloor == (-1 * std::numeric_limits<float>::infinity())
                                 ? std::nullopt
                                 : std::optional(hitFloor),
-        std::optional(glm::vec3(hitWallX, 0.0f, hitWallZ)), hitCeiling};
+        std::optional(Point(hitWallX, 0.0f, hitWallZ)), hitCeiling};
 }
 
 /*
-bool colliding(CollisionSphere s, CollisionTriangle &t, glm::vec3 *penetration, glm::vec3 position,
-glm::vec3 scale) { glm::vec3 closestPoint = closestTriPoint(s.getPosition(), t, position, scale);
-    glm::vec3 distance = closestPoint - s.getPosition();
+bool colliding(CollisionSphere s, CollisionTriangle &t, Point *penetration, Point position,
+Point scale) { Point closestPoint = closestTriPoint(s.getPosition(), t, position, scale);
+    Point distance = closestPoint - s.getPosition();
     float depth = s.getRadius() - glm::length(distance);
     if (penetration != nullptr) {
         *penetration = depth * glm::normalize(distance);
@@ -201,12 +198,12 @@ glm::vec3 scale) { glm::vec3 closestPoint = closestTriPoint(s.getPosition(), t, 
 */
 
 /*
-bool colliding(CollisionSphere s, CollisionModel &m, std::vector<glm::vec3> *penetration) {
+bool colliding(CollisionSphere s, CollisionModel &m, std::vector<Point> *penetration) {
     bool collision = false;
     auto triangles = m.getTris();
-    glm::vec3 modelPos = m.getPosition();
-    glm::vec3 modelScale = m.getScale();
-    glm::vec3 tmpPen = glm::vec3(0.0f);
+    Point modelPos = m.getPosition();
+    Point modelScale = m.getScale();
+    Point tmpPen = Point(0.0f);
     for ( int i = 0; i < triangles.size(); i++ ) {
         if (colliding(s, triangles[i], &tmpPen, modelScale, modelPos)) {
             penetration->push_back(tmpPen);
@@ -217,7 +214,7 @@ bool colliding(CollisionSphere s, CollisionModel &m, std::vector<glm::vec3> *pen
 }
 */
 /*
-glm::vec3 closestTriPoint(glm::vec3 p, CollisionTriangle t, glm::vec3 position, glm::vec3 scale) {
+Point closestTriPoint(Point p, CollisionTriangle t, Point position, Point scale) {
     // thanks to Real-Time Collision Detection by Christer Ericson
     auto verts = t.getVerts();
     glm::vec3 a = (verts[0] * scale) + position;
@@ -267,13 +264,11 @@ glm::vec3 closestTriPoint(glm::vec3 p, CollisionTriangle t, glm::vec3 position, 
     return u * a + v * b + w * c;
 }
 */
-} // namespace Eendgine
 
-float sign(glm::vec3 p1, glm::vec3 p2, glm::vec3 p3) {
+float sign(Point p1, Point p2, Point p3) {
     return ((p1.x - p3.x) * (p2.z - p3.z)) - ((p2.x - p3.x) * (p1.z - p3.z));
 }
-float pointHeightOnTri(
-    const glm::vec3& p1, const glm::vec3& p2, const glm::vec3& p3, float x, float z) {
+float pointHeightOnTri(const Point& p1, const Point& p2, const Point& p3, float x, float z) {
     // undefined behavior if plane is parallel
     // WHAT?
     // https://math.stackexchange.com/questions/1154340/how-to-find-the-height-of-a-2d-coordinate-on-a-3d-triangle
@@ -284,17 +279,17 @@ float pointHeightOnTri(
     return -(a * x + c * z + d) / b;
 }
 
-glm::vec3 triNormal(glm::vec3 p1, glm::vec3 p2, glm::vec3 p3) {
+Point triNormal(Point p1, Point p2, Point p3) {
     // https://www.khronos.org/opengl/wiki/Calculating_a_Surface_Normal
-    glm::vec3 a = p2 - p1;
-    glm::vec3 b = p3 - p1;
+    Point a = p2 - p1;
+    Point b = p3 - p1;
 
-    return glm::vec3(a.y * b.z - a.z * b.y, a.z * b.x - a.x * b.z, a.x * b.y - a.y * b.x);
+    return Point(a.y * b.z - a.z * b.y, a.z * b.x - a.x * b.z, a.x * b.y - a.y * b.x);
 }
-bool vertOnTri(glm::vec3 vert, std::array<glm::vec3, 3> tri) {
-    glm::vec3 u = tri[1] - tri[0];
-    glm::vec3 v = tri[2] - tri[0];
-    glm::vec3 w = vert - tri[0];
+bool vertOnTri(Point vert, std::array<Point, 3> tri) {
+    Point u = tri[1] - tri[0];
+    Point v = tri[2] - tri[0];
+    Point w = vert - tri[0];
     float uu = glm::dot(u, u);
     float uv = glm::dot(u, v);
     float vv = glm::dot(v, v);
@@ -307,3 +302,4 @@ bool vertOnTri(glm::vec3 vert, std::array<glm::vec3, 3> tri) {
     float t = (uv * wu - uu * wv) / denominator;
     return (s >= 0) && (t >= 0) && (s + t <= 1);
 }
+} // namespace Eendgine

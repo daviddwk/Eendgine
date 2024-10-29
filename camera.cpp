@@ -3,8 +3,8 @@
 
 namespace Eendgine {
 Camera2D::Camera2D(int width, int height)
-    : _width(width), _height(height), _scale(1.0f), _position(glm::vec3(0.0f)),
-      _orthoMatrix(glm::mat4(0.0f)), _cameraMatrix(glm::mat4(0.0f))
+    : _width(width), _height(height), _scale(1.0f), _position(Point(0.0f)),
+      _orthoMatrix(TransformationMatrix(0.0f)), _cameraMatrix(TransformationMatrix(0.0f))
 
 {
     _orthoMatrix = glm::ortho(0.0f, (float)width, 0.0f, (float)height);
@@ -13,10 +13,10 @@ Camera2D::Camera2D(int width, int height)
 
 void Camera2D::update() {
     glm::vec3 translate =
-        glm::vec3(-_position.x + (_width / 2.0f), -_position.y + (_height / 2.0f), 0.0f);
+        Point(-_position.x + (_width / 2.0f), -_position.y + (_height / 2.0f), 0.0f);
     _cameraMatrix = glm::translate(_orthoMatrix, translate);
 
-    glm::vec3 scale = glm::vec3(_scale, _scale, 0.0f);
+    glm::vec3 scale = Scale(_scale, _scale, 0.0f);
     _cameraMatrix = glm::scale(glm::mat4(1.0f), scale) * _cameraMatrix;
 }
 
@@ -29,7 +29,7 @@ glm::vec2 Camera2D::convertScreenToWorld(glm::vec2 screenChoords) {
     return screenChoords;
 }
 
-Camera3D::Camera3D(float aspectRatio, glm::vec3 position, glm::vec3 target)
+Camera3D::Camera3D(float aspectRatio, Point position, Point target)
     : _aspectRatio(aspectRatio), _position(position), _target(target), _viewMat(glm::mat4(0.0f)),
       _projectionMat(glm::mat4(0.0f)) {
     update();
