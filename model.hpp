@@ -34,7 +34,7 @@ class Model {
         void draw(uint shaderId, Camera3D& camera);
 
     private:
-        unsigned int _VAO, _EBO, _VBO;
+        unsigned int _VAO, _VBO, _EBO;
         std::vector<Vertex> _vertices;
         std::vector<unsigned int> _indices;
         Point _position;
@@ -71,7 +71,7 @@ class Animation {
 
     private:
         float _animScale;
-        std::vector<unsigned int> _VAOs, _EBOs, _VBOs;
+        std::vector<unsigned int> _VAOs, _VBOs, _EBO;
         std::vector<std::vector<InpolVertex>> _vertices;
         std::vector<std::vector<unsigned int>> _indices;
         Point _position;

@@ -44,7 +44,7 @@ CollisionModel::CollisionModel(std::filesystem::path modelPath) {
     if (indices.size() % 3 != 0) {
         fatalError("collisionModel indices not divisible by 0");
     }
-    for (int i = 0; i < indices.size(); i += 3) {
+    for (unsigned int i = 0; i < indices.size(); i += 3) {
         // TODO check for normals
         _collisionTris.emplace_back(
             std::array<Point, 3>{vertices[indices[i]].position, vertices[indices[i + 1]].position,
@@ -143,8 +143,10 @@ CollisionResults adjustToCollision(CollisionCylinder& c, std::vector<CollisionMo
     Point tmpWallOffset(0.0f);
 
     for (auto m : models) {
-        //#pragma omp parallel for private(tmpFloorHeight, tmpWallOffset) \
-            //reduction(+:numWalls, hitWallX, hitWallZ) reduction(max: hitFloor)
+        /*
+        #pragma omp parallel for private(tmpFloorHeight, tmpWallOffset)
+        reduction(+:numWalls, hitWallX, hitWallZ) reduction(max: hitFloor)
+        */
         for (auto& t : m->getTris()) {
             switch (t.getSurface()) {
             case CollisionTriangle::surface::floor:

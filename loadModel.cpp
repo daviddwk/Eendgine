@@ -81,7 +81,7 @@ void loadModel(std::filesystem::path modelPath, std::filesystem::path nextModelP
         processMesh(m, scene, tmpVertices, tmpIndices, startIdx);
         startIdx += m->mNumVertices;
     }
-    for (int i = 0; i < tmpVertices.size(); i++) {
+    for (unsigned int i = 0; i < tmpVertices.size(); i++) {
         InpolVertex iv;
         iv.color = tmpVertices[i].color;
         iv.normal = tmpVertices[i].normal;
@@ -96,7 +96,7 @@ void loadModel(std::filesystem::path modelPath, std::filesystem::path nextModelP
         processMesh(m, nextScene, tmpVertices, indices, startIdx);
         startIdx += m->mNumVertices;
     }
-    for (int i = 0; i < vertices.size(); i++) {
+    for (unsigned int i = 0; i < vertices.size(); i++) {
         vertices[i].nextNormal = tmpVertices[i].normal;
         vertices[i].nextPosition = tmpVertices[i].position;
     }
@@ -134,7 +134,6 @@ void processMesh(aiMesh* mesh, const aiScene* scene, std::vector<Vertex>& vertic
     for (unsigned int i = 0; i < mesh->mNumFaces; i++) {
         aiFace face = mesh->mFaces[i];
         for (unsigned int j = 0; j < face.mNumIndices; j++) {
-            unsigned int currIdx = face.mIndices[j];
             indices.push_back(face.mIndices[j] + startIdx);
         }
     }

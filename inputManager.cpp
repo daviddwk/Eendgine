@@ -19,7 +19,7 @@ void InputManager::processInput() {
     downPress = keyState[SDL_SCANCODE_DOWN];
     spacePress = keyState[SDL_SCANCODE_SPACE];
 
-    unsigned int mouseState = SDL_GetRelativeMouseState(&deltaMouseX, &deltaMouseY);
+    // unsigned int mouseState = SDL_GetRelativeMouseState(&deltaMouseX, &deltaMouseY);
 
     SDL_Event event;
     while (SDL_PollEvent(&event)) {

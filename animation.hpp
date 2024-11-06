@@ -33,13 +33,13 @@ class Animation {
         void setAnim(float scale) { _animScale = scale - (int)scale; };
 
     private:
-        float _animScale;
         std::vector<unsigned int> _VAOs, _EBOs, _VBOs;
         std::vector<std::vector<InpolVertex>> _vertices;
         std::vector<std::vector<unsigned int>> _indices;
         Point _position;
         Scale _scale;
         Rotation _rotation;
+        float _animScale;
         unsigned int _textureIdx;
         std::vector<Texture> _textures;
 };

@@ -57,7 +57,6 @@ void Screen::render(ShaderProgram shader) {
     glClear(GL_COLOR_BUFFER_BIT);
     shader.use();
     glBindVertexArray(_VAO);
-    unsigned int smallTexId = 0;
     glUniform1i(glGetUniformLocation(shader.getProgramID(), "screenTexture"), 0);
     glBindTexture(GL_TEXTURE_2D, _textureColorBuffer);
 

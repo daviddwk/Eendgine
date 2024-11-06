@@ -6,8 +6,8 @@
 
 namespace Eendgine {
 Model::Model(std::string modelPath)
-    : _position(Point(0.0f)), _scale(Scale(1.0f)), _rotation(Rotation(0.0f)), _textureIdx(0),
-      _VAO(0), _VBO(0), _EBO(0) {
+    : _VAO(0), _VBO(0), _EBO(0), _position(Point(0.0f)), _scale(Scale(1.0f)),
+      _rotation(Rotation(0.0f)), _textureIdx(0) {
 
     loadModel(modelPath, _vertices, _indices, _textures);
 

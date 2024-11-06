@@ -7,8 +7,8 @@
 
 namespace Eendgine {
 Animation::Animation(std::filesystem::path modelsDir)
-    : _position(Point(0.0f)), _scale(Scale(1.0f)), _rotation(Rotation(0.0f)), _textureIdx(0),
-      _animScale(0.0f) {
+    : _position(Point(0.0f)), _scale(Scale(1.0f)), _rotation(Rotation(0.0f)), _animScale(0.0f),
+      _textureIdx(0) {
     std::vector<std::string> modelPaths;
 
     if (!std::filesystem::is_directory(modelsDir)) {
@@ -31,7 +31,7 @@ Animation::Animation(std::filesystem::path modelsDir)
     _vertices.resize(modelPaths.size());
     _indices.resize(modelPaths.size());
 
-    for (int i = 0; i < modelPaths.size(); i++) {
+    for (unsigned int i = 0; i < modelPaths.size(); i++) {
         // use next model looping back to the first
         loadModel(modelPaths[i], modelPaths[(i + 1) % modelPaths.size()], _vertices[i], _indices[i],
             _textures);

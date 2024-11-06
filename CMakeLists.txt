@@ -19,4 +19,4 @@ file(GLOB_RECURSE SOURCES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} "*.cpp")
 
 add_library(Eendgine ${SOURCES})
 target_link_libraries(Eendgine PRIVATE SDL2 assimp stb GLESv2 ${OpenMP_CXX_FLAGS})
-target_compile_options(Eendgine PRIVATE -Wall ${OpenMP_CXX_FLAGS})
+target_compile_options(Eendgine PRIVATE -Werror ${OpenMP_CXX_FLAGS})
