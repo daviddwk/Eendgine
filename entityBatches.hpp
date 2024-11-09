@@ -1,43 +1,48 @@
 #pragma once
 
 #include "camera.hpp"
+#include "doll.hpp"
 #include "entityBatch.hpp"
-#include "model.hpp"
 #include "shaders.hpp"
 #include "sprite.hpp"
+#include "statue.hpp"
 
 #include <filesystem>
 
 namespace Eendgine {
-using ModelId = unsigned int;
-using AnimationId = unsigned int;
-using BillboardId = unsigned int;
+using StatueId = unsigned int;
+using DollId = unsigned int;
+using BoardId = unsigned int;
 using PanelId = unsigned int;
+
+using Board = Sprite;
+using Panel = Sprite;
+
 class Entities {
     public:
-        class ModelBatch {
+        class StatueBatch {
             public:
-                static ModelId insert(std::filesystem::path modelPath) {
-                    return _models.insert(modelPath);
+                static StatueId insert(std::filesystem::path statuePath) {
+                    return _statues.insert(statuePath);
                 };
-                static void erase(ModelId id) { _models.erase(id); };
-                static Model& getRef(ModelId id) { return _models.getRef(id); }
+                static void erase(StatueId id) { _statues.erase(id); };
+                static Statue& getRef(StatueId id) { return _statues.getRef(id); }
         };
         class AnimationBatch {
             public:
-                static AnimationId insert(std::filesystem::path modelsDir) {
-                    return _animations.insert(modelsDir);
+                static DollId insert(std::filesystem::path modelsDir) {
+                    return _dolls.insert(modelsDir);
                 };
-                static void erase(AnimationId id) { _animations.erase(id); };
-                static Animation& getRef(AnimationId id) { return _animations.getRef(id); }
+                static void erase(DollId id) { _dolls.erase(id); };
+                static Doll& getRef(DollId id) { return _dolls.getRef(id); }
         };
-        class BillboardBatch {
+        class BoardBatch {
             public:
-                static BillboardId insert(std::vector<std::filesystem::path> texturePaths) {
-                    return _billboards.insert(texturePaths);
+                static BoardId insert(std::vector<std::filesystem::path> texturePaths) {
+                    return _boards.insert(texturePaths);
                 };
-                static void erase(BillboardId id) { _billboards.erase(id); };
-                static Sprite& getRef(BillboardId id) { return _billboards.getRef(id); }
+                static void erase(BoardId id) { _boards.erase(id); };
+                static Board& getRef(BoardId id) { return _boards.getRef(id); }
         };
         class PanelBatch {
             public:
@@ -45,14 +50,14 @@ class Entities {
                     return _panels.insert(texturePaths);
                 };
                 static void erase(PanelId id) { _panels.erase(id); };
-                static Sprite& getRef(PanelId id) { return _panels.getRef(id); }
+                static Panel& getRef(PanelId id) { return _panels.getRef(id); }
         };
         static void draw(Shaders& shaders, Camera2D& hudCamera, Camera3D& sceneCamera);
 
     private:
-        inline static EntityBatch<Model> _models;
-        inline static EntityBatch<Animation> _animations;
-        inline static EntityBatch<Sprite> _billboards;
-        inline static EntityBatch<Sprite> _panels;
+        inline static EntityBatch<Statue> _statues;
+        inline static EntityBatch<Doll> _dolls;
+        inline static EntityBatch<Board> _boards;
+        inline static EntityBatch<Panel> _panels;
 };
 } // namespace Eendgine

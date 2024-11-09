@@ -1,12 +1,8 @@
 #pragma once
-#include "camera.hpp"
-#include "model.hpp"
 #include "shader.hpp"
-#include "sprite.hpp"
 
 #include <algorithm>
 #include <functional>
-#include <set>
 
 namespace Eendgine {
 template <class E> struct entityLabeled {

@@ -1,15 +1,18 @@
-#include <filesystem>
-#include <vector>
-
+#pragma once
 #include "camera.hpp"
 #include "texture.hpp"
 #include "types.hpp"
 #include "vertex.hpp"
+#include <assimp/Importer.hpp>
+#include <assimp/postprocess.h>
+#include <assimp/scene.h>
+#include <string>
+#include <vector>
 
 namespace Eendgine {
-class Animation {
+class Statue {
     public:
-        Animation(std::filesystem::path modelsDir);
+        Statue(std::string modelPath);
 
         void setPosition(Point position) { _position = position; };
         void setScale(Scale scale) { _scale = scale; };
@@ -26,20 +29,16 @@ class Animation {
 
         Texture getTexture() { return _textures[_textureIdx]; };
         unsigned int getTextureIdx() { return _textureIdx; };
-        float getAnim() { return _animScale; };
 
         void draw(uint shaderId, Camera3D& camera);
 
-        void setAnim(float scale) { _animScale = scale - (int)scale; };
-
     private:
-        std::vector<unsigned int> _VAOs, _EBOs, _VBOs;
-        std::vector<std::vector<InpolVertex>> _vertices;
-        std::vector<std::vector<unsigned int>> _indices;
+        unsigned int _VAO, _VBO, _EBO;
+        std::vector<Vertex> _vertices;
+        std::vector<unsigned int> _indices;
         Point _position;
         Scale _scale;
         Rotation _rotation;
-        float _animScale;
         unsigned int _textureIdx;
         std::vector<Texture> _textures;
 };

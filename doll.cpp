@@ -1,12 +1,12 @@
 #include "Eendgine/camera.hpp"
-#include "animation.hpp"
+#include "doll.hpp"
 #include "fatalError.hpp"
 #include "loadModel.hpp"
 #include <GLES3/gl3.h>
 #include <glm/gtc/matrix_transform.hpp>
 
 namespace Eendgine {
-Animation::Animation(std::filesystem::path modelsDir)
+Doll::Doll(std::filesystem::path modelsDir)
     : _position(Point(0.0f)), _scale(Scale(1.0f)), _rotation(Rotation(0.0f)), _animScale(0.0f),
       _textureIdx(0) {
     std::vector<std::string> modelPaths;
@@ -71,7 +71,7 @@ Animation::Animation(std::filesystem::path modelsDir)
     }
 }
 
-void Animation::draw(uint shaderId, Camera3D& camera) {
+void Doll::draw(uint shaderId, Camera3D& camera) {
     // using RGB(1,0,1) for transparent
     // parts of the texture using shaders
     TransformationMatrix transform = TransformationMatrix(1.0f);

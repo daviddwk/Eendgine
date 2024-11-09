@@ -1,11 +1,11 @@
 #include "loadModel.hpp"
-#include "model.hpp"
+#include "statue.hpp"
 #include "types.hpp"
 #include <GLES3/gl3.h>
 #include <glm/gtc/matrix_transform.hpp>
 
 namespace Eendgine {
-Model::Model(std::string modelPath)
+Statue::Statue(std::string modelPath)
     : _VAO(0), _VBO(0), _EBO(0), _position(Point(0.0f)), _scale(Scale(1.0f)),
       _rotation(Rotation(0.0f)), _textureIdx(0) {
 
@@ -36,7 +36,7 @@ Model::Model(std::string modelPath)
     glEnableVertexAttribArray(3);
 }
 
-void Model::draw(uint shaderId, Camera3D& camera) {
+void Statue::draw(uint shaderId, Camera3D& camera) {
     // using RGB(1,0,1) for transparent
     // parts of the texture using shaders
 
