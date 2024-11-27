@@ -13,7 +13,7 @@
 namespace Eendgine {
 class Doll {
     public:
-        Doll(std::filesystem::path dollPath);
+        Doll(std::filesystem::path dollPath, bool loop);
 
         void setAnimation(std::string animation) { _animation = animation; }
 

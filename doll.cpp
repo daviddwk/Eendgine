@@ -6,10 +6,9 @@
 #include <GLES3/gl3.h>
 #include <filesystem>
 #include <glm/gtc/matrix_transform.hpp>
-#include <iostream>
 
 namespace Eendgine {
-Doll::Doll(std::filesystem::path dollPath)
+Doll::Doll(std::filesystem::path dollPath, bool loop)
     : _position(Point(0.0f)), _scale(Scale(1.0f)), _rotation(Rotation(0.0f)), _animScale(0.0f),
       _textureIdx(0) {
 
@@ -45,13 +44,15 @@ Doll::Doll(std::filesystem::path dollPath)
             modelPath = animationPath / std::filesystem::path(nextModelName);
         }
 
-        _VAOs[animationName].resize(modelPaths.size(), 0);
-        _VBOs[animationName].resize(modelPaths.size(), 0);
-        _EBOs[animationName].resize(modelPaths.size(), 0);
-        _vertices[animationName].resize(modelPaths.size());
-        _indices[animationName].resize(modelPaths.size());
+        const unsigned int numInpols = loop ? modelPaths.size() : modelPaths.size() - 1;
 
-        for (unsigned int i = 0; i < modelPaths.size(); i++) {
+        _VAOs[animationName].resize(numInpols, 0);
+        _VBOs[animationName].resize(numInpols, 0);
+        _EBOs[animationName].resize(numInpols, 0);
+        _vertices[animationName].resize(numInpols);
+        _indices[animationName].resize(numInpols);
+
+        for (unsigned int i = 0; i < numInpols; i++) {
             // use next model looping back to the first
             loadModel(modelPaths[i], modelPaths[(i + 1) % modelPaths.size()],
                 _vertices[animationName][i], _indices[animationName][i], _textures);
