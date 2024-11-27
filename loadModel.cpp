@@ -57,7 +57,7 @@ void loadModel(std::filesystem::path modelPath, std::filesystem::path nextModelP
     if (!scene)
         fatalError("failed to load model: could not load file " + modelPath.string());
     if (!nextScene)
-        fatalError("failed to load model: could not load file" + modelPath.string());
+        fatalError("failed to load model: could not load file " + modelPath.string());
     if (scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE)
         fatalError("failed to load model: scene flags incomplete");
     if (nextScene->mFlags & AI_SCENE_FLAGS_INCOMPLETE)

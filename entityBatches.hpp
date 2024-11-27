@@ -28,7 +28,7 @@ class Entities {
                 static void erase(StatueId id) { _statues.erase(id); };
                 static Statue& getRef(StatueId id) { return _statues.getRef(id); }
         };
-        class AnimationBatch {
+        class DollBatch {
             public:
                 static DollId insert(std::filesystem::path modelsDir) {
                     return _dolls.insert(modelsDir);

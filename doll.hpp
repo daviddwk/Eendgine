@@ -1,6 +1,8 @@
 #pragma once
 
 #include <filesystem>
+#include <map>
+#include <string>
 #include <vector>
 
 #include "camera.hpp"
@@ -11,7 +13,9 @@
 namespace Eendgine {
 class Doll {
     public:
-        Doll(std::filesystem::path modelsDir);
+        Doll(std::filesystem::path dollPath);
+
+        void setAnimation(std::string animation) { _animation = animation; }
 
         void setPosition(Point position) { _position = position; };
         void setScale(Scale scale) { _scale = scale; };
@@ -22,6 +26,7 @@ class Doll {
 
         void setTextureIdx(unsigned int idx) { _textureIdx = (idx < _textures.size() ? idx : 0); };
 
+        std::string getAnimation() { return _animation; };
         Point getPosition() { return _position; };
         Scale getScale() { return _scale; };
         Rotation getRotation() { return _rotation; };
@@ -35,9 +40,11 @@ class Doll {
         void setAnim(float scale) { _animScale = scale - (int)scale; };
 
     private:
-        std::vector<unsigned int> _VAOs, _EBOs, _VBOs;
-        std::vector<std::vector<InpolVertex>> _vertices;
-        std::vector<std::vector<unsigned int>> _indices;
+        std::string _animation;
+        std::map<std::string, std::vector<unsigned int>> _VAOs, _EBOs, _VBOs;
+        std::map<std::string, std::vector<std::vector<InpolVertex>>> _vertices;
+        std::map<std::string, std::vector<std::vector<unsigned int>>> _indices;
+
         Point _position;
         Scale _scale;
         Rotation _rotation;

@@ -41,36 +41,34 @@ void Info::registerTime(const std::string& name, const uint32_t options) {
     };
 }
 
-void Info::updateInt(const std::string& name, int updatedValue) {
+void Info::updateInt(const std::string& name, const int update) {
     if (!_registeredInts.contains(name))
         return;
     auto tmp_reg = _registeredInts[name];
     if (tmp_reg.options & INFO_OPTION_AVERAGE) {
         if (tmp_reg.count != 0) {
-            tmp_reg.average =
-                (updatedValue + (tmp_reg.value * tmp_reg.count)) / (tmp_reg.count + 1);
+            tmp_reg.average = (update + (tmp_reg.value * tmp_reg.count)) / (tmp_reg.count + 1);
         } else {
-            tmp_reg.average = updatedValue;
+            tmp_reg.average = update;
         }
     }
-    tmp_reg.value = updatedValue;
+    tmp_reg.value = update;
     tmp_reg.count++;
     _registeredInts[name] = tmp_reg;
 }
 
-void Info::updateFloat(const std::string& name, float updatedValue) {
+void Info::updateFloat(const std::string& name, const float update) {
     if (!_registeredFloats.contains(name))
         return;
     auto tmp_reg = _registeredFloats[name];
     if (tmp_reg.options & INFO_OPTION_AVERAGE) {
         if (tmp_reg.count != 0) {
-            tmp_reg.average =
-                (updatedValue + (tmp_reg.value * tmp_reg.count)) / (tmp_reg.count + 1);
+            tmp_reg.average = (update + (tmp_reg.value * tmp_reg.count)) / (tmp_reg.count + 1);
         } else {
-            tmp_reg.average = updatedValue;
+            tmp_reg.average = update;
         }
     }
-    tmp_reg.value = updatedValue;
+    tmp_reg.value = update;
     tmp_reg.count++;
     _registeredFloats[name] = tmp_reg;
 }

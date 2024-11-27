@@ -1,9 +1,9 @@
 #pragma once
 #include <map>
-#include <optional>
 #include <stdint.h>
 #include <string>
 
+#define INFO_OPTION_NONE ((0x00000000))
 #define INFO_OPTION_AVERAGE ((0x00000001))
 
 namespace Eendgine {
@@ -44,6 +44,7 @@ class Info {
                 uint64_t count;
                 float average;
         };
+
         inline static std::map<std::string, registeredInt> _registeredInts;
         inline static std::map<std::string, registeredFloat> _registeredFloats;
         inline static std::map<std::string, registeredTime> _registeredTimes;
