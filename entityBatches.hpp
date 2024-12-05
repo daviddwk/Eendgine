@@ -30,8 +30,8 @@ class Entities {
         };
         class DollBatch {
             public:
-                static DollId insert(std::filesystem::path modelsDir, bool loop) {
-                    return _dolls.insert(modelsDir, loop);
+                static DollId insert(std::filesystem::path modelsDir) {
+                    return _dolls.insert(modelsDir);
                 };
                 static void erase(DollId id) { _dolls.erase(id); };
                 static Doll& getRef(DollId id) { return _dolls.getRef(id); }

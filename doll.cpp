@@ -5,10 +5,12 @@
 #include "loadModel.hpp"
 #include <GLES3/gl3.h>
 #include <filesystem>
+#include <fstream>
 #include <glm/gtc/matrix_transform.hpp>
+#include <json/json.h>
 
 namespace Eendgine {
-Doll::Doll(std::filesystem::path dollPath, bool loop)
+Doll::Doll(std::filesystem::path dollPath)
     : _position(Point(0.0f)), _scale(Scale(1.0f)), _rotation(Rotation(0.0f)), _animScale(0.0f),
       _textureIdx(0) {
 
@@ -28,10 +30,26 @@ Doll::Doll(std::filesystem::path dollPath, bool loop)
     }
 
     for (const auto& animationPath : animationPaths) {
+        // metadata
+        Json::Value root;
+        std::filesystem::path metadataPath = animationPath / "metadata.json";
+        std::ifstream metadata(metadataPath);
+        if (!metadata.is_open()) {
+            fatalError("could not open: " + metadataPath.string());
+        }
+        try {
+            metadata >> root;
+        } catch (...) {
+            fatalError("improper json: " + metadataPath.string());
+        }
+        if (!root["loop"].is<bool>()) {
+            fatalError("no loop in: " + metadataPath.string());
+        }
+        bool loop = root["loop"].asBool();
+
+        // animations
         std::string animationName = animationPath.filename();
-
         std::vector<std::filesystem::path> modelPaths;
-
         int modelNum = 0;
 
         std::string nextModelName =
