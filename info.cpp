@@ -98,12 +98,12 @@ void Info::stopTime(const std::string& name) {
 }
 
 template <typename T> void printInfoMap(const T& map) {
-    for (auto const& iter : map) {
-        if (iter.second.count != 0) {
-            std::cout << iter.first << ":\t" // key
-                      << iter.second.value;
-            if (iter.second.options & INFO_OPTION_AVERAGE) {
-                std::cout << "\taverage:\t" << iter.second.average;
+    for (auto const& [key, info] : map) {
+        if (info.count != 0) {
+            std::cout << key << ":\t" // key
+                      << info.value;
+            if (info.options & INFO_OPTION_AVERAGE) {
+                std::cout << "\taverage:\t" << info.average;
             }
             std::cout << '\n';
         }
