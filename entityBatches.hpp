@@ -38,16 +38,16 @@ class Entities {
         };
         class BoardBatch {
             public:
-                static BoardId insert(std::vector<std::filesystem::path> texturePaths) {
-                    return _boards.insert(texturePaths);
+                static BoardId insert(std::filesystem::path boardPath) {
+                    return _boards.insert(boardPath);
                 };
                 static void erase(BoardId id) { _boards.erase(id); };
                 static Board& getRef(BoardId id) { return _boards.getRef(id); }
         };
         class PanelBatch {
             public:
-                static PanelId insert(std::vector<std::filesystem::path> texturePaths) {
-                    return _panels.insert(texturePaths);
+                static PanelId insert(std::filesystem::path panelPath) {
+                    return _panels.insert(panelPath);
                 };
                 static void erase(PanelId id) { _panels.erase(id); };
                 static Panel& getRef(PanelId id) { return _panels.getRef(id); }

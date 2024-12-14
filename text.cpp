@@ -4,7 +4,7 @@
 
 namespace Eendgine {
 Text::Text(std::filesystem::path fontName, std::string text, Point position, float scale)
-    : _fontPath("resources/fonts" / fontName), _position(position), _scale(scale) {
+    : _fontPath("fonts" / fontName), _position(position), _scale(scale) {
     setText(text);
     setPosition(position);
     setScale(scale);

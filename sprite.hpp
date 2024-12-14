@@ -5,27 +5,25 @@
 #include "types.hpp"
 #include "vertex.hpp"
 #include <filesystem>
+#include <map>
 #include <vector>
 
 namespace Eendgine {
 // TODO combine these into one again
 class Sprite {
     public:
-        Sprite(std::filesystem::path texturePath);
-        Sprite(std::vector<std::filesystem::path> texturePaths);
+        Sprite(std::filesystem::path path);
         std::vector<Texture>::size_type getNumTextures();
-        void setTextureIdx(std::vector<Texture>::size_type textureIdx) {
-            _textureIdx = (textureIdx < _textures.size()) ? textureIdx : 0;
-        };
+        void setTexture(std::string texture) { _currentTexture = texture; };
         void setPosition(Point position) { _position = position; };
-        void setScale(float w, float h) { _size = Scale(w, h, 1.0f); };
+        void setScale(Scale2D scale) { _size = Scale(scale.x, scale.y, 1.0f); };
         void setRotation(float r) { _rotation = r; };
 
-        unsigned int getTextureIdx() { return _textureIdx; };
+        std::string getTextureName() { return _currentTexture; };
         Point getPosition() { return _position; };
         Scale getSize() { return _size; };
         float getRotation() { return _rotation; };
-        Texture getTexture() { return _textures[_textureIdx]; };
+        Texture getTexture() { return _textures[_currentTexture]; };
 
         void draw(uint shaderId, Camera2D& camera);
         void draw(uint shaderId, Camera3D& camera);
@@ -36,7 +34,7 @@ class Sprite {
         Scale _size;
         float _rotation;
         unsigned int _VAO;
-        unsigned int _textureIdx;
-        std::vector<Texture> _textures;
+        std::string _currentTexture;
+        std::map<std::string, Texture> _textures;
 };
 } // namespace Eendgine

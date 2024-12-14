@@ -112,6 +112,8 @@ Doll::Doll(std::filesystem::path dollPath)
     }
 }
 
+Doll::~Doll() {}
+
 void Doll::draw(uint shaderId, Camera3D& camera) {
     // using RGB(1,0,1) for transparent
     // parts of the texture using shaders

@@ -14,6 +14,7 @@ namespace Eendgine {
 class Doll {
     public:
         Doll(std::filesystem::path dollPath);
+        ~Doll();
 
         void setAnimation(std::string animation) { _animation = animation; }
 

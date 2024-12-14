@@ -1,4 +1,5 @@
 #include "Eendgine/camera.hpp"
+#include "fatalError.hpp"
 #include "sprite.hpp"
 #include "textureCache.hpp"
 #include <GLES3/gl3.h>
@@ -7,14 +8,16 @@
 namespace Eendgine {
 
 // can remove the need for two different initializers using templating
-Sprite::Sprite(std::filesystem::path texturePath)
-    : _position(Point(0.0f)), _size(Scale(1.0f)), _rotation(0.0f), _VAO(0), _textureIdx(0) {
-    std::vector<std::filesystem::path> texturePaths{texturePath};
-    setup(texturePaths);
-}
+Sprite::Sprite(std::filesystem::path path)
+    : _position(Point(0.0f)), _size(Scale(1.0f)), _rotation(0.0f), _VAO(0), _currentTexture("") {
 
-Sprite::Sprite(std::vector<std::filesystem::path> texturePaths)
-    : _position(Point(0.0f)), _size(Scale(1.0f)), _rotation(0.0f), _VAO(0), _textureIdx(0) {
+    std::vector<std::filesystem::path> texturePaths;
+    std::filesystem::path spritePath = std::filesystem::path("resources") / path;
+    for (const auto& entry : std::filesystem::directory_iterator(spritePath)) {
+        if (entry.is_regular_file() && (entry.path().extension() == ".png")) {
+            texturePaths.push_back(entry.path());
+        }
+    }
     setup(texturePaths);
 }
 
@@ -24,10 +27,13 @@ void Sprite::setup(std::vector<std::filesystem::path>& texturePaths) {
     _size = Scale(1.0f);
     _rotation = 0;
 
-    for (auto t : texturePaths) {
-        _textures.push_back(Eendgine::TextureCache::getTexture(t));
+    for (const auto& t : texturePaths) {
+        if (t.has_stem() == false) {
+            fatalError("texture: " + t.string() + "has no stem");
+        }
+        _textures[t.stem()] = Eendgine::TextureCache::getTexture(t);
     }
-    _textureIdx = 0;
+    _currentTexture = _textures.begin()->first;
 
     Vertex verticies[4];
 
