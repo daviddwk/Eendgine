@@ -5,10 +5,13 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 namespace Eendgine {
-Statue::Statue(std::string modelPath)
+Statue::Statue(const std::string path)
     : _VAO(0), _VBO(0), _EBO(0), _position(Point(0.0f)), _scale(Scale(1.0f)),
       _rotation(Rotation(0.0f)), _textureIdx(0) {
 
+    const std::filesystem::path modelPath =
+        std::filesystem::path("resources") / path /
+        (std::filesystem::path(path).filename().string() + ".obj");
     loadModel(modelPath, _vertices, _indices, _textures);
 
     glGenVertexArrays(1, &_VAO);

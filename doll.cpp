@@ -10,10 +10,11 @@
 #include <json/json.h>
 
 namespace Eendgine {
-Doll::Doll(std::filesystem::path dollPath)
+Doll::Doll(std::filesystem::path path)
     : _position(Point(0.0f)), _scale(Scale(1.0f)), _rotation(Rotation(0.0f)), _animScale(0.0f),
       _textureIdx(0) {
 
+    std::filesystem::path dollPath = std::filesystem::path("resources") / path;
     if (!std::filesystem::is_directory(dollPath)) {
         fatalError("Doll directory " + dollPath.string() + " is not a directory");
     }

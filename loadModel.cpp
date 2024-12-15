@@ -2,8 +2,6 @@
 #include "loadModel.hpp"
 #include "types.hpp"
 
-#include <iostream>
-
 namespace Eendgine {
 
 void loadModel(std::filesystem::path modelPath, std::vector<Vertex>& vertices,
@@ -12,7 +10,7 @@ void loadModel(std::filesystem::path modelPath, std::vector<Vertex>& vertices,
     const aiScene* scene =
         importer.ReadFile(modelPath, aiProcess_Triangulate | aiProcess_GenNormals);
     if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
-        fatalError("failed to load model");
+        fatalError("failed to load model: " + modelPath.string());
         return;
     }
     std::filesystem::path modelDir = modelPath.parent_path();
