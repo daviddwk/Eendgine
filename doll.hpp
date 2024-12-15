@@ -16,6 +16,8 @@ class Doll {
         Doll(std::filesystem::path dollPath);
         ~Doll();
 
+        void eraseBuffers();
+
         void setAnimation(std::string animation) { _animation = animation; }
 
         void setPosition(Point position) { _position = position; };
@@ -42,7 +44,7 @@ class Doll {
 
     private:
         std::string _animation;
-        std::map<std::string, std::vector<unsigned int>> _VAOs, _EBOs, _VBOs;
+        std::map<std::string, std::vector<unsigned int>> _VAOs, _VBOs, _EBOs;
         std::map<std::string, std::vector<std::vector<InpolVertex>>> _vertices;
         std::map<std::string, std::vector<std::vector<unsigned int>>> _indices;
 

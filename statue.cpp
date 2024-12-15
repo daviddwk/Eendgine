@@ -1,13 +1,15 @@
+#include "fatalError.hpp"
 #include "loadModel.hpp"
 #include "statue.hpp"
 #include "types.hpp"
 #include <GLES3/gl3.h>
 #include <glm/gtc/matrix_transform.hpp>
+#include <iostream>
 
 namespace Eendgine {
 Statue::Statue(const std::string path)
     : _VAO(0), _VBO(0), _EBO(0), _position(Point(0.0f)), _scale(Scale(1.0f)),
-      _rotation(Rotation(0.0f)), _textureIdx(0) {
+      _rotation(Rotation(0.0f)), _textureIdx(0), _name(path) {
 
     const std::filesystem::path modelPath =
         std::filesystem::path("resources") / path /
@@ -37,6 +39,15 @@ Statue::Statue(const std::string path)
     glVertexAttribPointer(
         3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, normal));
     glEnableVertexAttribArray(3);
+}
+
+Statue::~Statue() {}
+
+void Statue::eraseBuffers() {
+    fatalError("buffers deleted");
+    glDeleteVertexArrays(1, &_VAO);
+    glDeleteFramebuffers(1, &_VBO);
+    glDeleteFramebuffers(1, &_EBO);
 }
 
 void Statue::draw(uint shaderId, Camera3D& camera) {

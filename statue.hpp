@@ -13,6 +13,9 @@ namespace Eendgine {
 class Statue {
     public:
         Statue(std::string modelPath);
+        ~Statue();
+
+        void eraseBuffers();
 
         void setPosition(Point position) { _position = position; };
         void setScale(Scale scale) { _scale = scale; };
@@ -41,5 +44,6 @@ class Statue {
         Rotation _rotation;
         unsigned int _textureIdx;
         std::vector<Texture> _textures;
+        std::string _name;
 };
 } // namespace Eendgine

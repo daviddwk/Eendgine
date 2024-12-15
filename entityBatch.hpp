@@ -3,7 +3,6 @@
 
 #include <algorithm>
 #include <functional>
-
 namespace Eendgine {
 template <class E> struct entityLabeled {
         unsigned int id;
@@ -31,6 +30,7 @@ template <class E> class EntityBatch {
             // so that the _indexMap is always accurate
             //
             // check if it's in there here? could do it in sort
+
             _toErase.push_back(id);
         }
 
@@ -66,7 +66,9 @@ template <class E> class EntityBatch {
                     // could swap to end and remove instead
                     // but having issues with swap
                     auto idxEntity = it->second;
-                    _entities.erase(_entities.begin() + idxEntity);
+                    auto entityLabeledToErase = _entities.begin() + idxEntity;
+                    entityLabeledToErase->entity.eraseBuffers();
+                    _entities.erase(entityLabeledToErase);
                     _indexMap.erase(it);
                 } else {
                     // there is an issue

@@ -9,7 +9,8 @@ namespace Eendgine {
 
 // can remove the need for two different initializers using templating
 Sprite::Sprite(std::filesystem::path path)
-    : _position(Point(0.0f)), _size(Scale(1.0f)), _rotation(0.0f), _VAO(0), _currentTexture("") {
+    : _position(Point(0.0f)), _size(Scale(1.0f)), _rotation(0.0f), _VAO(0), _VBO(0), _EBO(0),
+      _currentTexture("") {
 
     std::vector<std::filesystem::path> texturePaths;
     std::filesystem::path spritePath = std::filesystem::path("resources") / path;
@@ -19,6 +20,14 @@ Sprite::Sprite(std::filesystem::path path)
         }
     }
     setup(texturePaths);
+}
+
+Sprite::~Sprite() {}
+
+void Sprite::eraseBuffers() {
+    glDeleteVertexArrays(1, &_VAO);
+    glDeleteFramebuffers(1, &_VBO);
+    glDeleteFramebuffers(1, &_EBO);
 }
 
 void Sprite::setup(std::vector<std::filesystem::path>& texturePaths) {
@@ -59,16 +68,16 @@ void Sprite::setup(std::vector<std::filesystem::path>& texturePaths) {
     glGenVertexArrays(1, &_VAO);
     glBindVertexArray(_VAO);
 
-    unsigned int VBO;
-    glGenBuffers(1, &VBO);
+    unsigned int _VBO;
+    glGenBuffers(1, &_VBO);
 
-    unsigned int EBO;
-    glGenBuffers(1, &EBO);
+    unsigned int _EBO;
+    glGenBuffers(1, &_EBO);
 
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBindBuffer(GL_ARRAY_BUFFER, _VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(verticies), verticies, GL_STATIC_DRAW);
 
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _EBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 12 * sizeof(float), (void*)0);

@@ -22,35 +22,35 @@ class Entities {
     public:
         class StatueBatch {
             public:
-                static StatueId insert(std::filesystem::path statuePath) {
+                static StatueId insert(const std::filesystem::path statuePath) {
                     return _statues.insert(statuePath);
                 };
-                static void erase(StatueId id) { _statues.erase(id); };
-                static Statue& getRef(StatueId id) { return _statues.getRef(id); }
+                static void erase(const StatueId id) { _statues.erase(id); };
+                static Statue& getRef(const StatueId id) { return _statues.getRef(id); }
         };
         class DollBatch {
             public:
-                static DollId insert(std::filesystem::path modelsDir) {
-                    return _dolls.insert(modelsDir);
+                static DollId insert(const std::filesystem::path dollPath) {
+                    return _dolls.insert(dollPath);
                 };
-                static void erase(DollId id) { _dolls.erase(id); };
-                static Doll& getRef(DollId id) { return _dolls.getRef(id); }
+                static void erase(const DollId id) { _dolls.erase(id); };
+                static Doll& getRef(const DollId id) { return _dolls.getRef(id); }
         };
         class BoardBatch {
             public:
-                static BoardId insert(std::filesystem::path boardPath) {
+                static BoardId insert(const std::filesystem::path boardPath) {
                     return _boards.insert(boardPath);
                 };
-                static void erase(BoardId id) { _boards.erase(id); };
-                static Board& getRef(BoardId id) { return _boards.getRef(id); }
+                static void erase(const BoardId id) { _boards.erase(id); };
+                static Board& getRef(const BoardId id) { return _boards.getRef(id); }
         };
         class PanelBatch {
             public:
-                static PanelId insert(std::filesystem::path panelPath) {
+                static PanelId insert(const std::filesystem::path panelPath) {
                     return _panels.insert(panelPath);
                 };
-                static void erase(PanelId id) { _panels.erase(id); };
-                static Panel& getRef(PanelId id) { return _panels.getRef(id); }
+                static void erase(const PanelId id) { _panels.erase(id); };
+                static Panel& getRef(const PanelId id) { return _panels.getRef(id); }
         };
         static void draw(Shaders& shaders, Camera2D& hudCamera, Camera3D& sceneCamera);
 

@@ -113,7 +113,31 @@ Doll::Doll(std::filesystem::path path)
     }
 }
 
-Doll::~Doll() {}
+Doll::~Doll() {
+    /*
+    for (auto& [key, vaos] : _VAOs) {
+        glDeleteVertexArrays(vaos.size(), vaos.data());
+    }
+    for (auto& [key, vbos] : _VBOs) {
+        glDeleteVertexArrays(vbos.size(), vbos.data());
+    }
+    for (auto& [key, ebos] : _EBOs) {
+        glDeleteVertexArrays(ebos.size(), ebos.data());
+    }
+    */
+}
+
+void Doll::eraseBuffers() {
+    for (auto& [key, vaos] : _VAOs) {
+        glDeleteVertexArrays(vaos.size(), vaos.data());
+    }
+    for (auto& [key, vbos] : _VBOs) {
+        glDeleteVertexArrays(vbos.size(), vbos.data());
+    }
+    for (auto& [key, ebos] : _EBOs) {
+        glDeleteVertexArrays(ebos.size(), ebos.data());
+    }
+}
 
 void Doll::draw(uint shaderId, Camera3D& camera) {
     // using RGB(1,0,1) for transparent

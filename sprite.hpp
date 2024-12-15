@@ -13,6 +13,8 @@ namespace Eendgine {
 class Sprite {
     public:
         Sprite(std::filesystem::path path);
+        ~Sprite();
+        void eraseBuffers();
         std::vector<Texture>::size_type getNumTextures();
         void setTexture(std::string texture) { _currentTexture = texture; };
         void setPosition(Point position) { _position = position; };
@@ -33,7 +35,7 @@ class Sprite {
         Point _position;
         Scale _size;
         float _rotation;
-        unsigned int _VAO;
+        unsigned int _VAO, _VBO, _EBO;
         std::string _currentTexture;
         std::map<std::string, Texture> _textures;
 };
