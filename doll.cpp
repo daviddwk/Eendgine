@@ -113,29 +113,17 @@ Doll::Doll(std::filesystem::path path)
     }
 }
 
-Doll::~Doll() {
-    /*
-    for (auto& [key, vaos] : _VAOs) {
-        glDeleteVertexArrays(vaos.size(), vaos.data());
-    }
-    for (auto& [key, vbos] : _VBOs) {
-        glDeleteVertexArrays(vbos.size(), vbos.data());
-    }
-    for (auto& [key, ebos] : _EBOs) {
-        glDeleteVertexArrays(ebos.size(), ebos.data());
-    }
-    */
-}
+Doll::~Doll() {}
 
 void Doll::eraseBuffers() {
     for (auto& [key, vaos] : _VAOs) {
         glDeleteVertexArrays(vaos.size(), vaos.data());
     }
     for (auto& [key, vbos] : _VBOs) {
-        glDeleteVertexArrays(vbos.size(), vbos.data());
+        glDeleteBuffers(vbos.size(), vbos.data());
     }
     for (auto& [key, ebos] : _EBOs) {
-        glDeleteVertexArrays(ebos.size(), ebos.data());
+        glDeleteBuffers(ebos.size(), ebos.data());
     }
 }
 

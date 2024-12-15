@@ -44,7 +44,6 @@ Statue::Statue(const std::string path)
 Statue::~Statue() {}
 
 void Statue::eraseBuffers() {
-    fatalError("buffers deleted");
     glDeleteVertexArrays(1, &_VAO);
     glDeleteFramebuffers(1, &_VBO);
     glDeleteFramebuffers(1, &_EBO);
