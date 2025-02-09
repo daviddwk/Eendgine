@@ -18,6 +18,7 @@ class Camera2D {
 
         Point2D getPosition() { return _position; }
         float getScale() { return _scale; }
+        Scale2D getDimensions() { return Scale2D(_width, _height); }
         TransformationMatrix getCameraMatrix() { return _cameraMatrix; }
 
     private:

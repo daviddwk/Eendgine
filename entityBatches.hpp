@@ -15,9 +15,6 @@ using DollId = unsigned int;
 using BoardId = unsigned int;
 using PanelId = unsigned int;
 
-using Board = Sprite;
-using Panel = Sprite;
-
 class Entities {
     public:
         class StatueBatch {

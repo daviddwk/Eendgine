@@ -38,8 +38,8 @@ void Text::setText(const std::string& text) {
         _panelIds.push_back(id);
         // set the width of the char appropriately
         // we assume all chars have the same height, but width can vary
-        Sprite& charSprite = Entities::PanelBatch::getRef(id);
-        Texture charTexture = charSprite.getTexture();
+        Panel& charPanel = Entities::PanelBatch::getRef(id);
+        Texture charTexture = charPanel.getTexture();
         float charRelativeWidth = ((float)charTexture.width / (float)charTexture.height);
         runningRelativeWidth += charRelativeWidth;
     }
