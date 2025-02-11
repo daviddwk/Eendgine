@@ -26,8 +26,11 @@ Panel::~Panel() {}
 
 void Panel::eraseBuffers() {
     glDeleteVertexArrays(1, &_VAO);
-    glDeleteFramebuffers(1, &_VBO);
-    glDeleteFramebuffers(1, &_EBO);
+    glDeleteBuffers(1, &_VBO);
+    glDeleteBuffers(1, &_EBO);
+    _VBO = 0;
+    _EBO = 0;
+    _VAO = 0;
 }
 
 void Panel::setup(std::vector<std::filesystem::path>& texturePaths) {
@@ -68,10 +71,8 @@ void Panel::setup(std::vector<std::filesystem::path>& texturePaths) {
     glGenVertexArrays(1, &_VAO);
     glBindVertexArray(_VAO);
 
-    unsigned int _VBO;
     glGenBuffers(1, &_VBO);
 
-    unsigned int _EBO;
     glGenBuffers(1, &_EBO);
 
     glBindBuffer(GL_ARRAY_BUFFER, _VBO);
@@ -88,6 +89,33 @@ void Panel::setup(std::vector<std::filesystem::path>& texturePaths) {
     glEnableVertexAttribArray(2);
     glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 12 * sizeof(float), (void*)(9 * sizeof(float)));
     glEnableVertexAttribArray(3);
+}
+
+void Panel::cropTexture(Point2D upperLeft, Point2D lowerRight) {
+    Vertex verticies[4];
+
+    // centered on origin
+    // with width and height of 1
+    // TODO make this array a shared constant
+    verticies[0].position = Point(1.0f, -1.0f, 0.0f);
+    verticies[1].position = Point(1.0f, 0.0f, 0.0f);
+    verticies[2].position = Point(0.0f, 0.0f, 0.0f);
+    verticies[3].position = Point(0.0f, -1.0f, 0.0f);
+
+    verticies[0].color = Color(0.0f, 0.0f, 1.0f, 1.0f);
+    verticies[1].color = Color(0.0f, 1.0f, 0.0f, 1.0f);
+    verticies[2].color = Color(1.0f, 0.0f, 0.0f, 1.0f);
+    verticies[3].color = Color(0.0f, 1.0f, 1.0f, 1.0f);
+
+    verticies[0].uv = Point2D(0.5f, 0.5f);
+    verticies[1].uv = Point2D(0.5f, 0.0f);
+    verticies[2].uv = Point2D(0.0f, 0.0f);
+    verticies[3].uv = Point2D(0.0f, 0.5f);
+
+    glBindBuffer(GL_ARRAY_BUFFER, _VBO);
+    glBufferSubData(GL_ARRAY_BUFFER, 0, 4 * sizeof(Vertex), verticies);
+
+    //_textures[_currentTexture].height;
 }
 
 std::vector<Texture>::size_type Panel::getNumTextures() { return _textures.size(); }
@@ -128,8 +156,11 @@ Board::~Board() {}
 
 void Board::eraseBuffers() {
     glDeleteVertexArrays(1, &_VAO);
-    glDeleteFramebuffers(1, &_VBO);
-    glDeleteFramebuffers(1, &_EBO);
+    glDeleteBuffers(1, &_VBO);
+    glDeleteBuffers(1, &_EBO);
+    _VBO = 0;
+    _EBO = 0;
+    _VAO = 0;
 }
 
 void Board::setup(std::vector<std::filesystem::path>& texturePaths) {
@@ -170,10 +201,8 @@ void Board::setup(std::vector<std::filesystem::path>& texturePaths) {
     glGenVertexArrays(1, &_VAO);
     glBindVertexArray(_VAO);
 
-    unsigned int _VBO;
     glGenBuffers(1, &_VBO);
 
-    unsigned int _EBO;
     glGenBuffers(1, &_EBO);
 
     glBindBuffer(GL_ARRAY_BUFFER, _VBO);

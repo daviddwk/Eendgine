@@ -17,7 +17,10 @@ class Panel {
         void eraseBuffers();
         std::vector<Texture>::size_type getNumTextures();
         void setTexture(std::string texture) { _currentTexture = texture; };
-        void setPosition(Point position) { _position = position; };
+        void cropTexture(Point2D upperLeft, Point2D lowerRight);
+        void setPosition(Point position) {
+            _position = Point{position.x, -position.y, position.z};
+        };
         void setScale(Scale2D scale) { _size = Scale(scale.x, scale.y, 1.0f); };
         void setRotation(float r) { _rotation = r; };
 

@@ -1,25 +1,56 @@
+#include "fatalError.hpp"
 #include "text.hpp"
 #include <filesystem>
+#include <fstream>
+#include <json/json.h>
 #include <stb/stb_image.h>
+
+std::array possibleChars = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n',
+    'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G',
+    'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
+    '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '\'', '"', '.', ',', '?', '!', ':'};
 
 namespace Eendgine {
 Text::Text(std::filesystem::path fontName, std::string text, Point position, float scale)
-    : _fontPath("fonts" / fontName), _position(position), _scale(scale) {
-    setText(text);
-    setPosition(position);
-    setScale(scale);
+    : _fontPath(std::filesystem::path("resources") / "fonts" / fontName), _position(position),
+      _scale(scale) {
+
+    Json::Value root;
+    std::filesystem::path metadataPath = _fontPath / "metadata.json";
+    std::ifstream metadata(metadataPath);
+    if (!metadata.is_open()) {
+        fatalError("could not open: " + metadataPath.string());
+    }
+    try {
+        metadata >> root;
+    } catch (...) {
+        fatalError("improper json: " + metadataPath.string());
+    }
+
+    // find the width of the png
+
+    for (const char ch : possibleChars) {
+        std::string chString = std::to_string(ch);
+        if (root[chString]["first"].isNumeric() && root[chString]["last"].isNumeric()) {
+            unsigned int firstColumn = root[chString]["first"].asUInt();
+            unsigned int secondColumn = root[chString]["last"].asUInt();
+            if (firstColumn < secondColumn) {
+                // TODO bail to debault
+            }
+            _charColumns[ch][0] = firstColumn;
+            _charColumns[ch][1] = secondColumn;
+            // TODO if column > num columns in image
+
+        } else {
+            // have default texture drawn if misisng from hash map
+        }
+    }
 }
 
 Text::~Text() {
     for (const PanelId& id : _panelIds) {
         Entities::PanelBatch::erase(id);
     }
-}
-void Text::clearText() {
-    for (const PanelId id : _panelIds) {
-        Entities::PanelBatch::erase(id);
-    }
-    _panelIds.clear();
 }
 
 void Text::setText(const std::string& text) {

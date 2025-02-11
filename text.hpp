@@ -1,6 +1,7 @@
 #include "entityBatches.hpp"
 #include "types.hpp"
 #include <filesystem>
+#include <map>
 #include <string>
 #include <vector>
 
@@ -20,6 +21,7 @@ class Text {
         float getScale() { return _scale; };
 
     private:
+        std::map<char, std::array<unsigned int, 2>> _charColumns;
         std::string _text;
         std::filesystem::path _fontPath;
         std::vector<PanelId> _panelIds;
