@@ -1,10 +1,11 @@
 #pragma once
 
+#include "board.hpp"
 #include "camera.hpp"
 #include "doll.hpp"
 #include "entityBatch.hpp"
+#include "panel.hpp"
 #include "shaders.hpp"
-#include "sprite.hpp"
 #include "statue.hpp"
 
 #include <filesystem>
