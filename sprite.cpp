@@ -93,6 +93,8 @@ void Panel::setup(std::vector<std::filesystem::path>& texturePaths) {
 
 void Panel::cropTexture(Point2D upperLeft, Point2D lowerRight) {
     Vertex verticies[4];
+    float textureHeight = _textures[_currentTexture].height;
+    float textureWidth = _textures[_currentTexture].width;
 
     // centered on origin
     // with width and height of 1
@@ -107,10 +109,14 @@ void Panel::cropTexture(Point2D upperLeft, Point2D lowerRight) {
     verticies[2].color = Color(1.0f, 0.0f, 0.0f, 1.0f);
     verticies[3].color = Color(0.0f, 1.0f, 1.0f, 1.0f);
 
-    verticies[0].uv = Point2D(0.5f, 0.5f);
-    verticies[1].uv = Point2D(0.5f, 0.0f);
-    verticies[2].uv = Point2D(0.0f, 0.0f);
-    verticies[3].uv = Point2D(0.0f, 0.5f);
+    verticies[0].uv = Point2D((textureWidth - lowerRight.x) / textureWidth,
+        (textureHeight - lowerRight.y) / textureHeight);
+    verticies[1].uv = Point2D((textureWidth - lowerRight.x) / textureWidth,
+        (textureHeight - upperLeft.y) / textureHeight);
+    verticies[2].uv = Point2D(
+        (textureWidth - upperLeft.x) / textureWidth, (textureHeight - upperLeft.y) / textureHeight);
+    verticies[3].uv = Point2D((textureWidth - upperLeft.x) / textureWidth,
+        (textureHeight - lowerRight.y) / textureHeight);
 
     glBindBuffer(GL_ARRAY_BUFFER, _VBO);
     glBufferSubData(GL_ARRAY_BUFFER, 0, 4 * sizeof(Vertex), verticies);
@@ -190,7 +196,7 @@ void Board::setup(std::vector<std::filesystem::path>& texturePaths) {
     verticies[1].color = Color(0.0f, 1.0f, 0.0f, 1.0f);
     verticies[2].color = Color(1.0f, 0.0f, 0.0f, 1.0f);
     verticies[3].color = Color(0.0f, 1.0f, 1.0f, 1.0f);
-
+    //                         w     h
     verticies[0].uv = Point2D(1.0f, 1.0f);
     verticies[1].uv = Point2D(1.0f, 0.0f);
     verticies[2].uv = Point2D(0.0f, 0.0f);
