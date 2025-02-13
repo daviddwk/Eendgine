@@ -109,14 +109,14 @@ void Panel::cropTexture(Point2D upperLeft, Point2D lowerRight) {
     verticies[2].color = Color(1.0f, 0.0f, 0.0f, 1.0f);
     verticies[3].color = Color(0.0f, 1.0f, 1.0f, 1.0f);
 
-    verticies[0].uv = Point2D((textureWidth - lowerRight.x) / textureWidth,
-        (textureHeight - lowerRight.y) / textureHeight);
-    verticies[1].uv = Point2D((textureWidth - lowerRight.x) / textureWidth,
-        (textureHeight - upperLeft.y) / textureHeight);
-    verticies[2].uv = Point2D(
-        (textureWidth - upperLeft.x) / textureWidth, (textureHeight - upperLeft.y) / textureHeight);
-    verticies[3].uv = Point2D((textureWidth - upperLeft.x) / textureWidth,
-        (textureHeight - lowerRight.y) / textureHeight);
+    verticies[0].uv =
+        Point2D(lowerRight.x / textureWidth, (textureHeight - lowerRight.y) / textureHeight);
+    verticies[1].uv =
+        Point2D(lowerRight.x / textureWidth, (textureHeight - upperLeft.y) / textureHeight);
+    verticies[2].uv =
+        Point2D(upperLeft.x / textureWidth, (textureHeight - upperLeft.y) / textureHeight);
+    verticies[3].uv =
+        Point2D(upperLeft.x / textureWidth, (textureHeight - lowerRight.y) / textureHeight);
 
     glBindBuffer(GL_ARRAY_BUFFER, _VBO);
     glBufferSubData(GL_ARRAY_BUFFER, 0, 4 * sizeof(Vertex), verticies);

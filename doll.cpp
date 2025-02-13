@@ -1,7 +1,6 @@
 #include "Eendgine/camera.hpp"
 #include "doll.hpp"
 #include "fatalError.hpp"
-#include "info.hpp"
 #include "loadModel.hpp"
 #include <GLES3/gl3.h>
 #include <filesystem>
@@ -145,8 +144,6 @@ void Doll::draw(uint shaderId, Camera3D& camera) {
     glUniformMatrix4fv(viewLoc, 1, GL_FALSE, &camera.getViewMat()[0][0]);
     glUniformMatrix4fv(transformLoc, 1, GL_FALSE, &transform[0][0]);
     float scaledAnimScale = _VAOs[_animation].size() * _animScale;
-    Info::registerFloat("scaledAnim", INFO_OPTION_NONE);
-    Info::updateFloat("scaledAnim", scaledAnimScale);
     glUniform1f(inpolLoc, scaledAnimScale - ((int)scaledAnimScale));
     glBindVertexArray(_VAOs[_animation][(int)scaledAnimScale]);
 

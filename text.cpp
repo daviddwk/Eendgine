@@ -3,6 +3,8 @@
 #include <filesystem>
 #include <fstream>
 #include <json/json.h>
+#include <limits>
+#include <optional>
 #include <stb/stb_image.h>
 
 std::array possibleChars = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n',
@@ -12,11 +14,14 @@ std::array possibleChars = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k
 
 namespace Eendgine {
 Text::Text(std::filesystem::path fontName, std::string text, Point position, float scale)
-    : _fontPath(std::filesystem::path("resources") / "fonts" / fontName), _position(position),
-      _scale(scale) {
+    : _text(text), _fontPath(std::filesystem::path("fonts") / fontName), _position(position),
+      _scale(scale), _charColumns({std::nullopt}) {
 
+    _texture = loadTexture("resources" / _fontPath / "font.png");
+
+    // open json
     Json::Value root;
-    std::filesystem::path metadataPath = _fontPath / "metadata.json";
+    std::filesystem::path metadataPath = "resources" / _fontPath / "metadata.json";
     std::ifstream metadata(metadataPath);
     if (!metadata.is_open()) {
         fatalError("could not open: " + metadataPath.string());
@@ -27,24 +32,31 @@ Text::Text(std::filesystem::path fontName, std::string text, Point position, flo
         fatalError("improper json: " + metadataPath.string());
     }
 
-    // find the width of the png
+    // ' ' to '~' see https://www.ascii-code.com/
+    for (char ch = 32; ch < 127; ++ch) {
+        Json::Value jsonChar = root[std::format("{}", ch)];
+        if (!jsonChar.isArray())
+            continue;
+        const unsigned int firstColumn = jsonChar[0].asUInt();
+        const unsigned int lastColumn = jsonChar[1].asUInt();
 
-    for (const char ch : possibleChars) {
-        std::string chString = std::to_string(ch);
-        if (root[chString]["first"].isNumeric() && root[chString]["last"].isNumeric()) {
-            unsigned int firstColumn = root[chString]["first"].asUInt();
-            unsigned int secondColumn = root[chString]["last"].asUInt();
-            if (firstColumn < secondColumn) {
-                // TODO bail to debault
-            }
-            _charColumns[ch][0] = firstColumn;
-            _charColumns[ch][1] = secondColumn;
-            // TODO if column > num columns in image
+        bool first_after_last = firstColumn > lastColumn;
+        bool exceeded_max = (firstColumn >= _texture.width) || (lastColumn >= _texture.width);
 
+        if (!first_after_last && !exceeded_max) {
+            _charColumns[ch] = std::tie(firstColumn, lastColumn);
         } else {
-            // have default texture drawn if misisng from hash map
+            fatalError("malformatted font metadat\n");
+            // print error and move on
         }
     }
+
+    // this should point to a folder with just font pngs?
+    // need to unwrap optional here
+    for (size_t char_idx = 0; char_idx < _text.length(); ++char_idx) {
+        _panelIds.push_back(Entities::PanelBatch::insert(_fontPath));
+    }
+    updateText();
 }
 
 Text::~Text() {
@@ -54,38 +66,52 @@ Text::~Text() {
 }
 
 void Text::setText(const std::string& text) {
-    for (const PanelId id : _panelIds) {
+    _text = text;
+
+    for (const PanelId& id : _panelIds) {
         Entities::PanelBatch::erase(id);
     }
     _panelIds.clear();
-    float runningRelativeWidth = 0.0f;
-    for (unsigned int i = 0; i < text.length(); ++i) {
-        // make a sprite with a texture of the char with the proper font
-        std::string charString;
-        charString += text[i];
-        charString += ".png";
-        std::filesystem::path charPath = _fontPath / charString;
-        PanelId id = Entities::PanelBatch::insert({_fontPath / charString});
-        _panelIds.push_back(id);
-        // set the width of the char appropriately
-        // we assume all chars have the same height, but width can vary
-        Panel& charPanel = Entities::PanelBatch::getRef(id);
-        Texture charTexture = charPanel.getTexture();
-        float charRelativeWidth = ((float)charTexture.width / (float)charTexture.height);
-        runningRelativeWidth += charRelativeWidth;
+    for (size_t char_idx = 0; char_idx < _text.length(); ++char_idx) {
+        _panelIds.push_back(Entities::PanelBatch::insert(_fontPath));
     }
-    setPosition(_position);
+    updateText();
 }
 
 void Text::setPosition(Point position) {
-    _position = position;
-    float runningWidth = 0.0f;
-    for (unsigned int i = 0; i < _panelIds.size(); ++i) {
-        auto& panelRef = Entities::PanelBatch::getRef(_panelIds[i]);
-        panelRef.setPosition(Point(runningWidth, 0.0f, 0.0f) + position);
-        runningWidth += Entities::PanelBatch::getRef(_panelIds[i]).getSize().x;
-    }
-};
 
-void Text::setScale(float scale) { _scale = scale; };
+    _position = position;
+    updateText();
+}
+
+void Text::setScale(float scale) {
+
+    _scale = scale;
+    updateText();
+}
+
+void Text::updateText() {
+    float horizontal = 0.0f;
+    for (size_t char_idx = 0; char_idx < _text.length(); ++char_idx) {
+        if (!_charColumns[_text[char_idx]].has_value())
+            continue;
+
+        unsigned int firstColumn = std::get<0>(_charColumns[_text[char_idx]].value());
+        unsigned int lastColumn = std::get<1>(_charColumns[_text[char_idx]].value());
+        unsigned int charWidth = (lastColumn - firstColumn) + 1;
+
+        Panel& panelRef = Entities::PanelBatch::getRef(_panelIds[char_idx]);
+
+        panelRef.setPosition(Point(_position.x + horizontal, _position.y, _position.z));
+        horizontal += ((float)charWidth / (float)_texture.height) * _scale;
+
+        panelRef.setScale(Scale2D(_scale * ((float)charWidth / (float)_texture.height), _scale));
+        Point2D upperLeft(firstColumn, 0.0f);
+        Point2D lowerRight(lastColumn + 1.0f, _texture.height);
+
+        panelRef.cropTexture(
+            Point2D(firstColumn, 0.0f), Point2D(lastColumn + 1.0f, _texture.height));
+    }
+}
+
 } // namespace Eendgine

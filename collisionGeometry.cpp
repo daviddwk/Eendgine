@@ -1,6 +1,5 @@
 #include "collisionGeometry.hpp"
 #include "fatalError.hpp"
-#include "info.hpp"
 #include "loadModel.hpp"
 #include "types.hpp"
 #include "vertex.hpp"
@@ -153,7 +152,6 @@ CollisionResults adjustToCollision(CollisionCylinder& c, std::vector<CollisionMo
                 tmpFloorHeight = snapCylinderToFloor(c, t);
                 if (tmpFloorHeight > floorHeight) {
                     hitFloor = tmpFloorHeight;
-                    Info::updateFloat("floor", tmpFloorHeight);
                 }
                 break;
             case CollisionTriangle::surface::wall:
