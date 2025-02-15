@@ -66,6 +66,9 @@ Text::~Text() {
 }
 
 void Text::setText(const std::string& text) {
+    if (_text == text)
+        return;
+
     _text = text;
 
     for (const PanelId& id : _panelIds) {

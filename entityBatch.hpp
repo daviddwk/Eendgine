@@ -19,10 +19,10 @@ template <class E> class EntityBatch {
         template <typename... Args> unsigned int insert(Args&&... args) {
             unsigned int _entitiesIdx = _entities.size();
             // check if already in map
-            _indexMap[_nextIdx] = _entitiesIdx;
-            _entities.emplace_back(_nextIdx, E(std::forward<Args>(args)...));
+            _indexMap[_nextId] = _entitiesIdx;
+            _entities.emplace_back(_nextId, E(std::forward<Args>(args)...));
             // just in case these are evaluated out of order
-            return _nextIdx++;
+            return _nextId++;
         }
 
         void erase(unsigned int id) {
@@ -31,7 +31,7 @@ template <class E> class EntityBatch {
             //
             // check if it's in there here? could do it in sort
 
-            _toErase.push_back(id);
+            _toEraseIds.push_back(id);
         }
 
         E& getRef(unsigned int id) { return _entities[_indexMap[id]].entity; }
@@ -59,27 +59,30 @@ template <class E> class EntityBatch {
         void sort() {
             // sorted greatest to largest, so that we can move later elements
             // to the end and erase them without effecting earlier elements
-            std::sort(_toErase.begin(), _toErase.end(), std::greater<int>());
-            for (auto idxToErase : _toErase) {
-                auto it = _indexMap.find(idxToErase);
-                if (it != _indexMap.end()) {
-                    // could swap to end and remove instead
-                    // but having issues with swap
-                    auto idxEntity = it->second;
-                    auto entityLabeledToErase = _entities.begin() + idxEntity;
-                    entityLabeledToErase->entity.eraseBuffers();
-                    _entities.erase(entityLabeledToErase);
-                    _indexMap.erase(it);
-                } else {
-                    // there is an issue
-                }
+            std::vector<unsigned int> _toEraseIdxs(_toEraseIds.size());
+            for (size_t idx = 0; idx < _toEraseIds.size(); ++idx) {
+                _toEraseIdxs[idx] = _indexMap[_toEraseIds[idx]];
             }
-            _toErase.clear();
-            std::sort(_entities.begin(), _entities.end(), newTextureCompare<E>);
+            std::sort(_toEraseIdxs.begin(), _toEraseIdxs.end(), std::greater<int>());
+            for (size_t toEraseIdxsIdx = 0; toEraseIdxsIdx < _toEraseIdxs.size();
+                ++toEraseIdxsIdx) {
+                unsigned int toEraseIdxsId = _toEraseIdxs[toEraseIdxsIdx];
+                unsigned int entitiesIdx = _indexMap[toEraseIdxsId];
+
+                if (_entities[entitiesIdx].id != toEraseIdxsId)
+                    std::cout << "mismatch id " << _entities[entitiesIdx].id << ' ' << toEraseIdxsId
+                              << std::endl;
+                _entities[entitiesIdx].entity.eraseBuffers();
+                _entities.erase(_entities.begin() + entitiesIdx);
+                _indexMap.erase(toEraseIdxsId);
+            }
+            _toEraseIds.clear();
+            _indexMap.clear();
             // could try and make this map sorted so this happens in order
             for (unsigned int i = 0; i < _entities.size(); i++) {
                 _indexMap[_entities[i].id] = i;
             }
+            std::sort(_entities.begin(), _entities.end(), newTextureCompare<E>);
         }
         // this probably shouldn't be a vector of pointers,
         // but I'll get around to making a real ECS later
@@ -87,7 +90,7 @@ template <class E> class EntityBatch {
         // vector so I can control when it sorts
         std::vector<entityLabeled<E>> _entities;
         std::unordered_map<unsigned int, unsigned int> _indexMap;
-        unsigned int _nextIdx = 0;
-        std::vector<unsigned int> _toErase;
+        unsigned int _nextId = 0;
+        std::vector<unsigned int> _toEraseIds;
 };
 } // namespace Eendgine
