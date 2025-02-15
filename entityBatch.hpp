@@ -57,32 +57,30 @@ template <class E> class EntityBatch {
 
     private:
         void sort() {
-            // sorted greatest to largest, so that we can move later elements
-            // to the end and erase them without effecting earlier elements
+            // make to erase idxs from ids
             std::vector<unsigned int> _toEraseIdxs(_toEraseIds.size());
             for (size_t idx = 0; idx < _toEraseIds.size(); ++idx) {
                 _toEraseIdxs[idx] = _indexMap[_toEraseIds[idx]];
             }
+            // sort ids greatest to largest so moving later elemnts first doesn't effect earlier
             std::sort(_toEraseIdxs.begin(), _toEraseIdxs.end(), std::greater<int>());
-            for (size_t toEraseIdxsIdx = 0; toEraseIdxsIdx < _toEraseIdxs.size();
-                ++toEraseIdxsIdx) {
-                unsigned int toEraseIdxsId = _toEraseIdxs[toEraseIdxsIdx];
-                unsigned int entitiesIdx = _indexMap[toEraseIdxsId];
-
-                if (_entities[entitiesIdx].id != toEraseIdxsId)
-                    std::cout << "mismatch id " << _entities[entitiesIdx].id << ' ' << toEraseIdxsId
-                              << std::endl;
-                _entities[entitiesIdx].entity.eraseBuffers();
-                _entities.erase(_entities.begin() + entitiesIdx);
-                _indexMap.erase(toEraseIdxsId);
+            // move all to erase to end of array and erase
+            for (size_t idx = 0; idx < _toEraseIdxs.size(); ++idx) {
+                iter_swap(_entities.begin() + _toEraseIdxs[idx], _entities.end() - (idx + 1));
+            }
+            for (size_t idx = 0; idx < _toEraseIdxs.size(); ++idx) {
+                size_t lastEntityIdx = _entities.size() - 1;
+                _entities[lastEntityIdx].entity.eraseBuffers();
+                _entities.erase(_entities.begin() + lastEntityIdx);
             }
             _toEraseIds.clear();
             _indexMap.clear();
-            // could try and make this map sorted so this happens in order
+            // sort based on texture
+            std::sort(_entities.begin(), _entities.end(), newTextureCompare<E>);
+            // fix index map
             for (unsigned int i = 0; i < _entities.size(); i++) {
                 _indexMap[_entities[i].id] = i;
             }
-            std::sort(_entities.begin(), _entities.end(), newTextureCompare<E>);
         }
         // this probably shouldn't be a vector of pointers,
         // but I'll get around to making a real ECS later
