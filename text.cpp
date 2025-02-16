@@ -13,9 +13,10 @@ std::array possibleChars = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k
     '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '\'', '"', '.', ',', '?', '!', ':'};
 
 namespace Eendgine {
-Text::Text(std::filesystem::path fontName, std::string text, Point position, float scale)
-    : _text(text), _fontPath(std::filesystem::path("fonts") / fontName), _position(position),
-      _scale(scale), _charColumns({std::nullopt}) {
+Text::Text(
+    std::filesystem::path fontName, std::string text, Point position, float scale, float width)
+    : _text(text), _width(width), _fontPath(std::filesystem::path("fonts") / fontName),
+      _position(position), _scale(scale), _charColumns({std::nullopt}) {
 
     _texture = loadTexture("resources" / _fontPath / "font.png");
 
@@ -95,17 +96,35 @@ void Text::setScale(float scale) {
 
 void Text::updateText() {
     float horizontal = 0.0f;
+    float vertical = 0.0f;
     for (size_t char_idx = 0; char_idx < _text.length(); ++char_idx) {
-        if (!_charColumns[_text[char_idx]].has_value())
+        char glyph = _text[char_idx];
+        if (glyph == '\n') {
+            horizontal = 0;
+            vertical += _scale;
             continue;
+        }
+        if (!_charColumns[glyph].has_value()) {
+            glyph = '?';
+            if (!_charColumns[glyph].has_value()) {
+                std::cerr << "Missing glyph and no '?' available so skipping." << std::endl;
+                continue;
+            }
+        }
 
-        unsigned int firstColumn = std::get<0>(_charColumns[_text[char_idx]].value());
-        unsigned int lastColumn = std::get<1>(_charColumns[_text[char_idx]].value());
+        unsigned int firstColumn;
+        unsigned int lastColumn;
+        std::tie(firstColumn, lastColumn) = _charColumns[glyph].value();
         unsigned int charWidth = (lastColumn - firstColumn) + 1;
 
         Panel& panelRef = Entities::PanelBatch::getRef(_panelIds[char_idx]);
 
-        panelRef.setPosition(Point(_position.x + horizontal, _position.y, _position.z));
+        if (horizontal + ((float)charWidth / (float)_texture.height) * _scale > _width) {
+            horizontal = 0;
+            vertical += _scale;
+            std::cout << vertical << std::endl;
+        }
+        panelRef.setPosition(Point(_position.x + horizontal, _position.y + vertical, _position.z));
         horizontal += ((float)charWidth / (float)_texture.height) * _scale;
 
         panelRef.setScale(Scale2D(_scale * ((float)charWidth / (float)_texture.height), _scale));

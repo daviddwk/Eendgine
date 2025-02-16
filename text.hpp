@@ -9,7 +9,8 @@
 namespace Eendgine {
 class Text {
     public:
-        Text(std::filesystem::path fontName, std::string text, Point position, float scale);
+        Text(std::filesystem::path fontName, std::string text, Point position, float scale,
+            float width);
         ~Text();
 
         void setText(const std::string& text);
@@ -22,6 +23,7 @@ class Text {
     private:
         void updateText();
         std::string _text;
+        float _width;
         std::filesystem::path _fontPath;
         std::vector<PanelId> _panelIds;
         Point _position;
