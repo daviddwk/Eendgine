@@ -4,8 +4,9 @@
 #include <algorithm>
 #include <functional>
 namespace Eendgine {
+
 template <class E> struct entityLabeled {
-        unsigned int id;
+        uint64_t id;
         E entity;
 };
 
@@ -16,7 +17,7 @@ template <class E> static bool newTextureCompare(entityLabeled<E>& el1, entityLa
 template <class E> class EntityBatch {
     public:
         // assuming that you don't put two of the same in here, but not checking
-        template <typename... Args> unsigned int insert(Args&&... args) {
+        template <typename... Args> uint64_t insert(Args&&... args) {
             unsigned int _entitiesIdx = _entities.size();
             // check if already in map
             _indexMap[_nextId] = _entitiesIdx;
@@ -34,7 +35,7 @@ template <class E> class EntityBatch {
             _toEraseIds.push_back(id);
         }
 
-        E& getRef(unsigned int id) { return _entities[_indexMap[id]].entity; }
+        E& getRef(uint64_t id) { return _entities[_indexMap[id]].entity; }
 
         template <typename C> void draw(ShaderProgram& shader, C& camera) {
             EntityBatch<E>::sort();
@@ -58,11 +59,10 @@ template <class E> class EntityBatch {
     private:
         void sort() {
             // make to erase idxs from ids
-            std::vector<unsigned int> _toEraseIdxs(_toEraseIds.size());
+            std::vector<size_t> _toEraseIdxs(_toEraseIds.size());
             for (size_t idx = 0; idx < _toEraseIds.size(); ++idx) {
                 _toEraseIdxs[idx] = _indexMap[_toEraseIds[idx]];
             }
-            // sort ids greatest to largest so moving later elemnts first doesn't effect earlier
             std::sort(_toEraseIdxs.begin(), _toEraseIdxs.end(), std::greater<int>());
             // move all to erase to end of array and erase
             for (size_t idx = 0; idx < _toEraseIdxs.size(); ++idx) {
@@ -78,7 +78,7 @@ template <class E> class EntityBatch {
             // sort based on texture
             std::sort(_entities.begin(), _entities.end(), newTextureCompare<E>);
             // fix index map
-            for (unsigned int i = 0; i < _entities.size(); i++) {
+            for (size_t i = 0; i < _entities.size(); i++) {
                 _indexMap[_entities[i].id] = i;
             }
         }
@@ -87,8 +87,8 @@ template <class E> class EntityBatch {
         //
         // vector so I can control when it sorts
         std::vector<entityLabeled<E>> _entities;
-        std::unordered_map<unsigned int, unsigned int> _indexMap;
-        unsigned int _nextId = 0;
-        std::vector<unsigned int> _toEraseIds;
+        std::unordered_map<uint64_t, size_t> _indexMap;
+        uint64_t _nextId = 0;
+        std::vector<uint64_t> _toEraseIds;
 };
 } // namespace Eendgine

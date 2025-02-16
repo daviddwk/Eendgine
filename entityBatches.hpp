@@ -11,10 +11,10 @@
 #include <filesystem>
 
 namespace Eendgine {
-using StatueId = unsigned int;
-using DollId = unsigned int;
-using BoardId = unsigned int;
-using PanelId = unsigned int;
+using StatueId = uint64_t;
+using DollId = uint64_t;
+using BoardId = uint64_t;
+using PanelId = uint64_t;
 
 class Entities {
     public:
