@@ -36,9 +36,9 @@ template <class E> class EntityBatch {
         }
 
         E* getRef(uint64_t id) {
-            if (_entities.contains(_indexMap[id])) {
-                return &_entities[_indexMap[id]].entity;
-            }
+            if (auto it{_indexMap.find(id)}; it != std::end(_indexMap))
+                return &_entities[it->second].entity;
+            return NULL;
         }
 
         template <typename C> void draw(ShaderProgram& shader, C& camera) {
