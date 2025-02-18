@@ -24,7 +24,7 @@ class Entities {
                     return _statues.insert(statuePath);
                 };
                 static void erase(const StatueId id) { _statues.erase(id); };
-                static Statue& getRef(const StatueId id) { return _statues.getRef(id); }
+                static Statue* getRef(const StatueId id) { return _statues.getRef(id); }
         };
         class DollBatch {
             public:
@@ -32,7 +32,7 @@ class Entities {
                     return _dolls.insert(dollPath);
                 };
                 static void erase(const DollId id) { _dolls.erase(id); };
-                static Doll& getRef(const DollId id) { return _dolls.getRef(id); }
+                static Doll* getRef(const DollId id) { return _dolls.getRef(id); }
         };
         class BoardBatch {
             public:
@@ -40,7 +40,7 @@ class Entities {
                     return _boards.insert(boardPath);
                 };
                 static void erase(const BoardId id) { _boards.erase(id); };
-                static Board& getRef(const BoardId id) { return _boards.getRef(id); }
+                static Board* getRef(const BoardId id) { return _boards.getRef(id); }
         };
         class PanelBatch {
             public:
@@ -48,7 +48,7 @@ class Entities {
                     return _panels.insert(panelPath);
                 };
                 static void erase(const PanelId id) { _panels.erase(id); };
-                static Panel& getRef(const PanelId id) { return _panels.getRef(id); }
+                static Panel* getRef(const PanelId id) { return _panels.getRef(id); }
         };
         static void draw(Shaders& shaders, Camera2D& hudCamera, Camera3D& sceneCamera);
 

@@ -117,21 +117,21 @@ void Text::updateText() {
         std::tie(firstColumn, lastColumn) = _charColumns[glyph].value();
         unsigned int charWidth = (lastColumn - firstColumn) + 1;
 
-        Panel& panelRef = Entities::PanelBatch::getRef(_panelIds[char_idx]);
+        Panel* panelRef = Entities::PanelBatch::getRef(_panelIds[char_idx]);
 
         if (horizontal + ((float)charWidth / (float)_texture.height) * _scale > _width) {
             horizontal = 0;
             vertical += _scale;
             std::cout << vertical << std::endl;
         }
-        panelRef.setPosition(Point(_position.x + horizontal, _position.y + vertical, _position.z));
+        panelRef->setPosition(Point(_position.x + horizontal, _position.y + vertical, _position.z));
         horizontal += ((float)charWidth / (float)_texture.height) * _scale;
 
-        panelRef.setScale(Scale2D(_scale * ((float)charWidth / (float)_texture.height), _scale));
+        panelRef->setScale(Scale2D(_scale * ((float)charWidth / (float)_texture.height), _scale));
         Point2D upperLeft(firstColumn, 0.0f);
         Point2D lowerRight(lastColumn + 1.0f, _texture.height);
 
-        panelRef.cropTexture(
+        panelRef->cropTexture(
             Point2D(firstColumn, 0.0f), Point2D(lastColumn + 1.0f, _texture.height));
     }
 }

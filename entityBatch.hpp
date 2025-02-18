@@ -35,7 +35,11 @@ template <class E> class EntityBatch {
             _toEraseIds.push_back(id);
         }
 
-        E& getRef(uint64_t id) { return _entities[_indexMap[id]].entity; }
+        E* getRef(uint64_t id) {
+            if (_entities.contains(_indexMap[id])) {
+                return &_entities[_indexMap[id]].entity;
+            }
+        }
 
         template <typename C> void draw(ShaderProgram& shader, C& camera) {
             EntityBatch<E>::sort();
