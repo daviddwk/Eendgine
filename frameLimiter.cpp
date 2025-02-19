@@ -2,6 +2,7 @@
 #include <SDL2/SDL.h>
 #include <chrono>
 #include <cmath>
+#include <print>
 #include <thread>
 
 namespace Eendgine {
@@ -16,18 +17,20 @@ void FrameLimiter::close() {}
 void FrameLimiter::startInterval() { _startTime = std::chrono::steady_clock::now(); }
 
 float FrameLimiter::stopInterval() {
-    const auto intervalTime = std::chrono::duration_cast<std::chrono::microseconds>(
-        std::chrono::steady_clock::now() - _startTime)
-                                  .count();
-    const auto frameTime = std::chrono::microseconds((int)((1.0f / _maxFps) * 1000000.0f));
-    if (intervalTime < frameTime.count()) {
-        deltaTime =
-            std::chrono::duration_cast<std::chrono::microseconds>(frameTime).count() / 1000000.0f;
-    } else if (intervalTime < 1 / _minFps) {
-        deltaTime = intervalTime;
+
+    std::chrono::milliseconds intervalTime = std::chrono::duration_cast<std::chrono::milliseconds>(
+        std::chrono::steady_clock::now() - _startTime);
+    const auto minLength = std::chrono::milliseconds((int)((1.0f / _maxFps) * 1000.0f));
+    const auto maxLength = std::chrono::milliseconds((int)((1.0f / _minFps) * 1000.0f));
+
+    if (intervalTime.count() < minLength.count()) {
+        deltaTime = minLength.count() / 1000.0f;
+        std::this_thread::sleep_until(_startTime + minLength);
+    } else if (intervalTime.count() < maxLength.count()) {
+        deltaTime = intervalTime.count() / 1000.0f;
     } else {
-        deltaTime = 1 / _minFps;
+        deltaTime = maxLength.count() / 1000.0f;
     }
-    return (float)intervalTime;
+    return (float)intervalTime.count() / 1000.0f;
 }
 } // namespace Eendgine
