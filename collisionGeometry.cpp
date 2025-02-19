@@ -87,11 +87,11 @@ bool colliding(Point2D point, CollisionRectangle rectangle, Point2D* penetration
         if (behindLeft == minDistance) {
             *penetration = Point2D(0.0, behindLeft);
         } else if (behindTop == minDistance) {
-            *penetration = Point2D(-behindTop, 0.0f);
+            *penetration = Point2D(behindTop, 0.0f);
         } else if (behindRight == minDistance) {
             *penetration = Point2D(0.0f, -behindRight);
         } else { // behindBottom
-            *penetration = Point2D(behindBottom, 0.0f);
+            *penetration = Point2D(-behindBottom, 0.0f);
         }
         return true;
     }
