@@ -3,6 +3,7 @@
 #include "loadModel.hpp"
 #include "types.hpp"
 #include "vertex.hpp"
+#include <algorithm>
 #include <cmath>
 #include <filesystem>
 #include <limits>
@@ -73,6 +74,29 @@ bool colliding(CollisionSphere s, CollisionPlane p, Point* penetration) {
         *penetration = pen;
     }
     return depth > 0.0f;
+}
+
+bool colliding(Point2D point, CollisionRectangle rectangle, Point2D* penetration) {
+    float behindLeft = point.x - rectangle.upperLeft.x; // negative means in front
+    float behindTop = point.y - rectangle.upperLeft.y;
+    float behindRight = rectangle.lowerRight.x - point.x;
+    float behindBottom = rectangle.lowerRight.y - point.y;
+
+    if (behindLeft > 0 && behindTop > 0 && behindRight > 0 && behindBottom > 0) {
+        float minDistance = std::min({behindLeft, behindTop, behindRight, behindBottom});
+        if (behindLeft == minDistance) {
+            *penetration = Point2D(0.0, behindLeft);
+        } else if (behindTop == minDistance) {
+            *penetration = Point2D(-behindTop, 0.0f);
+        } else if (behindRight == minDistance) {
+            *penetration = Point2D(0.0f, -behindRight);
+        } else { // behindBottom
+            *penetration = Point2D(behindBottom, 0.0f);
+        }
+        return true;
+    }
+    *penetration = Point2D(0.0f);
+    return false;
 }
 
 float snapCylinderToFloor(CollisionCylinder& c, CollisionTriangle& t) {

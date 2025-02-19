@@ -4,6 +4,7 @@
 #include <filesystem>
 #include <optional>
 #include <string>
+#include <tuple>
 #include <vector>
 
 #include "types.hpp"
@@ -13,6 +14,11 @@ struct CollisionResults {
         std::optional<float> floor;
         std::optional<Point> wall;
         std::optional<float> ceiling;
+};
+
+struct CollisionRectangle {
+        Point2D upperLeft;
+        Point2D lowerRight;
 };
 
 class CollisionSphere {
@@ -106,6 +112,7 @@ class CollisionModel {
 
 bool colliding(CollisionSphere s1, CollisionSphere s2, Point* penetration);
 bool colliding(CollisionSphere s, CollisionPlane p, Point* penetration);
+bool colliding(Point2D point, CollisionRectangle rectangle, Point2D* penetration);
 
 float snapCylinderToFloor(CollisionCylinder& c, CollisionTriangle& t);
 Point pushCylinderFromWall(CollisionCylinder& c, CollisionTriangle& t);
