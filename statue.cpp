@@ -4,17 +4,19 @@
 #include "types.hpp"
 #include <GLES3/gl3.h>
 #include <glm/gtc/matrix_transform.hpp>
-#include <iostream>
 
 namespace Eendgine {
 Statue::Statue(const std::string path)
-    : _VAO(0), _VBO(0), _EBO(0), _position(Point(0.0f)), _scale(Scale(1.0f)),
-      _rotation(Rotation(0.0f)), _textureIdx(0), _name(path) {
+    : _VAO(0), _VBO(0), _EBO(0), _numIndices(0), _position(Point(0.0f)), _scale(Scale(1.0f)),
+      _rotation(Rotation(0.0f)), _textureIdx(0) {
 
+    std::vector<Vertex> vertices;
+    std::vector<unsigned int> indices;
     const std::filesystem::path modelPath =
         std::filesystem::path("resources") / path /
         (std::filesystem::path(path).filename().string() + ".obj");
-    loadModel(modelPath, _vertices, _indices, _textures);
+    loadModel(modelPath, vertices, indices, _textures);
+    _numIndices = indices.size();
 
     glGenVertexArrays(1, &_VAO);
     glBindVertexArray(_VAO);
@@ -23,10 +25,10 @@ Statue::Statue(const std::string path)
     glGenBuffers(1, &_EBO);
 
     glBindBuffer(GL_ARRAY_BUFFER, _VBO);
-    glBufferData(GL_ARRAY_BUFFER, _vertices.size() * sizeof(Vertex), &_vertices[0], GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), &vertices[0], GL_STATIC_DRAW);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, _indices.size() * sizeof(unsigned int), &_indices[0],
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), &indices[0],
         GL_STATIC_DRAW);
 
     glVertexAttribPointer(
@@ -67,7 +69,7 @@ void Statue::draw(uint shaderId, Camera3D& camera) {
     glUniformMatrix4fv(transformLoc, 1, GL_FALSE, &transform[0][0]);
 
     glBindVertexArray(_VAO);
-    glDrawElements(GL_TRIANGLES, _indices.size(), GL_UNSIGNED_INT, 0);
+    glDrawElements(GL_TRIANGLES, _numIndices, GL_UNSIGNED_INT, 0);
 
     glBindVertexArray(0);
     glActiveTexture(GL_TEXTURE0);

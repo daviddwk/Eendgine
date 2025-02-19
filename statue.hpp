@@ -14,6 +14,33 @@ class Statue {
     public:
         Statue(std::string modelPath);
         ~Statue();
+        Statue(const Statue&) = delete;
+        Statue& operator=(const Statue&) = delete;
+        Statue(Statue&& other) {
+            _VAO = other._VAO;
+            _VBO = other._VBO;
+            _EBO = other._EBO;
+            _numIndices = other._numIndices;
+
+            _position = other._position;
+            _scale = other._scale;
+            _rotation = other._rotation;
+            _textureIdx = other._textureIdx;
+            _textures.swap(other._textures);
+        }
+        Statue& operator=(Statue&& other) {
+            _VAO = other._VAO;
+            _VBO = other._VBO;
+            _EBO = other._EBO;
+            _numIndices = other._numIndices;
+
+            _position = other._position;
+            _scale = other._scale;
+            _rotation = other._rotation;
+            _textureIdx = other._textureIdx;
+            _textures.swap(other._textures);
+            return *this;
+        }
 
         void eraseBuffers();
 
@@ -37,13 +64,11 @@ class Statue {
 
     private:
         unsigned int _VAO, _VBO, _EBO;
-        std::vector<Vertex> _vertices;
-        std::vector<unsigned int> _indices;
+        unsigned int _numIndices;
         Point _position;
         Scale _scale;
         Rotation _rotation;
         unsigned int _textureIdx;
         std::vector<Texture> _textures;
-        std::string _name;
 };
 } // namespace Eendgine

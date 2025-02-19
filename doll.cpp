@@ -1,4 +1,5 @@
 #include "Eendgine/camera.hpp"
+#include "Eendgine/vertex.hpp"
 #include "doll.hpp"
 #include "fatalError.hpp"
 #include "loadModel.hpp"
@@ -7,12 +8,15 @@
 #include <fstream>
 #include <glm/gtc/matrix_transform.hpp>
 #include <json/json.h>
+#include <print>
 
 namespace Eendgine {
 Doll::Doll(std::filesystem::path path)
-    : _position(Point(0.0f)), _scale(Scale(1.0f)), _rotation(Rotation(0.0f)), _animScale(0.0f),
-      _textureIdx(0) {
+    : _numIndices(0), _position(Point(0.0f)), _scale(Scale(1.0f)), _rotation(Rotation(0.0f)),
+      _animScale(0.0f), _textureIdx(0) {
 
+    std::map<std::string, std::vector<std::vector<InpolVertex>>> vertices;
+    std::map<std::string, std::vector<std::vector<unsigned int>>> indices;
     std::filesystem::path dollPath = std::filesystem::path("resources") / path;
     if (!std::filesystem::is_directory(dollPath)) {
         fatalError("Doll directory " + dollPath.string() + " is not a directory");
@@ -67,13 +71,13 @@ Doll::Doll(std::filesystem::path path)
         _VAOs[animationName].resize(numInpols, 0);
         _VBOs[animationName].resize(numInpols, 0);
         _EBOs[animationName].resize(numInpols, 0);
-        _vertices[animationName].resize(numInpols);
-        _indices[animationName].resize(numInpols);
+        vertices[animationName].resize(numInpols);
+        indices[animationName].resize(numInpols);
 
         for (unsigned int i = 0; i < numInpols; i++) {
             // use next model looping back to the first
             loadModel(modelPaths[i], modelPaths[(i + 1) % modelPaths.size()],
-                _vertices[animationName][i], _indices[animationName][i], _textures);
+                vertices[animationName][i], indices[animationName][i], _textures);
 
             glGenVertexArrays(1, &_VAOs[animationName][i]);
             glBindVertexArray(_VAOs[animationName][i]);
@@ -82,13 +86,13 @@ Doll::Doll(std::filesystem::path path)
             glGenBuffers(1, &_EBOs[animationName][i]);
 
             glBindBuffer(GL_ARRAY_BUFFER, _VBOs[animationName][i]);
-            glBufferData(GL_ARRAY_BUFFER, _vertices[animationName][i].size() * sizeof(InpolVertex),
-                &_vertices[animationName][i][0], GL_STATIC_DRAW);
+            glBufferData(GL_ARRAY_BUFFER, vertices[animationName][i].size() * sizeof(InpolVertex),
+                &vertices[animationName][i][0], GL_STATIC_DRAW);
 
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _EBOs[animationName][i]);
             glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-                _indices[animationName][i].size() * sizeof(unsigned int),
-                &_indices[animationName][i][0], GL_STATIC_DRAW);
+                indices[animationName][i].size() * sizeof(unsigned int),
+                &indices[animationName][i][0], GL_STATIC_DRAW);
 
             glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(InpolVertex),
                 (void*)offsetof(InpolVertex, position));
@@ -108,6 +112,14 @@ Doll::Doll(std::filesystem::path path)
             glVertexAttribPointer(5, 3, GL_FLOAT, GL_FALSE, sizeof(InpolVertex),
                 (void*)offsetof(InpolVertex, nextNormal));
             glEnableVertexAttribArray(5);
+        }
+    }
+    _numIndices = indices.begin()->second[0].size();
+    for (auto& indicesAnimation : indices) {
+        for (auto& indicesModel : indicesAnimation.second) {
+            if (indicesModel.size() != _numIndices)
+                fatalError(std::format(
+                    "mismatch in vertex number for animation {}", dollPath.generic_string()));
         }
     }
 }
@@ -147,8 +159,7 @@ void Doll::draw(uint shaderId, Camera3D& camera) {
     glUniform1f(inpolLoc, scaledAnimScale - ((int)scaledAnimScale));
     glBindVertexArray(_VAOs[_animation][(int)scaledAnimScale]);
 
-    glDrawElements(
-        GL_TRIANGLES, _indices[_animation][(int)scaledAnimScale].size(), GL_UNSIGNED_INT, 0);
+    glDrawElements(GL_TRIANGLES, _numIndices, GL_UNSIGNED_INT, 0);
 
     glBindVertexArray(0);
     glActiveTexture(GL_TEXTURE0);

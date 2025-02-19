@@ -21,7 +21,7 @@ template <class E> class EntityBatch {
             unsigned int _entitiesIdx = _entities.size();
             // check if already in map
             _indexMap[_nextId] = _entitiesIdx;
-            _entities.emplace_back(_nextId, E(std::forward<Args>(args)...));
+            _entities.push_back(entityLabeled{_nextId, E(std::forward<Args>(args)...)});
             // just in case these are evaluated out of order
             return _nextId++;
         }
@@ -49,7 +49,7 @@ template <class E> class EntityBatch {
             glUniform1i(glGetUniformLocation(shader.getProgramID(), texName.c_str()), 0);
             unsigned int lastTexture = 0;
             unsigned int thisTexture = 0;
-            for (auto ewi : EntityBatch<E>::_entities) {
+            for (auto& ewi : EntityBatch<E>::_entities) {
                 thisTexture = ewi.entity.getTexture().id;
                 if (lastTexture != thisTexture) {
                     glBindTexture(GL_TEXTURE_2D, thisTexture);

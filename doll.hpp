@@ -16,6 +16,38 @@ class Doll {
         Doll(std::filesystem::path dollPath);
         ~Doll();
 
+        Doll(const Doll&) = delete;
+        Doll& operator=(const Doll&) = delete;
+        Doll(Doll&& other) {
+            _animation = other._animation;
+            _VAOs.swap(other._VAOs);
+            _VBOs.swap(other._VBOs);
+            _EBOs.swap(other._EBOs);
+            _numIndices = other._numIndices;
+
+            _position = other._position;
+            _scale = other._scale;
+            _rotation = other._rotation;
+            _animScale = other._animScale;
+            _textureIdx = other._textureIdx;
+            _textures.swap(other._textures);
+        }
+        Doll& operator=(Doll&& other) {
+            _animation = other._animation;
+            _VAOs.swap(other._VAOs);
+            _VBOs.swap(other._VBOs);
+            _EBOs.swap(other._EBOs);
+            _numIndices = other._numIndices;
+
+            _position = other._position;
+            _scale = other._scale;
+            _rotation = other._rotation;
+            _animScale = other._animScale;
+            _textureIdx = other._textureIdx;
+            _textures.swap(other._textures);
+            return *this;
+        }
+
         void eraseBuffers();
 
         void setAnimation(std::string animation) { _animation = animation; }
@@ -45,8 +77,9 @@ class Doll {
     private:
         std::string _animation;
         std::map<std::string, std::vector<unsigned int>> _VAOs, _VBOs, _EBOs;
-        std::map<std::string, std::vector<std::vector<InpolVertex>>> _vertices;
-        std::map<std::string, std::vector<std::vector<unsigned int>>> _indices;
+        unsigned int _numIndices;
+        // std::map<std::string, std::vector<std::vector<InpolVertex>>> _vertices;
+        // std::map<std::string, std::vector<std::vector<unsigned int>>> _indices;
 
         Point _position;
         Scale _scale;

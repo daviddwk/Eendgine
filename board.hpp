@@ -12,6 +12,31 @@ class Board {
     public:
         Board(std::filesystem::path path);
         ~Board();
+        Board(const Board&) = delete;
+        Board& operator=(const Board&) = delete;
+        Board(Board&& other) {
+            _VAO = other._VAO;
+            _VBO = other._VBO;
+            _EBO = other._EBO;
+
+            _position = other._position;
+            _size = other._size;
+            _rotation = other._rotation;
+            _currentTexture = other._currentTexture;
+            _textures.swap(other._textures);
+        }
+        Board& operator=(Board&& other) {
+            _VAO = other._VAO;
+            _VBO = other._VBO;
+            _EBO = other._EBO;
+
+            _position = other._position;
+            _size = other._size;
+            _rotation = other._rotation;
+            _currentTexture = other._currentTexture;
+            _textures.swap(other._textures);
+            return *this;
+        }
         void eraseBuffers();
         std::vector<Texture>::size_type getNumTextures();
         void setTexture(std::string texture) { _currentTexture = texture; };
