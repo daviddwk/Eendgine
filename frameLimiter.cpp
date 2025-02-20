@@ -29,6 +29,7 @@ float FrameLimiter::stopInterval() {
     } else if (intervalTime.count() < maxLength.count()) {
         deltaTime = intervalTime.count() / 1000.0f;
     } else {
+        std::print("{}\n", 1 / (intervalTime.count() / 1000.0f));
         deltaTime = maxLength.count() / 1000.0f;
     }
     return (float)intervalTime.count() / 1000.0f;

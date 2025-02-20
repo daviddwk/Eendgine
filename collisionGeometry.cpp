@@ -85,13 +85,13 @@ bool colliding(Point2D point, CollisionRectangle rectangle, Point2D* penetration
     if (behindLeft > 0 && behindTop > 0 && behindRight > 0 && behindBottom > 0) {
         float minDistance = std::min({behindLeft, behindTop, behindRight, behindBottom});
         if (behindLeft == minDistance) {
-            *penetration = Point2D(0.0, behindLeft);
+            *penetration = Point2D(behindLeft, 0.0f);
         } else if (behindTop == minDistance) {
-            *penetration = Point2D(behindTop, 0.0f);
+            *penetration = Point2D(0.0f, behindTop);
         } else if (behindRight == minDistance) {
-            *penetration = Point2D(0.0f, -behindRight);
+            *penetration = Point2D(-behindRight, 0.0f);
         } else { // behindBottom
-            *penetration = Point2D(-behindBottom, 0.0f);
+            *penetration = Point2D(0.0f, -behindBottom);
         }
         return true;
     }
