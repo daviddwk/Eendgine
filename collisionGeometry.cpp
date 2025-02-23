@@ -76,26 +76,14 @@ bool colliding(CollisionSphere s, CollisionPlane p, Point* penetration) {
     return depth > 0.0f;
 }
 
-bool colliding(Point2D point, CollisionRectangle rectangle, Point2D* penetration) {
+bool colliding(Point2D point, CollisionRectangle rectangle) {
     float behindLeft = point.x - rectangle.upperLeft.x; // negative means in front
     float behindTop = point.y - rectangle.upperLeft.y;
     float behindRight = rectangle.lowerRight.x - point.x;
     float behindBottom = rectangle.lowerRight.y - point.y;
 
-    if (behindLeft > 0 && behindTop > 0 && behindRight > 0 && behindBottom > 0) {
-        float minDistance = std::min({behindLeft, behindTop, behindRight, behindBottom});
-        if (behindLeft == minDistance) {
-            *penetration = Point2D(behindLeft, 0.0f);
-        } else if (behindTop == minDistance) {
-            *penetration = Point2D(0.0f, behindTop);
-        } else if (behindRight == minDistance) {
-            *penetration = Point2D(-behindRight, 0.0f);
-        } else { // behindBottom
-            *penetration = Point2D(0.0f, -behindBottom);
-        }
+    if (behindLeft > 0 && behindTop > 0 && behindRight > 0 && behindBottom > 0)
         return true;
-    }
-    *penetration = Point2D(0.0f);
     return false;
 }
 

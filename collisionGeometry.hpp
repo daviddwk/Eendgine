@@ -112,7 +112,7 @@ class CollisionModel {
 
 bool colliding(CollisionSphere s1, CollisionSphere s2, Point* penetration);
 bool colliding(CollisionSphere s, CollisionPlane p, Point* penetration);
-bool colliding(Point2D point, CollisionRectangle rectangle, Point2D* penetration);
+bool colliding(Point2D point, CollisionRectangle rectangle);
 
 float snapCylinderToFloor(CollisionCylinder& c, CollisionTriangle& t);
 Point pushCylinderFromWall(CollisionCylinder& c, CollisionTriangle& t);
