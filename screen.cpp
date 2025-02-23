@@ -7,12 +7,13 @@ namespace Eendgine {
 void Screen::init(int width, int height) {
     _width = width;
     _height = height;
-    // unsigned int _VAO, _VBO;
     /*
     glFrontFace(GL_CCW);
     glCullFace(GL_BACK);
     glEnable(GL_CULL_FACE);
     */
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+
     glGenVertexArrays(1, &_VAO);
     glGenBuffers(1, &_VBO);
     glBindVertexArray(_VAO);
