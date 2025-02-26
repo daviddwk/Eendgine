@@ -122,7 +122,6 @@ void Text::updateText() {
         if (horizontal + ((float)charWidth / (float)_texture.height) * _scale > _width) {
             horizontal = 0;
             vertical += _scale;
-            std::cout << vertical << std::endl;
         }
         panelRef->setPosition(Point(_position.x + horizontal, _position.y + vertical, _position.z));
         horizontal += ((float)charWidth / (float)_texture.height) * _scale;
