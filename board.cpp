@@ -4,12 +4,13 @@
 #include "textureCache.hpp"
 #include <GLES3/gl3.h>
 #include <glm/gtc/type_ptr.hpp>
+#include <print>
 
 namespace Eendgine {
 
 Board::Board(std::filesystem::path path)
     : _position(Point(0.0f)), _size(Scale(1.0f)), _rotation(0.0f), _VAO(0), _VBO(0), _EBO(0),
-      _currentTexture("") {
+      _currentTextureIdx(0) {
 
     std::vector<std::filesystem::path> texturePaths;
     std::filesystem::path spritePath = std::filesystem::path("resources") / path;
@@ -38,13 +39,19 @@ void Board::setup(std::vector<std::filesystem::path>& texturePaths) {
     _size = Scale(1.0f);
     _rotation = 0;
 
+    // sorting them alphabetically, becasue the order they're iterated on
+    // is not specified
+    std::sort(texturePaths.begin(), texturePaths.end(),
+        [](auto a, auto b) { return a.string() < b.string(); });
     for (const auto& t : texturePaths) {
         if (t.has_stem() == false) {
             fatalError("texture: " + t.string() + "has no stem");
         }
-        _textures[t.stem()] = Eendgine::TextureCache::getTexture(t);
+        _textureMap[t.stem()] = _textures.size();
+        std::print("{}", t.stem().string());
+        _textures.push_back(Eendgine::TextureCache::getTexture(t));
     }
-    _currentTexture = _textures.begin()->first;
+    std::print("\n");
 
     Vertex verticies[4];
 

@@ -22,8 +22,9 @@ class Board {
             _position = other._position;
             _size = other._size;
             _rotation = other._rotation;
-            _currentTexture = other._currentTexture;
+            _currentTextureIdx = other._currentTextureIdx;
             _textures.swap(other._textures);
+            _textureMap.swap(other._textureMap);
         }
         Board& operator=(Board&& other) {
             _VAO = other._VAO;
@@ -33,22 +34,25 @@ class Board {
             _position = other._position;
             _size = other._size;
             _rotation = other._rotation;
-            _currentTexture = other._currentTexture;
+            _currentTextureIdx = other._currentTextureIdx;
             _textures.swap(other._textures);
+            _textureMap.swap(other._textureMap);
             return *this;
         }
         void eraseBuffers();
         std::vector<Texture>::size_type getNumTextures();
-        void setTexture(std::string texture) { _currentTexture = texture; };
+        void setTexture(std::string texture) { _currentTextureIdx = _textureMap[texture]; };
+        void setTextureIdx(size_t textureIdx) {
+            _currentTextureIdx = textureIdx % _textures.size();
+        };
         void setPosition(Point position) { _position = position; };
         void setScale(Scale2D scale) { _size = Scale(scale.x, scale.y, 1.0f); };
         void setRotation(float r) { _rotation = r; };
 
-        std::string getTextureName() { return _currentTexture; };
         Point getPosition() { return _position; };
         Scale getSize() { return _size; };
         float getRotation() { return _rotation; };
-        Texture getTexture() { return _textures[_currentTexture]; };
+        Texture getTexture() { return _textures[_currentTextureIdx]; };
 
         void draw(uint shaderId, Camera3D& camera);
 
@@ -58,7 +62,8 @@ class Board {
         Scale _size;
         float _rotation;
         unsigned int _VAO, _VBO, _EBO;
-        std::string _currentTexture;
-        std::map<std::string, Texture> _textures;
+        size_t _currentTextureIdx;
+        std::map<std::string, size_t> _textureMap;
+        std::vector<Texture> _textures;
 };
 } // namespace Eendgine
