@@ -2,11 +2,8 @@
 
 #include <filesystem>
 #include <map>
-#include <print>
 #include <string>
 #include <vector>
-
-#include <GLES3/gl3.h>
 
 #include "camera.hpp"
 #include "texture.hpp"
@@ -22,63 +19,73 @@ class Doll {
         Doll(const Doll&) = delete;
         Doll& operator=(const Doll&) = delete;
         Doll(Doll&& other) {
-            position = other.position;
-            scale = other.scale;
-            rotation = other.rotation;
+            _animation = other._animation;
+            _VAOs.swap(other._VAOs);
+            _VBOs.swap(other._VBOs);
+            _EBOs.swap(other._EBOs);
+            _numIndices = other._numIndices;
 
-            animation = other.animation;
-            VAOs.swap(other.VAOs);
-            VBOs.swap(other.VBOs);
-            EBOs.swap(other.EBOs);
-            numIndices = other.numIndices;
-
-            animScale = other.animScale;
-            currentTextureIdx = other.currentTextureIdx;
-            textures.swap(other.textures);
+            _position = other._position;
+            _scale = other._scale;
+            _rotation = other._rotation;
+            _animScale = other._animScale;
+            _textureIdx = other._textureIdx;
+            _textures.swap(other._textures);
         }
         Doll& operator=(Doll&& other) {
-            position = other.position;
-            scale = other.scale;
-            rotation = other.rotation;
+            _animation = other._animation;
+            _VAOs.swap(other._VAOs);
+            _VBOs.swap(other._VBOs);
+            _EBOs.swap(other._EBOs);
+            _numIndices = other._numIndices;
 
-            animation = other.animation;
-            VAOs.swap(other.VAOs);
-            VBOs.swap(other.VBOs);
-            EBOs.swap(other.EBOs);
-            numIndices = other.numIndices;
-
-            animScale = other.animScale;
-            currentTextureIdx = other.currentTextureIdx;
-            textures.swap(other.textures);
+            _position = other._position;
+            _scale = other._scale;
+            _rotation = other._rotation;
+            _animScale = other._animScale;
+            _textureIdx = other._textureIdx;
+            _textures.swap(other._textures);
             return *this;
         }
 
         void eraseBuffers();
 
-        void setAnimation(std::string animationName);
-        void setAnimScale(float scale) { animScale = scale - (int)scale; };
-        void setTextureIdx(unsigned int idx) {
-            currentTextureIdx = (idx < textures.size() ? idx : 0);
+        void setAnimation(std::string animation) { _animation = animation; }
+
+        void setPosition(Point position) { _position = position; };
+        void setScale(Scale scale) { _scale = scale; };
+        void setRadians(float x, float y) { _rotation = Rotation(x, y); };
+        void setRotation(float x, float y) {
+            _rotation = Rotation(glm::radians(x), glm::radians(y));
         };
 
-        std::string getAnimation() { return animation; };
-        float getAnimScale() { return animScale; };
-        unsigned int getTextureIdx() { return currentTextureIdx; };
-        Texture getTexture() { return textures[currentTextureIdx]; };
+        void setTextureIdx(unsigned int idx) { _textureIdx = (idx < _textures.size() ? idx : 0); };
+
+        std::string getAnimation() { return _animation; };
+        Point getPosition() { return _position; };
+        Scale getScale() { return _scale; };
+        Rotation getRotation() { return _rotation; };
+
+        Texture getTexture() { return _textures[_textureIdx]; };
+        unsigned int getTextureIdx() { return _textureIdx; };
+        float getAnim() { return _animScale; };
 
         void draw(uint shaderId, Camera3D& camera);
 
-        Point position;
-        Scale scale;
-        Rotation rotation;
+        void setAnim(float scale) { _animScale = scale - (int)scale; };
 
     private:
-        std::string animation;
-        std::map<std::string, std::vector<GLuint>> VAOs, VBOs, EBOs;
-        unsigned int numIndices;
+        std::string _animation;
+        std::map<std::string, std::vector<unsigned int>> _VAOs, _VBOs, _EBOs;
+        unsigned int _numIndices;
+        // std::map<std::string, std::vector<std::vector<InpolVertex>>> _vertices;
+        // std::map<std::string, std::vector<std::vector<unsigned int>>> _indices;
 
-        float animScale;
-        unsigned int currentTextureIdx;
-        std::vector<Texture> textures;
+        Point _position;
+        Scale _scale;
+        Rotation _rotation;
+        float _animScale;
+        unsigned int _textureIdx;
+        std::vector<Texture> _textures;
 };
 } // namespace Eendgine
