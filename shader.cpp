@@ -1,4 +1,6 @@
+#include "fatalError.hpp"
 #include "shader.hpp"
+#include <GLES3/gl3.h>
 #include <fstream>
 
 namespace Eendgine {
@@ -27,7 +29,7 @@ void ShaderProgram::compileShader(unsigned int shaderId, std::string shaderPath)
     std::ifstream shaderFile(shaderPath);
     if (shaderFile.fail()) {
         perror(shaderPath.c_str());
-        std::cout << "Unable to open file!" << std::endl;
+        fatalError("Unable to open shader file");
     }
 
     std::string fileContents = "";
@@ -47,12 +49,9 @@ void ShaderProgram::compileShader(unsigned int shaderId, std::string shaderPath)
     int isCompiled;
     glGetShaderiv(shaderId, GL_COMPILE_STATUS, &isCompiled);
     if (isCompiled == GL_FALSE) {
-        char infoLog[512];
-        glGetShaderInfoLog(shaderId, 512, NULL, infoLog);
-        std::cout << "Unable to compile shader!" << std::endl;
-        std::cout << shaderPath << std::endl;
-        std::cout << infoLog << std::endl;
-
+        char infoLog[GL_INFO_LOG_LENGTH];
+        glGetShaderInfoLog(shaderId, GL_INFO_LOG_LENGTH, NULL, infoLog);
+        fatalError(std::format("Unable to compile shader {} {}", shaderPath, infoLog));
         glDeleteShader(shaderId);
     }
 }

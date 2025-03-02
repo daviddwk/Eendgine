@@ -1,16 +1,18 @@
+#include <print>
+
+#include <GLES3/gl3.h>
+#include <glm/gtc/type_ptr.hpp>
+
 #include "Eendgine/camera.hpp"
 #include "board.hpp"
 #include "fatalError.hpp"
 #include "textureCache.hpp"
-#include <GLES3/gl3.h>
-#include <glm/gtc/type_ptr.hpp>
-#include <print>
 
 namespace Eendgine {
 
 Board::Board(std::filesystem::path path)
-    : _position(Point(0.0f)), _size(Scale(1.0f)), _rotation(0.0f), _VAO(0), _VBO(0), _EBO(0),
-      _currentTextureIdx(0) {
+    : position(Point(0.0f)), scale(Scale(1.0f)), rotation(0.0f), VAO(0), VBO(0), EBO(0),
+      currentTextureIdx(0) {
 
     std::vector<std::filesystem::path> texturePaths;
     std::filesystem::path spritePath = std::filesystem::path("resources") / path;
@@ -25,19 +27,19 @@ Board::Board(std::filesystem::path path)
 Board::~Board() {}
 
 void Board::eraseBuffers() {
-    glDeleteVertexArrays(1, &_VAO);
-    glDeleteBuffers(1, &_VBO);
-    glDeleteBuffers(1, &_EBO);
-    _VBO = 0;
-    _EBO = 0;
-    _VAO = 0;
+    glDeleteVertexArrays(1, &VAO);
+    glDeleteBuffers(1, &VBO);
+    glDeleteBuffers(1, &EBO);
+    VBO = 0;
+    EBO = 0;
+    VAO = 0;
 }
 
 void Board::setup(std::vector<std::filesystem::path>& texturePaths) {
 
-    _position = Point(0.0f);
-    _size = Scale(1.0f);
-    _rotation = 0;
+    position = Point(0.0f);
+    scale = Scale(1.0f);
+    rotation = 0;
 
     // sorting them alphabetically, becasue the order they're iterated on
     // is not specified
@@ -47,11 +49,9 @@ void Board::setup(std::vector<std::filesystem::path>& texturePaths) {
         if (t.has_stem() == false) {
             fatalError("texture: " + t.string() + "has no stem");
         }
-        _textureMap[t.stem()] = _textures.size();
-        std::print("{}", t.stem().string());
-        _textures.push_back(Eendgine::TextureCache::getTexture(t));
+        textureMap[t.stem()] = textures.size();
+        textures.push_back(Eendgine::TextureCache::getTexture(t));
     }
-    std::print("\n");
 
     Vertex verticies[4];
 
@@ -74,17 +74,17 @@ void Board::setup(std::vector<std::filesystem::path>& texturePaths) {
 
     unsigned int indices[] = {2, 1, 0, 3, 2, 0};
 
-    glGenVertexArrays(1, &_VAO);
-    glBindVertexArray(_VAO);
+    glGenVertexArrays(1, &VAO);
+    glBindVertexArray(VAO);
 
-    glGenBuffers(1, &_VBO);
+    glGenBuffers(1, &VBO);
 
-    glGenBuffers(1, &_EBO);
+    glGenBuffers(1, &EBO);
 
-    glBindBuffer(GL_ARRAY_BUFFER, _VBO);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(verticies), verticies, GL_STATIC_DRAW);
 
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _EBO);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 12 * sizeof(float), (void*)0);
@@ -97,18 +97,26 @@ void Board::setup(std::vector<std::filesystem::path>& texturePaths) {
     glEnableVertexAttribArray(3);
 }
 
-std::vector<Texture>::size_type Board::getNumTextures() { return _textures.size(); }
+void Board::setTexture(std::string textureName) {
+    if (textureMap.contains(textureName)) {
+        currentTextureIdx = textureMap[textureName];
+    } else {
+        std::print("WARNING: textureName {} does not exsist", textureName);
+    }
+}
+
+std::vector<Texture>::size_type Board::getNumTextures() { return textures.size(); }
 
 void Board::draw(uint shaderId, Camera3D& camera) {
     TransformationMatrix transform = TransformationMatrix(1.0f);
-    transform = glm::translate(transform, _position);
+    transform = glm::translate(transform, position);
     glm::mat3 rot = glm::inverse(glm::mat3(camera.getViewMat()));
     // there must be a cleaner way to do this
     transform = {{rot[0][0], rot[0][1], rot[0][2], transform[0][3]},
         {rot[1][0], rot[1][1], rot[1][2], transform[1][3]},
         {rot[2][0], rot[2][1], rot[2][2], transform[2][3]},
         {transform[3][0], transform[3][1], transform[3][2], transform[3][3]}};
-    transform = glm::scale(transform, _size);
+    transform = glm::scale(transform, Scale(scale.x, scale.y, 0.0f));
 
     unsigned int projectionLoc = glGetUniformLocation(shaderId, "projection");
     unsigned int viewLoc = glGetUniformLocation(shaderId, "view");
@@ -118,7 +126,7 @@ void Board::draw(uint shaderId, Camera3D& camera) {
     glUniformMatrix4fv(viewLoc, 1, GL_FALSE, &camera.getViewMat()[0][0]);
     glUniformMatrix4fv(transformLoc, 1, GL_FALSE, &transform[0][0]);
 
-    glBindVertexArray(_VAO);
+    glBindVertexArray(VAO);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);
 }

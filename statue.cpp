@@ -7,27 +7,27 @@
 
 namespace Eendgine {
 Statue::Statue(const std::string path)
-    : _VAO(0), _VBO(0), _EBO(0), _numIndices(0), _position(Point(0.0f)), _scale(Scale(1.0f)),
-      _rotation(Rotation(0.0f)), _textureIdx(0) {
+    : position(Point(0.0f)), scale(Scale(1.0f)), rotation(Rotation(0.0f)), VAO(0), VBO(0), EBO(0),
+      numIndices(0), textureIdx(0) {
 
     std::vector<Vertex> vertices;
     std::vector<unsigned int> indices;
     const std::filesystem::path modelPath =
         std::filesystem::path("resources") / path /
         (std::filesystem::path(path).filename().string() + ".obj");
-    loadModel(modelPath, vertices, indices, _textures);
-    _numIndices = indices.size();
+    loadModel(modelPath, vertices, indices, textures);
+    numIndices = indices.size();
 
-    glGenVertexArrays(1, &_VAO);
-    glBindVertexArray(_VAO);
+    glGenVertexArrays(1, &VAO);
+    glBindVertexArray(VAO);
 
-    glGenBuffers(1, &_VBO);
-    glGenBuffers(1, &_EBO);
+    glGenBuffers(1, &VBO);
+    glGenBuffers(1, &EBO);
 
-    glBindBuffer(GL_ARRAY_BUFFER, _VBO);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), &vertices[0], GL_STATIC_DRAW);
 
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _EBO);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), &indices[0],
         GL_STATIC_DRAW);
 
@@ -46,9 +46,9 @@ Statue::Statue(const std::string path)
 Statue::~Statue() {}
 
 void Statue::eraseBuffers() {
-    glDeleteVertexArrays(1, &_VAO);
-    glDeleteFramebuffers(1, &_VBO);
-    glDeleteFramebuffers(1, &_EBO);
+    glDeleteVertexArrays(1, &VAO);
+    glDeleteFramebuffers(1, &VBO);
+    glDeleteFramebuffers(1, &EBO);
 }
 
 void Statue::draw(uint shaderId, Camera3D& camera) {
@@ -56,10 +56,12 @@ void Statue::draw(uint shaderId, Camera3D& camera) {
     // parts of the texture using shaders
 
     TransformationMatrix transform = TransformationMatrix(1.0f);
-    transform = glm::translate(transform, _position);
-    transform = glm::rotate(transform, -_rotation.x, Point(0.0f, 1.0f, 0.0f));
-    transform = glm::rotate(transform, -_rotation.y, Point(-1.0f, 0.0f, 0.0f));
-    transform = glm::scale(transform, _scale);
+    transform = glm::translate(transform, position);
+    transform = glm::rotate(transform, -(rotation.x / 360.0f) * (2 * std::numbers::pi_v<float>),
+        glm::vec3(0.0f, 1.0f, 0.0f));
+    transform = glm::rotate(transform, -(rotation.y / 360.0f) * (2 * std::numbers::pi_v<float>),
+        glm::vec3(-1.0f, 0.0f, 0.0f));
+    transform = glm::scale(transform, scale);
 
     unsigned int projectionLoc = glGetUniformLocation(shaderId, "projection");
     unsigned int viewLoc = glGetUniformLocation(shaderId, "view");
@@ -68,8 +70,8 @@ void Statue::draw(uint shaderId, Camera3D& camera) {
     glUniformMatrix4fv(viewLoc, 1, GL_FALSE, &camera.getViewMat()[0][0]);
     glUniformMatrix4fv(transformLoc, 1, GL_FALSE, &transform[0][0]);
 
-    glBindVertexArray(_VAO);
-    glDrawElements(GL_TRIANGLES, _numIndices, GL_UNSIGNED_INT, 0);
+    glBindVertexArray(VAO);
+    glDrawElements(GL_TRIANGLES, numIndices, GL_UNSIGNED_INT, 0);
 
     glBindVertexArray(0);
     glActiveTexture(GL_TEXTURE0);

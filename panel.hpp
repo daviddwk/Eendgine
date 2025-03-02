@@ -1,11 +1,14 @@
 #pragma once
+#include <filesystem>
+#include <map>
+#include <vector>
+
+#include <GLES3/gl3.h>
+
 #include "camera.hpp"
 #include "texture.hpp"
 #include "types.hpp"
 #include "vertex.hpp"
-#include <filesystem>
-#include <map>
-#include <vector>
 
 namespace Eendgine {
 // TODO combine these into one again
@@ -16,53 +19,48 @@ class Panel {
         Panel(const Panel&) = delete;
         Panel& operator=(const Panel&) = delete;
         Panel(Panel&& other) {
-            _VAO = other._VAO;
-            _VBO = other._VBO;
-            _EBO = other._EBO;
+            position = other.position;
+            scale = other.scale;
+            rotation = other.rotation;
 
-            _position = other._position;
-            _size = other._size;
-            _rotation = other._rotation;
-            _currentTexture = other._currentTexture;
-            _textures.swap(other._textures);
+            VAO = other.VAO;
+            VBO = other.VBO;
+            EBO = other.EBO;
+
+            currentTexture = other.currentTexture;
+            textures.swap(other.textures);
         }
         Panel& operator=(Panel&& other) {
-            _VAO = other._VAO;
-            _VBO = other._VBO;
-            _EBO = other._EBO;
+            position = other.position;
+            scale = other.scale;
+            rotation = other.rotation;
 
-            _position = other._position;
-            _size = other._size;
-            _rotation = other._rotation;
-            _currentTexture = other._currentTexture;
-            _textures.swap(other._textures);
+            VAO = other.VAO;
+            VBO = other.VBO;
+            EBO = other.EBO;
+
+            currentTexture = other.currentTexture;
+            textures.swap(other.textures);
             return *this;
         }
         void eraseBuffers();
         std::vector<Texture>::size_type getNumTextures();
-        void setTexture(std::string texture) { _currentTexture = texture; };
+        void setTexture(std::string texture);
         void cropTexture(Point2D upperLeft, Point2D lowerRight);
-        void setPosition(Point position) {
-            _position = Point{position.x, -position.y, position.z};
-        };
-        void setScale(Scale2D scale) { _size = Scale(scale.x, scale.y, 1.0f); };
-        void setRotation(float r) { _rotation = r; };
 
-        std::string getTextureName() { return _currentTexture; };
-        Point getPosition() { return _position; };
-        Scale getSize() { return _size; };
-        float getRotation() { return _rotation; };
-        Texture getTexture() { return _textures[_currentTexture]; };
+        std::string getTextureName() { return currentTexture; };
+        Texture getTexture() { return textures[currentTexture]; };
 
         void draw(uint shaderId, Camera2D& camera);
 
+        Point position;
+        Scale2D scale;
+        float rotation;
+
     private:
         void setup(std::vector<std::filesystem::path>& texturePaths);
-        Point _position;
-        Scale _size;
-        float _rotation;
-        unsigned int _VAO, _VBO, _EBO;
-        std::string _currentTexture;
-        std::map<std::string, Texture> _textures;
+        GLuint VAO, VBO, EBO;
+        std::string currentTexture;
+        std::map<std::string, Texture> textures;
 };
 } // namespace Eendgine

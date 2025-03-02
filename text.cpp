@@ -123,10 +123,10 @@ void Text::updateText() {
             horizontal = 0;
             vertical += _scale;
         }
-        panelRef->setPosition(Point(_position.x + horizontal, _position.y + vertical, _position.z));
+        panelRef->position = Point(_position.x + horizontal, _position.y + vertical, _position.z);
         horizontal += ((float)charWidth / (float)_texture.height) * _scale;
 
-        panelRef->setScale(Scale2D(_scale * ((float)charWidth / (float)_texture.height), _scale));
+        panelRef->scale = Scale2D(_scale * ((float)charWidth / (float)_texture.height), _scale);
         Point2D upperLeft(firstColumn, 0.0f);
         Point2D lowerRight(lastColumn + 1.0f, _texture.height);
 

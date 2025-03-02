@@ -1,10 +1,10 @@
 #include "fatalError.hpp"
 #include <SDL2/SDL.h>
-#include <iostream>
+#include <print>
 
 namespace Eendgine {
 void fatalError(std::string errorMessage) {
-    std::cout << errorMessage << std::endl;
+    std::print("{}", errorMessage);
     SDL_Quit();
     exit(1);
 }
