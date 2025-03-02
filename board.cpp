@@ -48,10 +48,8 @@ void Board::setup(std::vector<std::filesystem::path>& texturePaths) {
             fatalError("texture: " + t.string() + "has no stem");
         }
         _textureMap[t.stem()] = _textures.size();
-        std::print("{}", t.stem().string());
         _textures.push_back(Eendgine::TextureCache::getTexture(t));
     }
-    std::print("\n");
 
     Vertex verticies[4];
 

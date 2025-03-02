@@ -1,6 +1,7 @@
-#include "screen.hpp"
+#include "fatalError.hpp"
 #include "shader.hpp"
-#include <iostream>
+
+#include "screen.hpp"
 
 namespace Eendgine {
 
@@ -41,7 +42,7 @@ void Screen::init(int width, int height) {
     glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, width, height);
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, _RBO);
     if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-        std::cout << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!" << std::endl;
+        fatalError("ERROR::FRAMEBUFFER:: Framebuffer is not complete!\n");
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
