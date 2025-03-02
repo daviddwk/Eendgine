@@ -15,7 +15,11 @@ void InputManager::processInput() {
     const unsigned char* keyState = SDL_GetKeyboardState(nullptr);
     int prevMouseX = mouseX;
     int prevMouseY = mouseY;
-    SDL_GetMouseState(&mouseX, &mouseY);
+    Uint32 mouseState = SDL_GetMouseState(&mouseX, &mouseY);
+    leftClick = (bool)(mouseState & SDL_BUTTON(SDL_BUTTON_LEFT));
+    rightClick = (bool)(mouseState & SDL_BUTTON(SDL_BUTTON_RIGHT));
+    middleClick = (bool)(mouseState & SDL_BUTTON(SDL_BUTTON_MIDDLE));
+
     deltaMouseX = prevMouseX - mouseX;
     deltaMouseY = prevMouseY - mouseY;
 
@@ -35,5 +39,4 @@ void InputManager::processInput() {
         }
     }
 }
-
 } // namespace Eendgine
