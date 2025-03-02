@@ -3,6 +3,7 @@
 #include <GLFW/glfw3.h>
 #include <SDL2/SDL_events.h>
 #include <SDL2/SDL_keyboard.h>
+#include <SDL2/SDL_mouse.h>
 
 namespace Eendgine {
 
@@ -12,6 +13,11 @@ void InputManager::processInput() {
     // const unsigned char *keyState = SDL_GetKeyboardState(nullptr);
 
     const unsigned char* keyState = SDL_GetKeyboardState(nullptr);
+    int prevMouseX = mouseX;
+    int prevMouseY = mouseY;
+    SDL_GetMouseState(&mouseX, &mouseY);
+    deltaMouseX = prevMouseX - mouseX;
+    deltaMouseY = prevMouseY - mouseY;
 
     leftPress = keyState[SDL_SCANCODE_LEFT];
     rightPress = keyState[SDL_SCANCODE_RIGHT];

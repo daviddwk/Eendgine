@@ -13,6 +13,8 @@ class InputManager {
         inline static bool shouldClose = false;
         inline static int deltaMouseX = 0;
         inline static int deltaMouseY = 0;
+        inline static int mouseX = 0;
+        inline static int mouseY = 0;
 
     private:
 };
