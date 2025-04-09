@@ -20,6 +20,8 @@ class InputManager {
         static int getDeltaMouseX();
         static int getDeltaMouseY();
 
+        static void setShouldClose(bool shouldClose);
+
     private:
         inline static bool _leftPress = false;
         inline static bool _rightPress = false;

@@ -52,4 +52,6 @@ int InputManager::getMouseX() { return _mouseX; };
 int InputManager::getMouseY() { return _mouseY; };
 int InputManager::getDeltaMouseX() { return _deltaMouseX; };
 int InputManager::getDeltaMouseY() { return _deltaMouseY; };
+
+void InputManager::setShouldClose(bool shouldClose) { _shouldClose = shouldClose; };
 } // namespace Eendgine
