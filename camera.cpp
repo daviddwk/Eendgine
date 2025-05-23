@@ -37,6 +37,6 @@ Camera3D::Camera3D(float aspectRatio, Point position, Point target)
 
 void Camera3D::update() {
     _projectionMat = glm::perspective(glm::radians(45.0f), _aspectRatio, 1.0f, 1000.0f);
-    _viewMat = glm::lookAt(_position, _target, glm::vec3(0.0f, 1.0f, 0.0f));
+    _viewMat = glm::lookAt(_position, _target, glm::vec3(0.0f, 0.0f, 1.0f));
 }
 } // namespace Eendgine
