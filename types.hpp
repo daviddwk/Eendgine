@@ -1,3 +1,4 @@
+#pragma once
 #include <glm/glm.hpp>
 
 namespace Eendgine {
@@ -10,5 +11,11 @@ using Point2D = glm::vec2;
 using Rotation = glm::vec2;
 using TransformationMatrix = glm::mat4;
 using Color = glm::vec4;
+
+struct Triangle {
+        Point p1;
+        Point p2;
+        Point p3;
+};
 
 } // namespace Eendgine
