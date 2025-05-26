@@ -46,9 +46,8 @@ class Statue {
 
         void setPosition(Point position) { _position = position; };
         void setScale(Scale scale) { _scale = scale; };
-        void setRadians(float x, float y) { _rotation = Rotation(x, y); };
-        void setRotation(float x, float y) {
-            _rotation = Rotation(glm::radians(x), glm::radians(y));
+        void setRotation(float x, float y, float z) {
+            _rotation = Rotation(glm::radians(x), glm::radians(y), glm::radians(z));
         };
 
         void setTextureIdx(unsigned int idx) { _textureIdx = (idx < _textures.size() ? idx : 0); };

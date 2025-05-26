@@ -58,7 +58,8 @@ void Statue::draw(uint shaderId, Camera3D& camera) {
     TransformationMatrix transform = TransformationMatrix(1.0f);
     transform = glm::translate(transform, _position);
     transform = glm::rotate(transform, -_rotation.x, Point(0.0f, 1.0f, 0.0f));
-    transform = glm::rotate(transform, -_rotation.y, Point(-1.0f, 0.0f, 0.0f));
+    transform = glm::rotate(transform, -_rotation.y, Point(1.0f, 0.0f, 0.0f));
+    transform = glm::rotate(transform, -_rotation.z, Point(0.0f, 0.0f, 1.0f));
     transform = glm::scale(transform, _scale);
 
     unsigned int projectionLoc = glGetUniformLocation(shaderId, "projection");
