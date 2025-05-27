@@ -3,18 +3,19 @@
 #include "shader.hpp"
 
 namespace Eendgine {
-enum Shader { sprite, model, animation, screen };
+enum Shader { panel, board, statue, doll, screen };
 class Shaders {
     public:
-        Shaders(ShaderProgram spriteShader, ShaderProgram modelShader,
-            ShaderProgram animationShader, ShaderProgram screenShader);
+        Shaders(ShaderProgram panelShader, ShaderProgram boardShader, ShaderProgram statueShader,
+            ShaderProgram dollShader, ShaderProgram screenShader);
         ShaderProgram& getShader(Shader shader);
         void setPixelSize(uint pixelSize);
 
     private:
-        ShaderProgram _spriteShader;
-        ShaderProgram _modelShader;
-        ShaderProgram _animationShader;
+        ShaderProgram _panelShader;
+        ShaderProgram _boardShader;
+        ShaderProgram _statueShader;
+        ShaderProgram _dollShader;
         ShaderProgram _screenShader;
 };
 } // namespace Eendgine
