@@ -3,23 +3,25 @@
 #include "fatalError.hpp"
 #include "textureCache.hpp"
 #include <GLES3/gl3.h>
+#include <fstream>
 #include <glm/gtc/type_ptr.hpp>
+#include <json/json.h>
 #include <print>
 
 namespace Eendgine {
 
 Board::Board(std::filesystem::path path)
     : _position(Point(0.0f)), _size(Scale(1.0f)), _rotation(0.0f), _VAO(0), _VBO(0), _EBO(0),
-      _currentTextureIdx(0) {
-
+      _currentStripIdx(0) {
+    std::filesystem::path basePath = std::filesystem::path("resources") / path;
+    std::filesystem::path metadataPath = basePath / "metadata.json";
     std::vector<std::filesystem::path> texturePaths;
-    std::filesystem::path spritePath = std::filesystem::path("resources") / path;
-    for (const auto& entry : std::filesystem::directory_iterator(spritePath)) {
+    for (const auto& entry : std::filesystem::directory_iterator(basePath)) {
         if (entry.is_regular_file() && (entry.path().extension() == ".png")) {
             texturePaths.push_back(entry.path());
         }
     }
-    setup(texturePaths);
+    setup(texturePaths, metadataPath);
 }
 
 Board::~Board() {}
@@ -33,7 +35,8 @@ void Board::eraseBuffers() {
     _VAO = 0;
 }
 
-void Board::setup(std::vector<std::filesystem::path>& texturePaths) {
+void Board::setup(
+    std::vector<std::filesystem::path>& texturePaths, std::filesystem::path& metadataPath) {
 
     _position = Point(0.0f);
     _size = Scale(1.0f);
@@ -47,8 +50,25 @@ void Board::setup(std::vector<std::filesystem::path>& texturePaths) {
         if (t.has_stem() == false) {
             fatalError("texture: " + t.string() + "has no stem");
         }
-        _textureMap[t.stem()] = _textures.size();
-        _textures.push_back(Eendgine::TextureCache::getTexture(t));
+        _stripMap[t.stem()] = _strips.size();
+        _strips.push_back((Strip){TextureCache::getTexture(t), 1}); // default to 1
+    }
+    assert(_stripMap.size() > 0);
+    _currentStrip = _stripMap.begin()->first;
+
+    Json::Value rootJson;
+    std::ifstream metadata(metadataPath);
+    if (metadata.is_open()) {
+        try {
+            metadata >> rootJson;
+        } catch (...) {
+            fatalError("improper json: " + metadataPath.string());
+        }
+        for (const auto& t : texturePaths) {
+            if (rootJson[t.stem()].isUInt()) {
+                _strips[_stripMap[t.stem()]].len = rootJson[t.stem()].asUInt();
+            }
+        }
     }
 
     Vertex verticies[4];
@@ -95,7 +115,7 @@ void Board::setup(std::vector<std::filesystem::path>& texturePaths) {
     glEnableVertexAttribArray(3);
 }
 
-std::vector<Texture>::size_type Board::getNumTextures() { return _textures.size(); }
+std::vector<Texture>::size_type Board::getNumTextures() { return _strips.size(); }
 
 void Board::draw(uint shaderId, Camera3D& camera) {
     TransformationMatrix transform = TransformationMatrix(1.0f);
@@ -119,8 +139,8 @@ void Board::draw(uint shaderId, Camera3D& camera) {
     glUniformMatrix4fv(viewLoc, 1, GL_FALSE, &camera.getViewMat()[0][0]);
     glUniformMatrix4fv(transformLoc, 1, GL_FALSE, &transform[0][0]);
 
-    glUniform1ui(frameIdxLoc, 0);
-    glUniform1ui(frameLenLoc, 1);
+    glUniform1ui(frameIdxLoc, _currentStripIdx);
+    glUniform1ui(frameLenLoc, _strips[_stripMap[_currentStrip]].len);
 
     glBindVertexArray(_VAO);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
