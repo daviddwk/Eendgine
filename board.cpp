@@ -111,10 +111,16 @@ void Board::draw(uint shaderId, Camera3D& camera) {
     unsigned int projectionLoc = glGetUniformLocation(shaderId, "projection");
     unsigned int viewLoc = glGetUniformLocation(shaderId, "view");
     unsigned int transformLoc = glGetUniformLocation(shaderId, "transform");
+    unsigned int frameIdxLoc = glGetUniformLocation(shaderId, "frameIdx");
+    unsigned int frameLenLoc = glGetUniformLocation(shaderId, "frameLen");
+
     glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, &camera.getProjectionMat()[0][0]);
 
     glUniformMatrix4fv(viewLoc, 1, GL_FALSE, &camera.getViewMat()[0][0]);
     glUniformMatrix4fv(transformLoc, 1, GL_FALSE, &transform[0][0]);
+
+    glUniform1ui(frameIdxLoc, 0);
+    glUniform1ui(frameLenLoc, 1);
 
     glBindVertexArray(_VAO);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
