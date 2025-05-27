@@ -45,6 +45,7 @@ class Board {
         std::vector<Texture>::size_type getNumTextures();
         void setStrip(std::string strip) { _currentStrip = strip; };
         void setStripIdx(size_t idx) { _currentStripIdx = idx; };
+        void setFlip(bool flip) { _flipStrip = flip; };
         void nextStripIdx() { _currentStripIdx++; }; // TODO loop
         void setPosition(Point position) { _position = position; };
         void setScale(Scale2D scale) { _size = Scale(scale.x, scale.y, 1.0f); };
@@ -68,6 +69,7 @@ class Board {
         unsigned int _VAO, _VBO, _EBO;
         std::string _currentStrip;
         size_t _currentStripIdx;
+        bool _flipStrip;
         std::map<std::string, size_t> _stripMap;
         std::vector<Strip> _strips;
 };

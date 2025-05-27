@@ -12,7 +12,7 @@ namespace Eendgine {
 
 Board::Board(std::filesystem::path path)
     : _position(Point(0.0f)), _size(Scale(1.0f)), _rotation(0.0f), _VAO(0), _VBO(0), _EBO(0),
-      _currentStripIdx(0) {
+      _currentStripIdx(0), _flipStrip(false) {
     std::filesystem::path basePath = std::filesystem::path("resources") / path;
     std::filesystem::path metadataPath = basePath / "metadata.json";
     std::vector<std::filesystem::path> texturePaths;
@@ -133,6 +133,7 @@ void Board::draw(uint shaderId, Camera3D& camera) {
     unsigned int transformLoc = glGetUniformLocation(shaderId, "transform");
     unsigned int frameIdxLoc = glGetUniformLocation(shaderId, "frameIdx");
     unsigned int frameLenLoc = glGetUniformLocation(shaderId, "frameLen");
+    unsigned int flipLoc = glGetUniformLocation(shaderId, "flip");
 
     glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, &camera.getProjectionMat()[0][0]);
 
@@ -141,6 +142,9 @@ void Board::draw(uint shaderId, Camera3D& camera) {
 
     glUniform1ui(frameIdxLoc, _currentStripIdx);
     glUniform1ui(frameLenLoc, _strips[_stripMap[_currentStrip]].len);
+
+    // beautiful and amazing hack that relies and underflowing the UV coords
+    glUniform1f(flipLoc, _flipStrip ? -1.0f : 1.0f);
 
     glBindVertexArray(_VAO);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
