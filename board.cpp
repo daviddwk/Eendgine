@@ -35,6 +35,40 @@ void Board::eraseBuffers() {
     _VAO = 0;
 }
 
+void Board::setStrip(std::string strip) {
+    assert(_stripMap.find(strip) != _stripMap.end());
+    _currentStrip = strip;
+    _currentStripIdx = 0;
+};
+
+void Board::setStripIdx(size_t idx) {
+    _currentStripIdx = idx % _strips[_stripMap[_currentStrip]].len;
+};
+
+void Board::nextStripIdx() {
+    _currentStripIdx = (_currentStripIdx + 1) % _strips[_stripMap[_currentStrip]].len;
+};
+
+void Board::setFlip(bool flip) { _flipStrip = flip; };
+
+void Board::setPosition(Point position) { _position = position; };
+
+void Board::setScale(Scale2D scale) { _size = Scale(scale.x, scale.y, 1.0f); };
+
+void Board::setRotation(float r) { _rotation = r; };
+
+size_t Board::getStripLen() { return _strips[_stripMap[_currentStrip]].len; };
+
+size_t Board::getStripIdx() { return _currentStripIdx; };
+
+Point Board::getPosition() { return _position; };
+
+Scale Board::getSize() { return _size; };
+
+float Board::getRotation() { return _rotation; };
+
+Texture Board::getTexture() { return _strips[_stripMap[_currentStrip]].texture; };
+
 void Board::setup(
     std::vector<std::filesystem::path>& texturePaths, std::filesystem::path& metadataPath) {
 
