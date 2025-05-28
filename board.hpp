@@ -12,41 +12,20 @@ class Board {
     public:
         Board(std::filesystem::path path);
         ~Board();
-        /*
-        Board(const Board&) = delete;
-        Board& operator=(const Board&) = delete;
-        Board(Board&& other) {
-            _VAO = other._VAO;
-            _VBO = other._VBO;
-            _EBO = other._EBO;
-
-            _position = other._position;
-            _size = other._size;
-            _rotation = other._rotation;
-            _currentTextureIdx = other._currentTextureIdx;
-            _textures.swap(other._textures);
-            _textureMap.swap(other._textureMap);
-        }
-        Board& operator=(Board&& other) {
-            _VAO = other._VAO;
-            _VBO = other._VBO;
-            _EBO = other._EBO;
-
-            _position = other._position;
-            _size = other._size;
-            _rotation = other._rotation;
-            _currentTextureIdx = other._currentTextureIdx;
-            _textures.swap(other._textures);
-            _textureMap.swap(other._textureMap);
-            return *this;
-        }
-        */
         void eraseBuffers();
         std::vector<Texture>::size_type getNumTextures();
-        void setStrip(std::string strip) { _currentStrip = strip; };
-        void setStripIdx(size_t idx) { _currentStripIdx = idx; };
+        void setStrip(std::string strip) {
+            assert(_stripMap.find(strip) != _stripMap.end());
+            _currentStrip = strip;
+            _currentStripIdx = 0;
+        };
+        void setStripIdx(size_t idx) {
+            _currentStripIdx = idx % _strips[_stripMap[_currentStrip]].len;
+        };
+        void nextStripIdx() {
+            _currentStripIdx = (_currentStripIdx + 1) % _strips[_stripMap[_currentStrip]].len;
+        };
         void setFlip(bool flip) { _flipStrip = flip; };
-        void nextStripIdx() { _currentStripIdx++; }; // TODO loop
         void setPosition(Point position) { _position = position; };
         void setScale(Scale2D scale) { _size = Scale(scale.x, scale.y, 1.0f); };
         void setRotation(float r) { _rotation = r; };
