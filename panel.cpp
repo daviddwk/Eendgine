@@ -122,10 +122,10 @@ void Panel::setup(std::vector<std::filesystem::path>& texturePaths) {
     verticies[2].color = Color(1.0f, 0.0f, 0.0f, 1.0f);
     verticies[3].color = Color(0.0f, 1.0f, 1.0f, 1.0f);
 
-    verticies[0].uv = Point2D(1.0f, 1.0f);
+    verticies[0].uv = Point2D(1.0f, -1.0f);
     verticies[1].uv = Point2D(1.0f, 0.0f);
     verticies[2].uv = Point2D(0.0f, 0.0f);
-    verticies[3].uv = Point2D(0.0f, 1.0f);
+    verticies[3].uv = Point2D(0.0f, -1.0f);
 
     unsigned int indices[] = {0, 1, 2, 0, 2, 3};
 

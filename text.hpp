@@ -1,3 +1,5 @@
+#pragma once
+
 #include "entityBatches.hpp"
 #include "types.hpp"
 #include <filesystem>

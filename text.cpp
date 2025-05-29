@@ -5,6 +5,7 @@
 #include <json/json.h>
 #include <limits>
 #include <optional>
+#include <print>
 #include <stb/stb_image.h>
 
 std::array possibleChars = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n',
@@ -127,8 +128,6 @@ void Text::updateText() {
         horizontal += ((float)charWidth / (float)_texture.height) * _scale;
 
         panelRef->setScale(Scale2D(_scale * ((float)charWidth / (float)_texture.height), _scale));
-        Point2D upperLeft(firstColumn, 0.0f);
-        Point2D lowerRight(lastColumn + 1.0f, _texture.height);
 
         panelRef->cropTexture(
             Point2D(firstColumn, 0.0f), Point2D(lastColumn + 1.0f, _texture.height));
