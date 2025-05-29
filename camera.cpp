@@ -7,7 +7,7 @@ Camera2D::Camera2D(int width, int height)
       _orthoMatrix(TransformationMatrix(0.0f)), _cameraMatrix(TransformationMatrix(0.0f))
 
 {
-    _orthoMatrix = glm::ortho(0.0f, (float)width, 0.0f, (float)height);
+    _orthoMatrix = glm::ortho(0.0f, (float)width, 0.0f, (float)height, -1000.0f, 1000.0f);
     update();
 }
 
@@ -16,7 +16,7 @@ void Camera2D::update() {
         Point(-_position.x + (_width / 2.0f), -_position.y + (_height / 2.0f), 0.0f);
     _cameraMatrix = glm::translate(_orthoMatrix, translate);
 
-    glm::vec3 scale = Scale(_scale, _scale, 0.0f);
+    glm::vec3 scale = Scale(_scale, _scale, 1.0f);
     _cameraMatrix = glm::scale(glm::mat4(1.0f), scale) * _cameraMatrix;
 }
 
