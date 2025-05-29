@@ -13,31 +13,6 @@ class Panel {
     public:
         Panel(std::filesystem::path path);
         ~Panel();
-        Panel(const Panel&) = delete;
-        Panel& operator=(const Panel&) = delete;
-        Panel(Panel&& other) {
-            _VAO = other._VAO;
-            _VBO = other._VBO;
-            _EBO = other._EBO;
-
-            _position = other._position;
-            _scale = other._scale;
-            _rotation = other._rotation;
-            _currentTexture = other._currentTexture;
-            _textures.swap(other._textures);
-        }
-        Panel& operator=(Panel&& other) {
-            _VAO = other._VAO;
-            _VBO = other._VBO;
-            _EBO = other._EBO;
-
-            _position = other._position;
-            _scale = other._scale;
-            _rotation = other._rotation;
-            _currentTexture = other._currentTexture;
-            _textures.swap(other._textures);
-            return *this;
-        }
 
         enum MouseStatus {
             none,
@@ -52,7 +27,7 @@ class Panel {
 
         std::string getTextureName();
         Point getPosition();
-        Scale getSize();
+        Scale getScale();
         float getRotation();
         Texture getTexture();
 
