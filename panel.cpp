@@ -82,7 +82,11 @@ void Panel::eraseBuffers() {
     _VAO = 0;
 }
 
-Panel::MouseStatus Panel::isClicked(int mouseX, int mouseY, bool click) {
+Panel::MouseStatus Panel::isClicked() {
+    int mouseX = InputManager::getMouseX();
+    int mouseY = InputManager::getMouseY();
+    bool click = InputManager::getLeftClick();
+
     bool inXBounds = mouseX >= _position.x && mouseX <= (_position.x + _scale.x);
     bool inYBounds = mouseY >= -_position.y && mouseY <= (-_position.y + _scale.y);
     if (inXBounds && inYBounds) {

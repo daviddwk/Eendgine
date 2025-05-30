@@ -34,7 +34,7 @@ class Panel {
         void cropTexture(Point2D upperLeft, Point2D lowerRight);
 
         void eraseBuffers();
-        MouseStatus isClicked(int mouseX, int mouseY, bool click);
+        MouseStatus isClicked();
 
         void draw(uint shaderId, Camera2D& camera);
 
