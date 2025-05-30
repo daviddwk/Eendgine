@@ -15,9 +15,9 @@ class Panel {
         ~Panel();
 
         enum MouseStatus {
-            none,
-            hover,
-            click,
+            NONE,
+            HOVER,
+            CLICK,
         };
 
         void setTexture(std::string texture);

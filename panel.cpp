@@ -87,11 +87,11 @@ Panel::MouseStatus Panel::isClicked(int mouseX, int mouseY, bool click) {
     bool inYBounds = mouseY >= -_position.y && mouseY <= (-_position.y + _scale.y);
     if (inXBounds && inYBounds) {
         if (click) {
-            return MouseStatus::click;
+            return MouseStatus::CLICK;
         }
-        return MouseStatus::hover;
+        return MouseStatus::HOVER;
     }
-    return MouseStatus::none;
+    return MouseStatus::NONE;
 }
 
 void Panel::setup(std::vector<std::filesystem::path>& texturePaths) {

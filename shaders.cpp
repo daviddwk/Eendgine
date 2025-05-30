@@ -10,15 +10,15 @@ Shaders::Shaders(ShaderProgram panelShader, ShaderProgram boardShader, ShaderPro
 ShaderProgram& Shaders::getShader(Shader shader) {
     switch (shader) {
     default:
-    case panel:
+    case PANEL:
         return _panelShader;
-    case board:
+    case BOARD:
         return _boardShader;
-    case statue:
+    case STATUE:
         return _statueShader;
-    case doll:
+    case DOLL:
         return _dollShader;
-    case screen:
+    case SCREEN:
         return _screenShader;
     }
 }

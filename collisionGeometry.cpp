@@ -28,11 +28,11 @@ CollisionTriangle::CollisionTriangle(
     _normal = glm::normalize(vertNormals[0] + vertNormals[1] + vertNormals[2]);
     // for collision
     if (_normal.y > 0.1f) {
-        _surface = surface::floor;
+        _surface = surface::FLOOR;
     } else if (_normal.y < -0.1f) {
-        _surface = surface::ceiling;
+        _surface = surface::CEILING;
     } else {
-        _surface = surface::wall;
+        _surface = surface::WALL;
     }
 }
 CollisionCylinder::CollisionCylinder(Point position, float height, float radius)
@@ -160,13 +160,13 @@ CollisionResults adjustToCollision(CollisionCylinder& c, std::vector<CollisionMo
         */
         for (auto& t : m->getTris()) {
             switch (t.getSurface()) {
-            case CollisionTriangle::surface::floor:
+            case CollisionTriangle::surface::FLOOR:
                 tmpFloorHeight = snapCylinderToFloor(c, t);
                 if (tmpFloorHeight > floorHeight) {
                     hitFloor = tmpFloorHeight;
                 }
                 break;
-            case CollisionTriangle::surface::wall:
+            case CollisionTriangle::surface::WALL:
                 tmpWallOffset = pushCylinderFromWall(c, t);
                 if (tmpWallOffset != Point(0.0f)) {
                     numWalls++;
@@ -176,7 +176,7 @@ CollisionResults adjustToCollision(CollisionCylinder& c, std::vector<CollisionMo
                 hitWallX += tmpWallOffset.x;
                 hitWallZ += tmpWallOffset.z;
                 break;
-            case CollisionTriangle::surface::ceiling:
+            case CollisionTriangle::surface::CEILING:
                 if (auto tmpCeilingHeight = pushCylinderFromCeiling(c, t)) {
                     // #pragma omp critical
                     if (*tmpCeilingHeight < ceilingHeight) {

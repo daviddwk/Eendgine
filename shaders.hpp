@@ -3,7 +3,7 @@
 #include "shader.hpp"
 
 namespace Eendgine {
-enum Shader { panel, board, statue, doll, screen };
+enum Shader { PANEL, BOARD, STATUE, DOLL, SCREEN };
 class Shaders {
     public:
         Shaders(ShaderProgram panelShader, ShaderProgram boardShader, ShaderProgram statueShader,

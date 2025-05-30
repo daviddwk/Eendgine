@@ -53,7 +53,7 @@ class CollisionPlane {
 
 class CollisionTriangle {
     public:
-        enum surface { floor, ceiling, wall };
+        enum surface { FLOOR, CEILING, WALL };
         CollisionTriangle(std::array<Point, 3> vertPositions, std::array<Point, 3> vertNormals);
         void setVerts(Point v0, Point v1, Point v2) { _verts = {v0, v1, v2}; };
         std::array<Point, 3> getVerts() { return _verts; };
