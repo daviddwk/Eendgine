@@ -35,7 +35,7 @@ void Panel::setScale(Scale2D scale) { _scale = Scale(scale.x, scale.y, 1.0f); };
 void Panel::setRotation(float rotation) { _rotation = rotation; };
 
 std::string Panel::getTextureName() { return _currentTexture; };
-Point Panel::getPosition() { return Point{position.x, -position.y, position.z}; };
+Point Panel::getPosition() { return Point{_position.x, -_position.y, _position.z}; };
 Scale Panel::getScale() { return _scale; };
 float Panel::getRotation() { return _rotation; };
 Texture Panel::getTexture() { return _textures[_currentTexture]; };

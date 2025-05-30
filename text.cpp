@@ -98,7 +98,7 @@ void Text::setScale(float scale) {
 void Text::updateText() {
     float horizontal = 0.0f;
     float vertical = 0.0f;
-    for (size_t char_idx = 0; char_idx < _text.length(); ++char_idx) {
+    for (std::string::size_type char_idx = 0; char_idx < _text.length(); ++char_idx) {
         char glyph = _text[char_idx];
         if (glyph == '\n') {
             horizontal = 0;
@@ -111,6 +111,32 @@ void Text::updateText() {
                 std::cerr << "Missing glyph and no '?' available so skipping." << std::endl;
                 continue;
             }
+        }
+        float wordHorizontal = horizontal;
+        if (glyph == ' ') {
+            for (std::string::size_type word_idx = char_idx + 1; word_idx < _text.length();
+                ++word_idx) {
+                char wordGlyph = _text[word_idx];
+                if (wordGlyph == ' ' || wordGlyph == '\n') {
+                    break;
+                }
+                if (!_charColumns[wordGlyph].has_value()) {
+                    wordGlyph = '?';
+                    if (!_charColumns[wordGlyph].has_value()) {
+                        std::cerr << "Missing glyph and no '?' available so skipping." << std::endl;
+                        continue;
+                    }
+                }
+                unsigned int firstColumn;
+                unsigned int lastColumn;
+                std::tie(firstColumn, lastColumn) = _charColumns[wordGlyph].value();
+                unsigned int charWidth = (lastColumn - firstColumn) + 1;
+                wordHorizontal += ((float)charWidth / (float)_texture.height) * _scale;
+            }
+        }
+        if (wordHorizontal > _width) {
+            horizontal = 0;
+            vertical += _scale;
         }
 
         unsigned int firstColumn;
