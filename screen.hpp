@@ -8,20 +8,27 @@ namespace Eendgine {
 
 class Screen {
     public:
-        static void init(int width, int height);
-        static void close();
-        static void bind();
-        static void render(ShaderProgram shader);
+        static void construct(int width, int height);
+        static void destruct();
+        static Screen& get();
+
+        void bind();
+        void render(ShaderProgram shader);
 
     private:
-        inline static int _width = 0;
-        inline static int _height = 0;
-        inline static unsigned int _VAO = 0;
-        inline static unsigned int _VBO = 0;
-        inline static unsigned int _RBO = 0;
-        inline static unsigned int _FB = 0;
-        inline static unsigned int _textureColorBuffer = 0;
-        inline static float _screenTriVerts[] = {
+        Screen(int width, int height);
+        ~Screen();
+
+        inline static Screen* _instance = nullptr;
+
+        int _width = 0;
+        int _height = 0;
+        unsigned int _VAO = 0;
+        unsigned int _VBO = 0;
+        unsigned int _RBO = 0;
+        unsigned int _FB = 0;
+        unsigned int _textureColorBuffer = 0;
+        float _screenTriVerts[12] = {
             -1.0f,
             3.0f,
             0.0f,

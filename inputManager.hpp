@@ -3,38 +3,50 @@
 namespace Eendgine {
 class InputManager {
     public:
-        static void init();
-        static void processInput();
+        static void construct();
+        static void destruct();
+        static InputManager& get();
 
-        static bool getLeftPress();
-        static bool getRightPress();
-        static bool getUpPress();
-        static bool getDownPress();
-        static bool getSpacePress();
-        static bool getShouldClose();
-        static bool getLeftClick();
-        static bool getRightClick();
-        static bool getMiddleClick();
-        static int getMouseX();
-        static int getMouseY();
-        static int getDeltaMouseX();
-        static int getDeltaMouseY();
+        InputManager(const InputManager&) = delete;
+        InputManager& operator=(const InputManager&) = delete;
 
-        static void setShouldClose(bool shouldClose);
+        // static void init();
+        void processInput();
+
+        bool getLeftPress();
+        bool getRightPress();
+        bool getUpPress();
+        bool getDownPress();
+        bool getSpacePress();
+        bool getShouldClose();
+        bool getLeftClick();
+        bool getRightClick();
+        bool getMiddleClick();
+        int getMouseX();
+        int getMouseY();
+        int getDeltaMouseX();
+        int getDeltaMouseY();
+
+        void setShouldClose(bool shouldClose);
 
     private:
-        inline static bool _leftPress = false;
-        inline static bool _rightPress = false;
-        inline static bool _upPress = false;
-        inline static bool _downPress = false;
-        inline static bool _spacePress = false;
-        inline static bool _shouldClose = false;
-        inline static bool _leftClick = false;
-        inline static bool _rightClick = false;
-        inline static bool _middleClick = false;
-        inline static int _mouseX = 0;
-        inline static int _mouseY = 0;
-        inline static int _deltaMouseX = 0;
-        inline static int _deltaMouseY = 0;
+        InputManager() = default;
+        ~InputManager() = default;
+
+        inline static InputManager* _instance = nullptr;
+
+        bool _leftPress = false;
+        bool _rightPress = false;
+        bool _upPress = false;
+        bool _downPress = false;
+        bool _spacePress = false;
+        bool _shouldClose = false;
+        bool _leftClick = false;
+        bool _rightClick = false;
+        bool _middleClick = false;
+        int _mouseX = 0;
+        int _mouseY = 0;
+        int _deltaMouseX = 0;
+        int _deltaMouseY = 0;
 };
 } // namespace Eendgine

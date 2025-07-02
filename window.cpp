@@ -1,3 +1,4 @@
+#include <assert.h>
 #include <print>
 
 #include <SDL2/SDL_error.h>
@@ -7,10 +8,8 @@
 #include "window.hpp"
 
 namespace Eendgine {
-void framebuffer_size_callback(SDL_Window* window, int width, int height);
-// void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
 
-void Window::init(int width, int height, std::string name) {
+Window::Window(int width, int height, std::string name) {
     _width = width;
     _height = height;
     SDL_Init(SDL_INIT_EVERYTHING);
@@ -26,7 +25,25 @@ void Window::init(int width, int height, std::string name) {
     SDL_GL_SetSwapInterval(0);
 }
 
-void Window::close() { SDL_DestroyWindow(_window); }
+Window::~Window() { SDL_DestroyWindow(_window); }
+
+void Window::construct(int width, int height, std::string name) {
+    assert(_instance == nullptr);
+    _instance = new Window(width, height, name);
+}
+
+void Window::destruct() {
+    assert(_instance != nullptr);
+    delete _instance;
+    _instance = nullptr;
+}
+
+Window& Window::get() {
+    assert(_instance != nullptr);
+    return *_instance;
+}
+void framebuffer_size_callback(SDL_Window* window, int width, int height);
+// void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
 
 void Window::swapBuffers() { SDL_GL_SwapWindow(_window); }
 } // namespace Eendgine

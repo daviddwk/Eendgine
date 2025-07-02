@@ -1,3 +1,5 @@
+#include <assert.h>
+
 #include "fatalError.hpp"
 #include "shader.hpp"
 
@@ -5,7 +7,7 @@
 
 namespace Eendgine {
 
-void Screen::init(int width, int height) {
+Screen::Screen(int width, int height) {
     _width = width;
     _height = height;
     /*
@@ -46,8 +48,24 @@ void Screen::init(int width, int height) {
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-void Screen::close() {
+Screen::~Screen() {
     // TODO somthing here I'm sure
+}
+
+void Screen::construct(int width, int height) {
+    assert(_instance == nullptr);
+    _instance = new Screen(width, height);
+}
+
+void Screen::destruct() {
+    assert(_instance != nullptr);
+    delete _instance;
+    _instance = nullptr;
+}
+
+Screen& Screen::get() {
+    assert(_instance != nullptr);
+    return *_instance;
 }
 
 void Screen::bind() {

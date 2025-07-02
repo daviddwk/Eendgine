@@ -1,3 +1,5 @@
+#include <cassert>
+
 #include <GLFW/glfw3.h>
 #include <SDL2/SDL_events.h>
 #include <SDL2/SDL_keyboard.h>
@@ -7,7 +9,21 @@
 
 namespace Eendgine {
 
-void InputManager::init() {}
+void InputManager::construct() {
+    assert(_instance == nullptr);
+    _instance = new InputManager;
+}
+
+void InputManager::destruct() {
+    assert(_instance != nullptr);
+    delete _instance;
+    _instance = nullptr;
+}
+
+InputManager& InputManager::get() {
+    assert(_instance != nullptr);
+    return *_instance;
+}
 
 void InputManager::processInput() {
     // const unsigned char *keyState = SDL_GetKeyboardState(nullptr);

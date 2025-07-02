@@ -8,16 +8,23 @@ namespace Eendgine {
 
 class Window {
     public:
-        static void init(int width, int height, std::string name);
-        static void close();
-        static void swapBuffers();
-        static void processInput();
+        static void construct(int width, int height, std::string name);
+        static void destruct();
+        static Window& get();
+
+        void swapBuffers();
+        void processInput();
 
     private:
-        static void framebuffer_size_callback(SDL_Window* window, int width, int height);
-        static void key_callback(SDL_Window* window, int key, int scancode, int action, int mods);
-        inline static int _width = 0;
-        inline static int _height = 0;
-        inline static SDL_Window* _window = nullptr;
+        Window(int width, int height, std::string name);
+        ~Window();
+
+        inline static Window* _instance = nullptr;
+
+        void framebuffer_size_callback(SDL_Window* window, int width, int height);
+        void key_callback(SDL_Window* window, int key, int scancode, int action, int mods);
+        int _width = 0;
+        int _height = 0;
+        SDL_Window* _window = nullptr;
 };
 } // namespace Eendgine

@@ -1,18 +1,32 @@
 #include "frameLimiter.hpp"
+
 #include <SDL2/SDL.h>
+
+#include <assert.h>
 #include <chrono>
-#include <cmath>
-#include <print>
 #include <thread>
 
 namespace Eendgine {
 
-void FrameLimiter::init(float maxFps, float minFps) {
-    _maxFps = maxFps;
-    _minFps = minFps;
+FrameLimiter::FrameLimiter(float maxFps, float minFps) : _maxFps(maxFps), _minFps(minFps) {}
+
+FrameLimiter::~FrameLimiter() {}
+
+void FrameLimiter::construct(float maxFps, float minFps) {
+    assert(_instance == nullptr);
+    _instance = new FrameLimiter(maxFps, minFps);
 }
 
-void FrameLimiter::close() {}
+void FrameLimiter::destruct() {
+    assert(_instance != nullptr);
+    delete _instance;
+    _instance = nullptr;
+}
+
+FrameLimiter& FrameLimiter::get() {
+    assert(_instance != nullptr);
+    return *_instance;
+}
 
 void FrameLimiter::startInterval() { _startTime = std::chrono::steady_clock::now(); }
 
