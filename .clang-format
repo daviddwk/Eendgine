@@ -1,4 +1,5 @@
 BasedOnStyle: LLVM
+AlignAfterOpenBracket: AlwaysBreak
 IndentWidth: 4
 ContinuationIndentWidth: 4
 AlignAfterOpenBracket: false
