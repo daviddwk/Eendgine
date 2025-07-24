@@ -18,22 +18,22 @@ void Entities::destruct() {
     delete _panels;
 }
 
-EntityBatch<Statue>& Entities::getStatues() {
+EntityBatch<Statue>& Entities::statues() {
     assert(_statues != nullptr);
     return *_statues;
 }
 
-EntityBatch<Doll>& Entities::getDolls() {
+EntityBatch<Doll>& Entities::dolls() {
     assert(_dolls != nullptr);
     return *_dolls;
 }
 
-EntityBatch<Board>& Entities::getBoards() {
+EntityBatch<Board>& Entities::boards() {
     assert(_boards != nullptr);
     return *_boards;
 }
 
-EntityBatch<Panel>& Entities::getPanels() {
+EntityBatch<Panel>& Entities::panels() {
     assert(_panels != nullptr);
     return *_panels;
 }

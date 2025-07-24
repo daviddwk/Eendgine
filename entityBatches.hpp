@@ -19,10 +19,10 @@ class Entities {
         static void construct();
         static void destruct();
 
-        static EntityBatch<Statue>& getStatues();
-        static EntityBatch<Doll>& getDolls();
-        static EntityBatch<Board>& getBoards();
-        static EntityBatch<Panel>& getPanels();
+        static EntityBatch<Statue>& statues();
+        static EntityBatch<Doll>& dolls();
+        static EntityBatch<Board>& boards();
+        static EntityBatch<Panel>& panels();
 
         static void draw(Shaders& shaders, Camera2D& hudCamera, Camera3D& sceneCamera);
 
