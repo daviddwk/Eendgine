@@ -4,6 +4,9 @@ namespace Eendgine {
 static std::random_device rng;
 static std::minstd_rand gen(rng());
 
+
 float randomRange(float min, float max);
 int randomRange(int min, int max);
+
+int randomIntLimit();
 } // namespace Eendgine
