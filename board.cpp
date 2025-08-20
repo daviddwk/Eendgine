@@ -11,8 +11,8 @@
 namespace Eendgine {
 
 Board::Board(std::filesystem::path path)
-    : _position(Point(0.0f)), _size(Scale(1.0f)), _rotation(0.0f), _VAO(0), _VBO(0), _EBO(0),
-      _currentStripIdx(0), _flipStrip(false) {
+    : m_position(Point(0.0f)), m_size(Scale(1.0f)), m_rotation(0.0f), m_VAO(0), m_VBO(0), m_EBO(0),
+      m_currentStripIdx(0), m_flipStrip(false) {
     std::filesystem::path basePath = std::filesystem::path("resources") / path;
     std::filesystem::path metadataPath = basePath / "metadata.json";
     std::vector<std::filesystem::path> texturePaths;
@@ -27,54 +27,54 @@ Board::Board(std::filesystem::path path)
 Board::~Board() {}
 
 void Board::eraseBuffers() {
-    glDeleteVertexArrays(1, &_VAO);
-    glDeleteBuffers(1, &_VBO);
-    glDeleteBuffers(1, &_EBO);
-    _VBO = 0;
-    _EBO = 0;
-    _VAO = 0;
+    glDeleteVertexArrays(1, &m_VAO);
+    glDeleteBuffers(1, &m_VBO);
+    glDeleteBuffers(1, &m_EBO);
+    m_VBO = 0;
+    m_EBO = 0;
+    m_VAO = 0;
 }
 
 void Board::setStrip(std::string strip) {
-    assert(_stripMap.find(strip) != _stripMap.end());
-    _currentStrip = strip;
-    _currentStripIdx = 0;
+    assert(m_stripMap.find(strip) != m_stripMap.end());
+    m_currentStrip = strip;
+    m_currentStripIdx = 0;
 };
 
 void Board::setStripIdx(size_t idx) {
-    _currentStripIdx = idx % _strips[_stripMap[_currentStrip]].len;
+    m_currentStripIdx = idx % m_strips[m_stripMap[m_currentStrip]].len;
 };
 
 void Board::nextStripIdx() {
-    _currentStripIdx = (_currentStripIdx + 1) % _strips[_stripMap[_currentStrip]].len;
+    m_currentStripIdx = (m_currentStripIdx + 1) % m_strips[m_stripMap[m_currentStrip]].len;
 };
 
-void Board::setFlip(bool flip) { _flipStrip = flip; };
+void Board::setFlip(bool flip) { m_flipStrip = flip; };
 
-void Board::setPosition(Point position) { _position = position; };
+void Board::setPosition(Point position) { m_position = position; };
 
-void Board::setScale(Scale2D scale) { _size = Scale(scale.x, scale.y, 1.0f); };
+void Board::setScale(Scale2D scale) { m_size = Scale(scale.x, scale.y, 1.0f); };
 
-void Board::setRotation(float r) { _rotation = r; };
+void Board::setRotation(float r) { m_rotation = r; };
 
-size_t Board::getStripLen() { return _strips[_stripMap[_currentStrip]].len; };
+size_t Board::getStripLen() { return m_strips[m_stripMap[m_currentStrip]].len; };
 
-size_t Board::getStripIdx() { return _currentStripIdx; };
+size_t Board::getStripIdx() { return m_currentStripIdx; };
 
-Point Board::getPosition() { return _position; };
+Point Board::getPosition() { return m_position; };
 
-Scale Board::getSize() { return _size; };
+Scale Board::getSize() { return m_size; };
 
-float Board::getRotation() { return _rotation; };
+float Board::getRotation() { return m_rotation; };
 
-Texture Board::getTexture() { return _strips[_stripMap[_currentStrip]].texture; };
+Texture Board::getTexture() { return m_strips[m_stripMap[m_currentStrip]].texture; };
 
 void Board::setup(
     std::vector<std::filesystem::path>& texturePaths, std::filesystem::path& metadataPath) {
 
-    _position = Point(0.0f);
-    _size = Scale(1.0f);
-    _rotation = 0;
+    m_position = Point(0.0f);
+    m_size = Scale(1.0f);
+    m_rotation = 0;
 
     // sorting them alphabetically, becasue the order they're iterated on
     // is not specified
@@ -84,11 +84,11 @@ void Board::setup(
         if (t.has_stem() == false) {
             fatalError("texture: " + t.string() + "has no stem");
         }
-        _stripMap[t.stem()] = _strips.size();
-        _strips.push_back((Strip){TextureCache::getTexture(t), 1}); // default to 1
+        m_stripMap[t.stem()] = m_strips.size();
+        m_strips.push_back((Strip){TextureCache::getTexture(t), 1}); // default to 1
     }
-    assert(_stripMap.size() > 0);
-    _currentStrip = _stripMap.begin()->first;
+    assert(m_stripMap.size() > 0);
+    m_currentStrip = m_stripMap.begin()->first;
 
     Json::Value rootJson;
     std::ifstream metadata(metadataPath);
@@ -100,7 +100,7 @@ void Board::setup(
         }
         for (const auto& t : texturePaths) {
             if (rootJson[t.stem()].isUInt()) {
-                _strips[_stripMap[t.stem()]].len = rootJson[t.stem()].asUInt();
+                m_strips[m_stripMap[t.stem()]].len = rootJson[t.stem()].asUInt();
             }
         }
     }
@@ -126,17 +126,17 @@ void Board::setup(
 
     unsigned int indices[] = {2, 1, 0, 3, 2, 0};
 
-    glGenVertexArrays(1, &_VAO);
-    glBindVertexArray(_VAO);
+    glGenVertexArrays(1, &m_VAO);
+    glBindVertexArray(m_VAO);
 
-    glGenBuffers(1, &_VBO);
+    glGenBuffers(1, &m_VBO);
 
-    glGenBuffers(1, &_EBO);
+    glGenBuffers(1, &m_EBO);
 
-    glBindBuffer(GL_ARRAY_BUFFER, _VBO);
+    glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(verticies), verticies, GL_STATIC_DRAW);
 
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _EBO);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_EBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 12 * sizeof(float), (void*)0);
@@ -149,18 +149,18 @@ void Board::setup(
     glEnableVertexAttribArray(3);
 }
 
-std::vector<Texture>::size_type Board::getNumTextures() { return _strips.size(); }
+std::vector<Texture>::size_type Board::getNumTextures() { return m_strips.size(); }
 
 void Board::draw(uint shaderId, Camera3D& camera) {
     TransformationMatrix transform = TransformationMatrix(1.0f);
-    transform = glm::translate(transform, _position);
+    transform = glm::translate(transform, m_position);
     glm::mat3 rot = glm::inverse(glm::mat3(camera.getViewMat()));
     // there must be a cleaner way to do this
     transform = {{rot[0][0], rot[0][1], rot[0][2], transform[0][3]},
         {rot[1][0], rot[1][1], rot[1][2], transform[1][3]},
         {rot[2][0], rot[2][1], rot[2][2], transform[2][3]},
         {transform[3][0], transform[3][1], transform[3][2], transform[3][3]}};
-    transform = glm::scale(transform, _size);
+    transform = glm::scale(transform, m_size);
 
     unsigned int projectionLoc = glGetUniformLocation(shaderId, "projection");
     unsigned int viewLoc = glGetUniformLocation(shaderId, "view");
@@ -174,13 +174,13 @@ void Board::draw(uint shaderId, Camera3D& camera) {
     glUniformMatrix4fv(viewLoc, 1, GL_FALSE, &camera.getViewMat()[0][0]);
     glUniformMatrix4fv(transformLoc, 1, GL_FALSE, &transform[0][0]);
 
-    glUniform1ui(frameIdxLoc, _currentStripIdx);
-    glUniform1ui(frameLenLoc, _strips[_stripMap[_currentStrip]].len);
+    glUniform1ui(frameIdxLoc, m_currentStripIdx);
+    glUniform1ui(frameLenLoc, m_strips[m_stripMap[m_currentStrip]].len);
 
     // beautiful and amazing hack that relies and underflowing the UV coords
-    glUniform1f(flipLoc, _flipStrip ? -1.0f : 1.0f);
+    glUniform1f(flipLoc, m_flipStrip ? -1.0f : 1.0f);
 
-    glBindVertexArray(_VAO);
+    glBindVertexArray(m_VAO);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);
 }

@@ -39,14 +39,15 @@ class Board {
     private:
         void setup(
             std::vector<std::filesystem::path>& texturePaths, std::filesystem::path& metadataPath);
-        Point _position;
-        Scale _size;
-        float _rotation;
-        unsigned int _VAO, _VBO, _EBO;
-        std::string _currentStrip;
-        size_t _currentStripIdx;
-        bool _flipStrip;
-        std::map<std::string, size_t> _stripMap;
-        std::vector<Strip> _strips;
+
+        Point m_position;
+        Scale m_size;
+        float m_rotation;
+        unsigned int m_VAO, m_VBO, m_EBO;
+        std::string m_currentStrip;
+        size_t m_currentStripIdx;
+        bool m_flipStrip;
+        std::map<std::string, size_t> m_stripMap;
+        std::vector<Strip> m_strips;
 };
 } // namespace Eendgine

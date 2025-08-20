@@ -10,6 +10,6 @@ class TextureCache {
         static Texture getTexture(std::filesystem::path texturePath);
 
     private:
-        inline static std::map<std::string, Texture> _textureMap;
+        inline static std::map<std::string, Texture> m_textureMap;
 };
 } // namespace Eendgine

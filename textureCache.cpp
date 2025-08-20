@@ -4,10 +4,10 @@
 
 namespace Eendgine {
 Texture TextureCache::getTexture(std::filesystem::path texturePath) {
-    auto mapItr = _textureMap.find(texturePath);
-    if (mapItr == _textureMap.end()) {
+    auto mapItr = m_textureMap.find(texturePath);
+    if (mapItr == m_textureMap.end()) {
         Texture texture = loadTexture(texturePath);
-        mapItr = _textureMap.insert(std::begin(_textureMap), {texturePath, texture});
+        mapItr = m_textureMap.insert(std::begin(m_textureMap), {texturePath, texture});
     }
     return mapItr->second;
 }

@@ -30,10 +30,10 @@ class Entities {
         Entities() = default;
         ~Entities() = default;
         
-        inline static EntityBatch<Statue>* _statues = nullptr;
-        inline static EntityBatch<Doll>* _dolls = nullptr;
-        inline static EntityBatch<Board>* _boards = nullptr;
-        inline static EntityBatch<Panel>* _panels = nullptr;
+        inline static EntityBatch<Statue>* m_statues = nullptr;
+        inline static EntityBatch<Doll>* m_dolls = nullptr;
+        inline static EntityBatch<Board>* m_boards = nullptr;
+        inline static EntityBatch<Panel>* m_panels = nullptr;
 };
 
 } // namespace Eendgine

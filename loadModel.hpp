@@ -1,11 +1,13 @@
 #pragma once
-#include "textureCache.hpp"
+
+#include "texture.hpp"
 #include "vertex.hpp"
+
 #include <assimp/Importer.hpp>
 #include <assimp/postprocess.h>
 #include <assimp/scene.h>
+
 #include <filesystem>
-#include <string>
 #include <vector>
 
 namespace Eendgine {

@@ -8,8 +8,8 @@
 namespace Eendgine {
 
 Screen::Screen(int width, int height) {
-    _width = width;
-    _height = height;
+    m_width = width;
+    m_height = height;
     /*
     glFrontFace(GL_CCW);
     glCullFace(GL_BACK);
@@ -17,32 +17,32 @@ Screen::Screen(int width, int height) {
     */
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
-    glGenVertexArrays(1, &_VAO);
-    glGenBuffers(1, &_VBO);
-    glBindVertexArray(_VAO);
-    glBindBuffer(GL_ARRAY_BUFFER, _VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(_screenTriVerts), &_screenTriVerts, GL_STATIC_DRAW);
+    glGenVertexArrays(1, &m_VAO);
+    glGenBuffers(1, &m_VBO);
+    glBindVertexArray(m_VAO);
+    glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(m_screenTriVerts), &m_screenTriVerts, GL_STATIC_DRAW);
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(1);
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
 
-    glGenFramebuffers(1, &_FB);
-    glBindFramebuffer(GL_FRAMEBUFFER, _FB);
+    glGenFramebuffers(1, &m_FB);
+    glBindFramebuffer(GL_FRAMEBUFFER, m_FB);
 
-    glGenTextures(1, &_textureColorBuffer);
-    glBindTexture(GL_TEXTURE_2D, _textureColorBuffer);
+    glGenTextures(1, &m_textureColorBuffer);
+    glBindTexture(GL_TEXTURE_2D, m_textureColorBuffer);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glFramebufferTexture2D(
-        GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, _textureColorBuffer, 0);
+        GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_textureColorBuffer, 0);
 
-    glGenRenderbuffers(1, &_RBO);
-    glBindRenderbuffer(GL_RENDERBUFFER, _RBO);
+    glGenRenderbuffers(1, &m_RBO);
+    glBindRenderbuffer(GL_RENDERBUFFER, m_RBO);
     glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, width, height);
-    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, _RBO);
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, m_RBO);
     if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
         fatalError("ERROR::FRAMEBUFFER:: Framebuffer is not complete!\n");
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -69,7 +69,7 @@ Screen& Screen::get() {
 }
 
 void Screen::bind() {
-    glBindFramebuffer(GL_FRAMEBUFFER, _FB);
+    glBindFramebuffer(GL_FRAMEBUFFER, m_FB);
     glEnable(GL_DEPTH_TEST);
     glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -81,14 +81,14 @@ void Screen::render(ShaderProgram shader) {
     glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
     shader.use();
-    glBindVertexArray(_VAO);
+    glBindVertexArray(m_VAO);
     glUniform1i(glGetUniformLocation(shader.getProgramID(), "screenTexture"), 0);
-    glBindTexture(GL_TEXTURE_2D, _textureColorBuffer);
+    glBindTexture(GL_TEXTURE_2D, m_textureColorBuffer);
 
     unsigned int heightLoc = glGetUniformLocation(shader.getProgramID(), "height");
     unsigned int widthLoc = glGetUniformLocation(shader.getProgramID(), "width");
-    glUniform1i(heightLoc, _height);
-    glUniform1i(widthLoc, _width);
+    glUniform1i(heightLoc, m_height);
+    glUniform1i(widthLoc, m_width);
     glDrawArrays(GL_TRIANGLES, 0, 6);
 }
 } // namespace Eendgine

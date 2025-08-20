@@ -2,7 +2,6 @@
 #include "camera.hpp"
 #include "texture.hpp"
 #include "types.hpp"
-#include "vertex.hpp"
 #include <filesystem>
 #include <map>
 #include <vector>
@@ -40,11 +39,11 @@ class Panel {
 
     private:
         void setup(std::vector<std::filesystem::path>& texturePaths);
-        Point _position;
-        Scale _scale;
-        float _rotation;
-        unsigned int _VAO, _VBO, _EBO;
-        std::string _currentTexture;
-        std::map<std::string, Texture> _textures;
+        Point m_position;
+        Scale m_scale;
+        float m_rotation;
+        unsigned int m_VAO, m_VBO, m_EBO;
+        std::string m_currentTexture;
+        std::map<std::string, Texture> m_textures;
 };
 } // namespace Eendgine

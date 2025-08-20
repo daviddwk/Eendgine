@@ -29,21 +29,21 @@ void InputManager::processInput() {
     // const unsigned char *keyState = SDL_GetKeyboardState(nullptr);
 
     const unsigned char* keyState = SDL_GetKeyboardState(nullptr);
-    int prevMouseX = _mouseX;
-    int prevMouseY = _mouseY;
-    Uint32 mouseState = SDL_GetMouseState(&_mouseX, &_mouseY);
-    _leftClick = (bool)(mouseState & SDL_BUTTON(SDL_BUTTON_LEFT));
-    _rightClick = (bool)(mouseState & SDL_BUTTON(SDL_BUTTON_RIGHT));
-    _middleClick = (bool)(mouseState & SDL_BUTTON(SDL_BUTTON_MIDDLE));
+    int prevMouseX = m_mouseX;
+    int prevMouseY = m_mouseY;
+    Uint32 mouseState = SDL_GetMouseState(&m_mouseX, &m_mouseY);
+    m_leftClick = (bool)(mouseState & SDL_BUTTON(SDL_BUTTON_LEFT));
+    m_rightClick = (bool)(mouseState & SDL_BUTTON(SDL_BUTTON_RIGHT));
+    m_middleClick = (bool)(mouseState & SDL_BUTTON(SDL_BUTTON_MIDDLE));
 
-    _deltaMouseX = prevMouseX - _mouseX;
-    _deltaMouseY = prevMouseY - _mouseY;
+    m_deltaMouseX = prevMouseX - m_mouseX;
+    m_deltaMouseY = prevMouseY - m_mouseY;
 
-    _leftPress = keyState[SDL_SCANCODE_LEFT];
-    _rightPress = keyState[SDL_SCANCODE_RIGHT];
-    _upPress = keyState[SDL_SCANCODE_UP];
-    _downPress = keyState[SDL_SCANCODE_DOWN];
-    _spacePress = keyState[SDL_SCANCODE_SPACE];
+    m_leftPress = keyState[SDL_SCANCODE_LEFT];
+    m_rightPress = keyState[SDL_SCANCODE_RIGHT];
+    m_upPress = keyState[SDL_SCANCODE_UP];
+    m_downPress = keyState[SDL_SCANCODE_DOWN];
+    m_spacePress = keyState[SDL_SCANCODE_SPACE];
 
     // unsigned int mouseState = SDL_GetRelativeMouseState(&deltaMouseX, &deltaMouseY);
 
@@ -51,23 +51,23 @@ void InputManager::processInput() {
     while (SDL_PollEvent(&event)) {
         switch (event.type) {
         case SDL_QUIT:
-            _shouldClose = true;
+            m_shouldClose = true;
         }
     }
 }
-bool InputManager::getLeftPress() { return _leftPress; };
-bool InputManager::getRightPress() { return _rightPress; };
-bool InputManager::getUpPress() { return _upPress; };
-bool InputManager::getDownPress() { return _downPress; };
-bool InputManager::getSpacePress() { return _spacePress; };
-bool InputManager::getShouldClose() { return _shouldClose; };
-bool InputManager::getLeftClick() { return _leftClick; };
-bool InputManager::getRightClick() { return _rightClick; };
-bool InputManager::getMiddleClick() { return _middleClick; };
-int InputManager::getMouseX() { return _mouseX; };
-int InputManager::getMouseY() { return _mouseY; };
-int InputManager::getDeltaMouseX() { return _deltaMouseX; };
-int InputManager::getDeltaMouseY() { return _deltaMouseY; };
+bool InputManager::getLeftPress() { return m_leftPress; };
+bool InputManager::getRightPress() { return m_rightPress; };
+bool InputManager::getUpPress() { return m_upPress; };
+bool InputManager::getDownPress() { return m_downPress; };
+bool InputManager::getSpacePress() { return m_spacePress; };
+bool InputManager::getShouldClose() { return m_shouldClose; };
+bool InputManager::getLeftClick() { return m_leftClick; };
+bool InputManager::getRightClick() { return m_rightClick; };
+bool InputManager::getMiddleClick() { return m_middleClick; };
+int InputManager::getMouseX() { return m_mouseX; };
+int InputManager::getMouseY() { return m_mouseY; };
+int InputManager::getDeltaMouseX() { return m_deltaMouseX; };
+int InputManager::getDeltaMouseY() { return m_deltaMouseY; };
 
-void InputManager::setShouldClose(bool shouldClose) { _shouldClose = shouldClose; };
+void InputManager::setShouldClose(bool shouldClose) { m_shouldClose = shouldClose; };
 } // namespace Eendgine

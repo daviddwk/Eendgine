@@ -3,7 +3,7 @@
 #include "loadModel.hpp"
 #include "types.hpp"
 #include "vertex.hpp"
-#include <algorithm>
+
 #include <cmath>
 #include <filesystem>
 #include <limits>
@@ -17,26 +17,26 @@ bool vertOnTri(Point vert, std::array<Point, 3> tri);
 float pointHeightOnTri(const Point& p1, const Point& p2, const Point& p3, float x, float z);
 
 CollisionSphere::CollisionSphere(Point position, float radius)
-    : _position(position), _radius(std::abs(radius)) {}
+    : m_position(position), m_radius(std::abs(radius)) {}
 CollisionPlane::CollisionPlane(Point position, Point normal)
-    : _position(position), _normal(normal) {}
+    : m_position(position), m_normal(normal) {}
 CollisionTriangle::CollisionTriangle(
     std::array<Point, 3> vertPositions, std::array<Point, 3> vertNormals)
-    : _verts(vertPositions) {
+    : m_verts(vertPositions) {
     // getting face normal from vertex normals by getting average (I think the math is fine)
     // https://math.stackexchange.com/questions/250165/converting-vertex-normals-to-face-normals
-    _normal = glm::normalize(vertNormals[0] + vertNormals[1] + vertNormals[2]);
+    m_normal = glm::normalize(vertNormals[0] + vertNormals[1] + vertNormals[2]);
     // for collision
-    if (_normal.y > 0.1f) {
-        _surface = surface::FLOOR;
-    } else if (_normal.y < -0.1f) {
-        _surface = surface::CEILING;
+    if (m_normal.y > 0.1f) {
+        m_surface = surface::FLOOR;
+    } else if (m_normal.y < -0.1f) {
+        m_surface = surface::CEILING;
     } else {
-        _surface = surface::WALL;
+        m_surface = surface::WALL;
     }
 }
 CollisionCylinder::CollisionCylinder(Point position, float height, float radius)
-    : _position(position), _height(height), _radius(radius) {}
+    : m_position(position), m_height(height), m_radius(radius) {}
 CollisionModel::CollisionModel(std::filesystem::path modelPath) {
     std::vector<Vertex> vertices;
     std::vector<unsigned int> indices;
@@ -46,7 +46,7 @@ CollisionModel::CollisionModel(std::filesystem::path modelPath) {
     }
     for (unsigned int i = 0; i < indices.size(); i += 3) {
         // TODO check for normals
-        _collisionTris.emplace_back(
+        m_collisionTris.emplace_back(
             std::array<Point, 3>{vertices[indices[i]].position, vertices[indices[i + 1]].position,
                 vertices[indices[i + 2]].position},
             std::array<Point, 3>{

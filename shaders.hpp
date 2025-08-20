@@ -12,10 +12,10 @@ class Shaders {
         void setPixelSize(uint pixelSize);
 
     private:
-        ShaderProgram _panelShader;
-        ShaderProgram _boardShader;
-        ShaderProgram _statueShader;
-        ShaderProgram _dollShader;
-        ShaderProgram _screenShader;
+        ShaderProgram m_panelShader;
+        ShaderProgram m_boardShader;
+        ShaderProgram m_statueShader;
+        ShaderProgram m_dollShader;
+        ShaderProgram m_screenShader;
 };
 } // namespace Eendgine

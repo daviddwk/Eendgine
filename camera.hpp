@@ -8,27 +8,27 @@ class Camera2D {
         Point2D convertScreenToWorld(Point2D screenChoords);
 
         void setPosition(float x, float y) {
-            _position = Point2D(x, y);
+            m_position = Point2D(x, y);
             update();
         }
         void setScale(float scale) {
-            _scale = scale;
+            m_scale = scale;
             update();
         }
 
-        Point2D getPosition() { return _position; }
-        float getScale() { return _scale; }
-        Scale2D getDimensions() { return Scale2D(_width, _height); }
-        TransformationMatrix getCameraMatrix() { return _cameraMatrix; }
+        Point2D getPosition() { return m_position; }
+        float getScale() { return m_scale; }
+        Scale2D getDimensions() { return Scale2D(m_width, m_height); }
+        TransformationMatrix getCameraMatrix() { return m_cameraMatrix; }
 
     private:
         void update();
 
-        int _width, _height;
-        float _scale;
-        Point2D _position;
-        TransformationMatrix _orthoMatrix;
-        TransformationMatrix _cameraMatrix;
+        int m_width, m_height;
+        float m_scale;
+        Point2D m_position;
+        TransformationMatrix m_orthoMatrix;
+        TransformationMatrix m_cameraMatrix;
 };
 class Camera3D {
     public:
@@ -36,31 +36,31 @@ class Camera3D {
 
         // concider not updating and making do manually
         void setAspectRatio(float aspectRatio) {
-            _aspectRatio = aspectRatio;
+            m_aspectRatio = aspectRatio;
             update();
         };
         void setPosition(Point position) {
-            _position = position;
+            m_position = position;
             update();
         };
         void setTarget(Point target) {
-            _target = target;
+            m_target = target;
             update();
         };
 
-        float getAspectRatio() { return _aspectRatio; };
-        Point getPosition() { return _position; };
-        Point getTarget() { return _target; };
-        TransformationMatrix getViewMat() { return _viewMat; };
-        TransformationMatrix getProjectionMat() { return _projectionMat; };
+        float getAspectRatio() { return m_aspectRatio; };
+        Point getPosition() { return m_position; };
+        Point getTarget() { return m_target; };
+        TransformationMatrix getViewMat() { return m_viewMat; };
+        TransformationMatrix getProjectionMat() { return m_projectionMat; };
 
     private:
         void update();
 
-        float _aspectRatio;
-        Point _position;
-        Point _target;
-        TransformationMatrix _viewMat;
-        TransformationMatrix _projectionMat;
+        float m_aspectRatio;
+        Point m_position;
+        Point m_target;
+        TransformationMatrix m_viewMat;
+        TransformationMatrix m_projectionMat;
 };
 } // namespace Eendgine

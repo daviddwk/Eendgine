@@ -7,6 +7,7 @@
 #include "fatalError.hpp"
 #include "inputManager.hpp"
 #include "textureCache.hpp"
+#include "vertex.hpp"
 
 #include "panel.hpp"
 
@@ -14,8 +15,8 @@ namespace Eendgine {
 
 // can remove the need for two different initializers using templating
 Panel::Panel(std::filesystem::path path)
-    : _position(Point(0.0f)), _scale(Scale(1.0f)), _rotation(0.0f), _VAO(0), _VBO(0), _EBO(0),
-      _currentTexture("") {
+    : m_position(Point(0.0f)), m_scale(Scale(1.0f)), m_rotation(0.0f), m_VAO(0), m_VBO(0), m_EBO(0),
+      m_currentTexture("") {
 
     std::vector<std::filesystem::path> texturePaths;
     std::filesystem::path spritePath = std::filesystem::path("resources") / path;
@@ -29,21 +30,21 @@ Panel::Panel(std::filesystem::path path)
 
 Panel::~Panel() {}
 
-void Panel::setTexture(std::string texture) { _currentTexture = texture; };
-void Panel::setPosition(Point position) { _position = Point{position.x, -position.y, position.z}; };
-void Panel::setScale(Scale2D scale) { _scale = Scale(scale.x, scale.y, 1.0f); };
-void Panel::setRotation(float rotation) { _rotation = rotation; };
+void Panel::setTexture(std::string texture) { m_currentTexture = texture; };
+void Panel::setPosition(Point position) { m_position = Point{position.x, -position.y, position.z}; };
+void Panel::setScale(Scale2D scale) { m_scale = Scale(scale.x, scale.y, 1.0f); };
+void Panel::setRotation(float rotation) { m_rotation = rotation; };
 
-std::string Panel::getTextureName() { return _currentTexture; };
-Point Panel::getPosition() { return Point{_position.x, -_position.y, _position.z}; };
-Scale Panel::getScale() { return _scale; };
-float Panel::getRotation() { return _rotation; };
-Texture Panel::getTexture() { return _textures[_currentTexture]; };
+std::string Panel::getTextureName() { return m_currentTexture; };
+Point Panel::getPosition() { return Point{m_position.x, -m_position.y, m_position.z}; };
+Scale Panel::getScale() { return m_scale; };
+float Panel::getRotation() { return m_rotation; };
+Texture Panel::getTexture() { return m_textures[m_currentTexture]; };
 
 void Panel::cropTexture(Point2D upperLeft, Point2D lowerRight) {
     Vertex verticies[4];
-    float textureHeight = _textures[_currentTexture].height;
-    float textureWidth = _textures[_currentTexture].width;
+    float textureHeight = m_textures[m_currentTexture].height;
+    float textureWidth = m_textures[m_currentTexture].width;
 
     // centered on origin
     // with width and height of 1
@@ -67,19 +68,19 @@ void Panel::cropTexture(Point2D upperLeft, Point2D lowerRight) {
     verticies[3].uv =
         Point2D(upperLeft.x / textureWidth, (textureHeight - lowerRight.y) / textureHeight);
 
-    glBindBuffer(GL_ARRAY_BUFFER, _VBO);
+    glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
     glBufferSubData(GL_ARRAY_BUFFER, 0, 4 * sizeof(Vertex), verticies);
 
     //_textures[_currentTexture].height;
 }
 
 void Panel::eraseBuffers() {
-    glDeleteVertexArrays(1, &_VAO);
-    glDeleteBuffers(1, &_VBO);
-    glDeleteBuffers(1, &_EBO);
-    _VBO = 0;
-    _EBO = 0;
-    _VAO = 0;
+    glDeleteVertexArrays(1, &m_VAO);
+    glDeleteBuffers(1, &m_VBO);
+    glDeleteBuffers(1, &m_EBO);
+    m_VBO = 0;
+    m_EBO = 0;
+    m_VAO = 0;
 }
 
 Panel::MouseStatus Panel::isClicked() {
@@ -87,8 +88,8 @@ Panel::MouseStatus Panel::isClicked() {
     int mouseY = InputManager::get().getMouseY();
     bool click = InputManager::get().getLeftClick();
 
-    bool inXBounds = mouseX >= _position.x && mouseX <= (_position.x + _scale.x);
-    bool inYBounds = mouseY >= -_position.y && mouseY <= (-_position.y + _scale.y);
+    bool inXBounds = mouseX >= m_position.x && mouseX <= (m_position.x + m_scale.x);
+    bool inYBounds = mouseY >= -m_position.y && mouseY <= (-m_position.y + m_scale.y);
     if (inXBounds && inYBounds) {
         if (click) {
             return MouseStatus::CLICK;
@@ -100,17 +101,17 @@ Panel::MouseStatus Panel::isClicked() {
 
 void Panel::setup(std::vector<std::filesystem::path>& texturePaths) {
 
-    _position = Point(0.0f);
-    _scale = Scale(1.0f);
-    _rotation = 0;
+    m_position = Point(0.0f);
+    m_scale = Scale(1.0f);
+    m_rotation = 0;
 
     for (const auto& t : texturePaths) {
         if (t.has_stem() == false) {
             fatalError("texture: " + t.string() + "has no stem");
         }
-        _textures[t.stem()] = Eendgine::TextureCache::getTexture(t);
+        m_textures[t.stem()] = Eendgine::TextureCache::getTexture(t);
     }
-    _currentTexture = _textures.begin()->first;
+    m_currentTexture = m_textures.begin()->first;
 
     Vertex verticies[4];
 
@@ -133,17 +134,17 @@ void Panel::setup(std::vector<std::filesystem::path>& texturePaths) {
 
     unsigned int indices[] = {0, 1, 2, 0, 2, 3};
 
-    glGenVertexArrays(1, &_VAO);
-    glBindVertexArray(_VAO);
+    glGenVertexArrays(1, &m_VAO);
+    glBindVertexArray(m_VAO);
 
-    glGenBuffers(1, &_VBO);
+    glGenBuffers(1, &m_VBO);
 
-    glGenBuffers(1, &_EBO);
+    glGenBuffers(1, &m_EBO);
 
-    glBindBuffer(GL_ARRAY_BUFFER, _VBO);
+    glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(verticies), verticies, GL_STATIC_DRAW);
 
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _EBO);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_EBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 12 * sizeof(float), (void*)0);
@@ -161,14 +162,14 @@ void Panel::draw(uint shaderId, Camera2D& camera) {
     Scale2D cameraDims = camera.getDimensions();
 
     trans = glm::translate(trans, glm::vec3(-(cameraDims.x / 2.0f), (cameraDims.y / 2.0f), 0.0f));
-    trans = glm::translate(trans, _position);
-    trans = glm::rotate(trans, glm::radians(-_rotation), Point(0.0f, 0.0f, 1.0f));
-    trans = glm::scale(trans, _scale);
+    trans = glm::translate(trans, m_position);
+    trans = glm::rotate(trans, glm::radians(-m_rotation), Point(0.0f, 0.0f, 1.0f));
+    trans = glm::scale(trans, m_scale);
 
     unsigned int transformLoc = glGetUniformLocation(shaderId, "transform");
     glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
 
-    glBindVertexArray(_VAO);
+    glBindVertexArray(m_VAO);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);
 }

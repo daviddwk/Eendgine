@@ -4,24 +4,24 @@ namespace Eendgine {
 
 Shaders::Shaders(ShaderProgram panelShader, ShaderProgram boardShader, ShaderProgram statueShader,
     ShaderProgram dollShader, ShaderProgram screenShader)
-    : _panelShader(panelShader), _boardShader(boardShader), _statueShader(statueShader),
-      _dollShader(dollShader), _screenShader(screenShader) {}
+    : m_panelShader(panelShader), m_boardShader(boardShader), m_statueShader(statueShader),
+      m_dollShader(dollShader), m_screenShader(screenShader) {}
 
 ShaderProgram& Shaders::getShader(Shader shader) {
     switch (shader) {
     default:
     case PANEL:
-        return _panelShader;
+        return m_panelShader;
     case BOARD:
-        return _boardShader;
+        return m_boardShader;
     case STATUE:
-        return _statueShader;
+        return m_statueShader;
     case DOLL:
-        return _dollShader;
+        return m_dollShader;
     case SCREEN:
-        return _screenShader;
+        return m_screenShader;
     }
 }
 
-void Shaders::setPixelSize(uint pixelSize) { _screenShader.setInt("pixelSize", pixelSize); }
+void Shaders::setPixelSize(uint pixelSize) { m_screenShader.setInt("pixelSize", pixelSize); }
 } // namespace Eendgine

@@ -3,51 +3,51 @@
 namespace Eendgine {
     
 void Entities::construct() {
-    assert(_statues == nullptr && _dolls == nullptr && _boards == nullptr && _panels == nullptr);
-    _statues = new EntityBatch<Statue>;
-    _dolls = new EntityBatch<Doll>;
-    _boards = new EntityBatch<Board>;
-    _panels = new EntityBatch<Panel>;
+    assert(m_statues == nullptr && m_dolls == nullptr && m_boards == nullptr && m_panels == nullptr);
+    m_statues = new EntityBatch<Statue>;
+    m_dolls = new EntityBatch<Doll>;
+    m_boards = new EntityBatch<Board>;
+    m_panels = new EntityBatch<Panel>;
 }
 
 void Entities::destruct() {
-    assert(_statues != nullptr && _dolls != nullptr && _boards != nullptr && _panels != nullptr);
-    delete _statues;
-    delete _dolls;
-    delete _boards;
-    delete _panels;
+    assert(m_statues != nullptr && m_dolls != nullptr && m_boards != nullptr && m_panels != nullptr);
+    delete m_statues;
+    delete m_dolls;
+    delete m_boards;
+    delete m_panels;
 }
 
 EntityBatch<Statue>& Entities::statues() {
-    assert(_statues != nullptr);
-    return *_statues;
+    assert(m_statues != nullptr);
+    return *m_statues;
 }
 
 EntityBatch<Doll>& Entities::dolls() {
-    assert(_dolls != nullptr);
-    return *_dolls;
+    assert(m_dolls != nullptr);
+    return *m_dolls;
 }
 
 EntityBatch<Board>& Entities::boards() {
-    assert(_boards != nullptr);
-    return *_boards;
+    assert(m_boards != nullptr);
+    return *m_boards;
 }
 
 EntityBatch<Panel>& Entities::panels() {
-    assert(_panels != nullptr);
-    return *_panels;
+    assert(m_panels != nullptr);
+    return *m_panels;
 }
 
 void Entities::draw(Shaders& shaders, Camera2D& hudCamera, Camera3D& sceneCamera) {
     glClearColor(0.1f, 0.2f, 0.3f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    _statues->draw(shaders.getShader(Shader::STATUE), sceneCamera);
-    _dolls->draw(shaders.getShader(Shader::DOLL), sceneCamera);
-    _boards->draw(shaders.getShader(Shader::BOARD), sceneCamera);
+    m_statues->draw(shaders.getShader(Shader::STATUE), sceneCamera);
+    m_dolls->draw(shaders.getShader(Shader::DOLL), sceneCamera);
+    m_boards->draw(shaders.getShader(Shader::BOARD), sceneCamera);
 
     glClear(GL_DEPTH_BUFFER_BIT);
 
-    _panels->draw(shaders.getShader(Shader::PANEL), hudCamera);
+    m_panels->draw(shaders.getShader(Shader::PANEL), hudCamera);
 }
 } // namespace Eendgine

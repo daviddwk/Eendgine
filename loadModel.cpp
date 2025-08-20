@@ -1,6 +1,9 @@
 #include "fatalError.hpp"
 #include "loadModel.hpp"
+#include "textureCache.hpp"
 #include "types.hpp"
+
+#include <string>
 
 namespace Eendgine {
 

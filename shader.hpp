@@ -8,15 +8,15 @@ class ShaderProgram {
     public:
         ShaderProgram(std::string vertexShaderPath, std::string fragmentShaderPath);
         void use();
-        unsigned int getProgramID() { return _programID; };
+        unsigned int getProgramID() { return m_programID; };
         void setInt(std::string name, int value) {
-            glUniform1i(glGetUniformLocation(_programID, name.c_str()), value);
+            glUniform1i(glGetUniformLocation(m_programID, name.c_str()), value);
         }
 
     private:
         void compileShader(unsigned int id, std::string shaderPath);
-        unsigned int _programID;
-        unsigned int _vertexShaderID;
-        unsigned int _fragmentShaderID;
+        unsigned int m_programID;
+        unsigned int m_vertexShaderID;
+        unsigned int m_fragmentShaderID;
 };
 } // namespace Eendgine

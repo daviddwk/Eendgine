@@ -8,23 +8,23 @@
 namespace Eendgine {
 
 ShaderProgram::ShaderProgram(std::string vertexShaderPath, std::string fragmentShaderPath)
-    : _programID(0), _vertexShaderID(0), _fragmentShaderID(0) {
+    : m_programID(0), m_vertexShaderID(0), m_fragmentShaderID(0) {
 
-    _vertexShaderID = glCreateShader(GL_VERTEX_SHADER);
-    _fragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);
+    m_vertexShaderID = glCreateShader(GL_VERTEX_SHADER);
+    m_fragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);
 
-    compileShader(_vertexShaderID, vertexShaderPath);
-    compileShader(_fragmentShaderID, fragmentShaderPath);
+    compileShader(m_vertexShaderID, vertexShaderPath);
+    compileShader(m_fragmentShaderID, fragmentShaderPath);
 
-    _programID = glCreateProgram();
+    m_programID = glCreateProgram();
 
-    glAttachShader(_programID, _vertexShaderID);
-    glAttachShader(_programID, _fragmentShaderID);
+    glAttachShader(m_programID, m_vertexShaderID);
+    glAttachShader(m_programID, m_fragmentShaderID);
 
-    glLinkProgram(_programID);
+    glLinkProgram(m_programID);
 
-    glDeleteShader(_vertexShaderID);
-    glDeleteShader(_fragmentShaderID);
+    glDeleteShader(m_vertexShaderID);
+    glDeleteShader(m_fragmentShaderID);
 }
 
 void ShaderProgram::compileShader(unsigned int shaderId, std::string shaderPath) {
@@ -58,5 +58,5 @@ void ShaderProgram::compileShader(unsigned int shaderId, std::string shaderPath)
     }
 }
 
-void ShaderProgram::use() { glUseProgram(_programID); }
+void ShaderProgram::use() { glUseProgram(m_programID); }
 } // namespace Eendgine

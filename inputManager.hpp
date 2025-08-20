@@ -35,18 +35,18 @@ class InputManager {
 
         inline static InputManager* _instance = nullptr;
 
-        bool _leftPress = false;
-        bool _rightPress = false;
-        bool _upPress = false;
-        bool _downPress = false;
-        bool _spacePress = false;
-        bool _shouldClose = false;
-        bool _leftClick = false;
-        bool _rightClick = false;
-        bool _middleClick = false;
-        int _mouseX = 0;
-        int _mouseY = 0;
-        int _deltaMouseX = 0;
-        int _deltaMouseY = 0;
+        bool m_leftPress = false;
+        bool m_rightPress = false;
+        bool m_upPress = false;
+        bool m_downPress = false;
+        bool m_spacePress = false;
+        bool m_shouldClose = false;
+        bool m_leftClick = false;
+        bool m_rightClick = false;
+        bool m_middleClick = false;
+        int m_mouseX = 0;
+        int m_mouseY = 0;
+        int m_deltaMouseX = 0;
+        int m_deltaMouseY = 0;
 };
 } // namespace Eendgine

@@ -24,80 +24,80 @@ struct CollisionRectangle {
 class CollisionSphere {
     public:
         CollisionSphere(Point position, float radius);
-        void setPosition(Point position) { _position = position; };
-        void setRadius(float r) { _radius = std::abs(r); };
+        void setPosition(Point position) { m_position = position; };
+        void setRadius(float r) { m_radius = std::abs(r); };
 
-        Point getPosition() { return _position; };
-        float getRadius() { return _radius; };
+        Point getPosition() { return m_position; };
+        float getRadius() { return m_radius; };
 
     private:
-        Point _position = Point(0.0f, 0.0f, 0.0f);
+        Point m_position = Point(0.0f, 0.0f, 0.0f);
         // radius loops to be safe
-        float _radius = 0;
+        float m_radius = 0;
 };
 
 class CollisionPlane {
     public:
         CollisionPlane(Point position, Point normal);
 
-        void setPosition(float x, float y, float z) { _position = Point(x, y, z); };
-        void setNormal(float x, float y, float z) { _normal = Point(x, y, z); };
+        void setPosition(float x, float y, float z) { m_position = Point(x, y, z); };
+        void setNormal(float x, float y, float z) { m_normal = Point(x, y, z); };
 
-        Point getPosition() { return _position; };
-        Point getNormal() { return _normal; };
+        Point getPosition() { return m_position; };
+        Point getNormal() { return m_normal; };
 
     private:
-        Point _position;
-        Point _normal;
+        Point m_position;
+        Point m_normal;
 };
 
 class CollisionTriangle {
     public:
         enum surface { FLOOR, CEILING, WALL };
         CollisionTriangle(std::array<Point, 3> vertPositions, std::array<Point, 3> vertNormals);
-        void setVerts(Point v0, Point v1, Point v2) { _verts = {v0, v1, v2}; };
-        std::array<Point, 3> getVerts() { return _verts; };
-        Point getNormal() { return _normal; };
-        surface getSurface() { return _surface; }
+        void setVerts(Point v0, Point v1, Point v2) { m_verts = {v0, v1, v2}; };
+        std::array<Point, 3> getVerts() { return m_verts; };
+        Point getNormal() { return m_normal; };
+        surface getSurface() { return m_surface; }
 
     private:
-        std::array<Point, 3> _verts;
-        Point _normal;
-        surface _surface;
+        std::array<Point, 3> m_verts;
+        Point m_normal;
+        surface m_surface;
 };
 
 class CollisionCylinder {
     public:
         CollisionCylinder(Point position, float height, float radius);
 
-        void setPosition(Point position) { _position = position; };
-        void setHeight(float height) { _height = height; };
-        void setRaduis(float radius) { _radius = radius; };
+        void setPosition(Point position) { m_position = position; };
+        void setHeight(float height) { m_height = height; };
+        void setRaduis(float radius) { m_radius = radius; };
 
-        Point getPosition() { return _position; };
-        float getHeight() { return _height; };
-        float getRadius() { return _radius; };
+        Point getPosition() { return m_position; };
+        float getHeight() { return m_height; };
+        float getRadius() { return m_radius; };
 
     private:
-        Point _position;
-        float _height;
-        float _radius;
+        Point m_position;
+        float m_height;
+        float m_radius;
 };
 
 class CollisionModel {
     public:
         CollisionModel(std::filesystem::path modelPath);
-        void setPosition(Point position) { _position = position; };
-        void setScale(Point scale) { _scale = scale; };
-        Point getPosition() { return _position; };
-        Point getScale() { return _scale; };
+        void setPosition(Point position) { m_position = position; };
+        void setScale(Point scale) { m_scale = scale; };
+        Point getPosition() { return m_position; };
+        Point getScale() { return m_scale; };
         std::vector<CollisionTriangle> getTris() {
-            std::vector<CollisionTriangle> tris = _collisionTris;
+            std::vector<CollisionTriangle> tris = m_collisionTris;
             for (auto& t : tris) {
                 std::array<Point, 3> triVerts = t.getVerts();
                 for (auto& v : triVerts) {
-                    v *= _scale;
-                    v += _position;
+                    v *= m_scale;
+                    v += m_position;
                 }
                 t.setVerts(triVerts[0], triVerts[1], triVerts[2]);
             }
@@ -105,9 +105,9 @@ class CollisionModel {
         };
 
     private:
-        std::vector<CollisionTriangle> _collisionTris;
-        Point _position = Point(0.0f);
-        Point _scale = Point(1.0f);
+        std::vector<CollisionTriangle> m_collisionTris;
+        Point m_position = Point(0.0f);
+        Point m_scale = Point(1.0f);
 };
 
 bool colliding(CollisionSphere s1, CollisionSphere s2, Point* penetration);
