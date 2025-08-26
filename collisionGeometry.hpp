@@ -1,6 +1,5 @@
 #pragma once
 #include <array>
-#include <cmath>
 #include <filesystem>
 #include <optional>
 #include <vector>
@@ -22,16 +21,10 @@ struct CollisionRectangle {
 class CollisionSphere {
     public:
         CollisionSphere(Point position, float radius);
-        void setPosition(Point position) { m_position = position; };
-        void setRadius(float r) { m_radius = std::abs(r); };
 
-        Point getPosition() { return m_position; };
-        float getRadius() { return m_radius; };
-
-    private:
-        Point m_position = Point(0.0f, 0.0f, 0.0f);
+        Point position = Point(0.0f, 0.0f, 0.0f);
         // radius loops to be safe
-        float m_radius = 0;
+        float radius = 0;
 };
 
 class CollisionPlane {
@@ -111,6 +104,7 @@ class CollisionModel {
 bool colliding(CollisionSphere s1, CollisionSphere s2, Point* penetration);
 bool colliding(CollisionSphere s, CollisionPlane p, Point* penetration);
 bool colliding(Point2D point, CollisionRectangle rectangle);
+std::optional<Point> colliding(Point point, CollisionSphere sphere);
 
 float snapCylinderToFloor(CollisionCylinder& c, CollisionTriangle& t);
 Point pushCylinderFromWall(CollisionCylinder& c, CollisionTriangle& t);

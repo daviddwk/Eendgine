@@ -17,7 +17,7 @@ bool vertOnTri(Point vert, std::array<Point, 3> tri);
 float pointHeightOnTri(const Point& p1, const Point& p2, const Point& p3, float x, float z);
 
 CollisionSphere::CollisionSphere(Point position, float radius)
-    : m_position(position), m_radius(std::abs(radius)) {}
+    : position(position), radius(std::abs(radius)) {}
 CollisionPlane::CollisionPlane(Point position, Point normal)
     : m_position(position), m_normal(normal) {}
 CollisionTriangle::CollisionTriangle(
@@ -56,7 +56,7 @@ CollisionModel::CollisionModel(std::filesystem::path modelPath) {
             });
     }
 }
-
+/*
 bool colliding(CollisionSphere s1, CollisionSphere s2, Point* penetration) {
     Point distance = s2.getPosition() - s1.getPosition();
     float depth = (s1.getRadius() + s2.getRadius()) - glm::length(distance);
@@ -75,7 +75,7 @@ bool colliding(CollisionSphere s, CollisionPlane p, Point* penetration) {
     }
     return depth > 0.0f;
 }
-
+*/
 bool colliding(Point2D point, CollisionRectangle rectangle) {
     float behindLeft = point.x - rectangle.upperLeft.x; // negative means in front
     float behindTop = point.y - rectangle.upperLeft.y;
@@ -85,6 +85,16 @@ bool colliding(Point2D point, CollisionRectangle rectangle) {
     if (behindLeft > 0 && behindTop > 0 && behindRight > 0 && behindBottom > 0)
         return true;
     return false;
+}
+
+std::optional<Point> colliding(Point point, CollisionSphere sphere) {
+    Point difference = point - sphere.position;
+    float distance = glm::length(difference);
+    if (distance < sphere.radius) {
+        float depth = sphere.radius - distance;
+        return std::optional<Point>(glm::normalize(difference) * (depth / sphere.radius));
+    }
+    return std::nullopt;    
 }
 
 float snapCylinderToFloor(CollisionCylinder& c, CollisionTriangle& t) {
