@@ -1,15 +1,11 @@
 #include "collisionGeometry.hpp"
 #include "types.hpp"
 
-#include <cmath>
 #include <omp.h>
 
 namespace Eendgine {
 
-CollisionSphere::CollisionSphere(Point position, float radius)
-    : position(position), radius(std::abs(radius)) {}
-
-bool pointOnRectangle(Point2D point, CollisionRectangle rectangle) {
+bool pointOnRectangle(Point2D point, Rectangle rectangle) {
     float behindLeft = point.x - rectangle.upperLeft.x; // negative means in front
     float behindTop = point.y - rectangle.upperLeft.y;
     float behindRight = rectangle.lowerRight.x - point.x;
@@ -20,7 +16,7 @@ bool pointOnRectangle(Point2D point, CollisionRectangle rectangle) {
     return false;
 }
 
-std::optional<Point> pointToSphereEdgeRelative(Point point, CollisionSphere sphere) {
+std::optional<Point> pointToSphereEdgeRelative(Point point, Sphere sphere) {
     Point difference = point - sphere.position;
     float distance = glm::length(difference);
     if (distance < sphere.radius) {
