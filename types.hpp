@@ -42,4 +42,48 @@ class Sphere {
         float radius = 0;
 };
 
+class Angle {
+    public:
+        Angle(float degrees) {
+            setDegrees(degrees);
+        };
+
+        float getDegrees() { return m_degrees; };
+        void setDegrees(float degrees) {
+            float tmpDegrees = fmod(degrees, 360.0f);
+            if (tmpDegrees < 0) {
+                tmpDegrees = 360.0f - tmpDegrees;
+            }
+            m_degrees = tmpDegrees;
+        };
+
+        Angle operator+(const Angle& other) {
+            return Angle(m_degrees + other.m_degrees);
+        }
+        Angle operator-(const Angle& other) {
+            return Angle(m_degrees - other.m_degrees);
+        }
+        Angle operator*(const float factor) {
+            return Angle(m_degrees * factor);
+        }
+        Angle operator/(const float divisor) {
+            return Angle(m_degrees / divisor);
+        }
+        bool operator>(const Angle& other) {
+            return m_degrees > other.m_degrees;
+        }
+        bool operator>=(const Angle& other) {
+            return m_degrees >= other.m_degrees;
+        }
+        bool operator<(const Angle& other) {
+            return m_degrees < other.m_degrees;
+        }
+        bool operator<=(const Angle& other) {
+            return m_degrees <= other.m_degrees;
+        }
+
+    private:
+        float m_degrees = 0;
+};
+
 } // namespace Eendgine
