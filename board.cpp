@@ -156,10 +156,13 @@ void Board::draw(uint shaderId, Camera3D& camera) {
     transform = glm::translate(transform, m_position);
     glm::mat3 rot = glm::inverse(glm::mat3(camera.getViewMat()));
     // there must be a cleaner way to do this
-    transform = {{rot[0][0], rot[0][1], rot[0][2], transform[0][3]},
-        {rot[1][0], rot[1][1], rot[1][2], transform[1][3]},
-        {rot[2][0], rot[2][1], rot[2][2], transform[2][3]},
+    // clang-format off
+    transform = {
+        {rot[0][0],       rot[0][1],       rot[0][2],       transform[0][3]},
+        {rot[1][0],       rot[1][1],       rot[1][2],       transform[1][3]},
+        {rot[2][0],       rot[2][1],       rot[2][2],       transform[2][3]},
         {transform[3][0], transform[3][1], transform[3][2], transform[3][3]}};
+    // clang-format on
     transform = glm::scale(transform, m_size);
 
     unsigned int projectionLoc = glGetUniformLocation(shaderId, "projection");
@@ -178,7 +181,7 @@ void Board::draw(uint shaderId, Camera3D& camera) {
     glUniform1ui(frameLenLoc, m_strips[m_stripMap[m_currentStrip]].len);
 
     // beautiful and amazing hack that relies and underflowing the UV coords
-    glUniform1f(flipLoc, m_flipStrip ? -1.0f : 1.0f);
+    glUniform1ui(flipLoc, m_flipStrip);
 
     glBindVertexArray(m_VAO);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
