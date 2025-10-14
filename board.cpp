@@ -1,12 +1,12 @@
 #include "Eendgine/camera.hpp"
 #include "board.hpp"
+#include "Eendgine/texture.hpp"
 #include "fatalError.hpp"
 #include "textureCache.hpp"
 #include <GLES3/gl3.h>
 #include <fstream>
 #include <glm/gtc/type_ptr.hpp>
 #include <json/json.h>
-#include <print>
 
 namespace Eendgine {
 
@@ -41,7 +41,7 @@ void Board::setStrip(std::string strip) {
     m_currentStripIdx = 0;
 };
 
-void Board::setStripIdx(size_t idx) {
+void Board::setStripIdx(unsigned int idx) {
     m_currentStripIdx = idx % m_strips[m_stripMap[m_currentStrip]].len;
 };
 
@@ -57,9 +57,11 @@ void Board::setScale(Scale2D scale) { m_size = Scale(scale.x, scale.y, 1.0f); };
 
 void Board::setRotation(float r) { m_rotation = r; };
 
-size_t Board::getStripLen() { return m_strips[m_stripMap[m_currentStrip]].len; };
+std::vector<Strip>::size_type Board::getStripLen() {
+    return m_strips[m_stripMap[m_currentStrip]].len;
+};
 
-size_t Board::getStripIdx() { return m_currentStripIdx; };
+unsigned int Board::getStripIdx() { return m_currentStripIdx; };
 
 Point Board::getPosition() { return m_position; };
 
@@ -180,7 +182,6 @@ void Board::draw(uint shaderId, Camera3D& camera) {
     glUniform1ui(frameIdxLoc, m_currentStripIdx);
     glUniform1ui(frameLenLoc, m_strips[m_stripMap[m_currentStrip]].len);
 
-    // beautiful and amazing hack that relies and underflowing the UV coords
     glUniform1ui(flipLoc, m_flipStrip);
 
     glBindVertexArray(m_VAO);

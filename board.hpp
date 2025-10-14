@@ -16,7 +16,7 @@ class Board {
         void eraseBuffers();
 
         void setStrip(std::string strip);
-        void setStripIdx(size_t idx);
+        void setStripIdx(unsigned int idx);
         void nextStripIdx();
         void setFlip(bool flip);
 
@@ -24,8 +24,8 @@ class Board {
         void setScale(Scale2D scale);
         void setRotation(float r);
 
-        size_t getStripLen();
-        size_t getStripIdx();
+        std::vector<Strip>::size_type getStripLen();
+        unsigned int getStripIdx();
 
         Point getPosition();
         Scale getSize();
@@ -45,9 +45,9 @@ class Board {
         float m_rotation;
         unsigned int m_VAO, m_VBO, m_EBO;
         std::string m_currentStrip;
-        size_t m_currentStripIdx;
+        unsigned int m_currentStripIdx;
         bool m_flipStrip;
-        std::map<std::string, size_t> m_stripMap;
+        std::map<std::string, unsigned int> m_stripMap;
         std::vector<Strip> m_strips;
 };
 } // namespace Eendgine
