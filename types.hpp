@@ -4,6 +4,8 @@
 
 namespace Eendgine {
 
+constexpr float INV_SQRT_TWO = 0.7071f;
+
 using Scale = glm::vec3;
 using Scale2D = glm::vec2;
 using Point = glm::vec3;
