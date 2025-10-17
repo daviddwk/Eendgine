@@ -13,8 +13,13 @@ Window::Window(int width, int height, std::string name) {
     m_width = width;
     m_height = height;
     SDL_Init(SDL_INIT_EVERYTHING);
-    m_window = SDL_CreateWindow(name.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, m_width,
-        m_height, SDL_WINDOW_OPENGL);
+    m_window = SDL_CreateWindow(
+        name.c_str(),
+        SDL_WINDOWPOS_CENTERED,
+        SDL_WINDOWPOS_CENTERED,
+        m_width,
+        m_height,
+        SDL_WINDOW_OPENGL);
     if (m_window == nullptr) {
         std::print("Failed to create SDL window: {}\n", SDL_GetError());
     }

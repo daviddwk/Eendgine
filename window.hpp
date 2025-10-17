@@ -1,5 +1,6 @@
 #pragma once
 
+#include <filesystem>
 #include <string>
 
 #include <SDL2/SDL.h>
@@ -23,7 +24,7 @@ class Window {
 
         void framebuffer_size_callback(SDL_Window* window, int width, int height);
         void key_callback(SDL_Window* window, int key, int scancode, int action, int mods);
-        
+
         int m_width = 0;
         int m_height = 0;
         SDL_Window* m_window = nullptr;

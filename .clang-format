@@ -1,8 +1,10 @@
 BasedOnStyle: LLVM
-AlignAfterOpenBracket: AlwaysBreak
 IndentWidth: 4
 ContinuationIndentWidth: 4
-AlignAfterOpenBracket: false
+AlignAfterOpenBracket: AlwaysBreak
 ColumnLimit: 100
 IndentAccessModifiers: true
 PointerAlignment: Left
+BinPackArguments: false
+AllowAllArgumentsOnNextLine: false
+AllowShortIfStatementsOnASingleLine: true
