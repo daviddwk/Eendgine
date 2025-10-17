@@ -1,5 +1,6 @@
 #include "audio.hpp"
 
+#include <SDL2/SDL_audio.h>
 #include <Simple-SDL2-Audio/audio.h>
 #include <assert.h>
 
@@ -9,12 +10,18 @@ Audio::Audio() { initAudio(); }
 
 Audio::~Audio() { endAudio(); }
 
-void Audio::playNoise(std::filesystem::path file, unsigned int volume) {
-    playSound(file.c_str(), volume);
+void Audio::playNoise(std::filesystem::path file, float volume) {
+    playSound(file.c_str(), handleVolume(volume));
 }
 
-void Audio::playTrack(std::filesystem::path file, unsigned int volume) {
-    playMusic(file.c_str(), volume);
+void Audio::playTrack(std::filesystem::path file, float volume) {
+    playMusic(file.c_str(), handleVolume(volume));
+}
+
+unsigned int Audio::handleVolume(float volume) {
+    if (volume < 0.0f) volume = 0.0f;
+    if (volume > 100.0f) volume = 100.0f;
+    return static_cast<unsigned int>(static_cast<float>(SDL_MIX_MAXVOLUME) * (volume / 100.0f));
 }
 
 void Audio::construct() {

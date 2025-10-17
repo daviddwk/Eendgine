@@ -1,5 +1,6 @@
 #pragma once
 
+#include <SDL2/SDL_audio.h>
 #include <filesystem>
 
 namespace Eendgine {
@@ -9,12 +10,14 @@ class Audio {
         static void destruct();
         static Audio& get();
 
-        void playNoise(std::filesystem::path file, unsigned int volume);
-        void playTrack(std::filesystem::path file, unsigned int volume);
+        void playNoise(std::filesystem::path file, float volume);
+        void playTrack(std::filesystem::path file, float volume);
 
     private:
         Audio();
         ~Audio();
+
+        unsigned int handleVolume(float volume);
 
         inline static Audio* m_instance = nullptr;
 };
