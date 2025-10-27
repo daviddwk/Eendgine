@@ -18,6 +18,7 @@ class InputManager {
         bool getUpPress();
         bool getDownPress();
         bool getSpacePress();
+        bool getEscapePress();
         bool getShouldClose();
         bool getLeftClick();
         bool getRightClick();
@@ -40,6 +41,7 @@ class InputManager {
         bool m_upPress = false;
         bool m_downPress = false;
         bool m_spacePress = false;
+        bool m_escapePress = false;
         bool m_shouldClose = false;
         bool m_leftClick = false;
         bool m_rightClick = false;

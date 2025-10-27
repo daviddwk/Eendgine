@@ -44,6 +44,7 @@ void InputManager::processInput() {
     m_upPress = keyState[SDL_SCANCODE_UP];
     m_downPress = keyState[SDL_SCANCODE_DOWN];
     m_spacePress = keyState[SDL_SCANCODE_SPACE];
+    m_escapePress = keyState[SDL_SCANCODE_ESCAPE];
 
     // unsigned int mouseState = SDL_GetRelativeMouseState(&deltaMouseX, &deltaMouseY);
 
@@ -60,6 +61,7 @@ bool InputManager::getRightPress() { return m_rightPress; };
 bool InputManager::getUpPress() { return m_upPress; };
 bool InputManager::getDownPress() { return m_downPress; };
 bool InputManager::getSpacePress() { return m_spacePress; };
+bool InputManager::getEscapePress() { return m_escapePress; }
 bool InputManager::getShouldClose() { return m_shouldClose; };
 bool InputManager::getLeftClick() { return m_leftClick; };
 bool InputManager::getRightClick() { return m_rightClick; };
