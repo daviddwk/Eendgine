@@ -58,7 +58,6 @@ Statue::Statue(const std::string path)
 }
 
 Statue::~Statue() {
-    std::print("delete statue\n");
     glDeleteVertexArrays(1, &m_VAO);
     glDeleteBuffers(1, &m_VBO);
     glDeleteBuffers(1, &m_EBO);
@@ -69,14 +68,12 @@ Statue::Statue(Statue&& other) noexcept
       m_numIndices(std::move(other.m_numIndices)), m_position(std::move(other.m_position)),
       m_scale(std::move(other.m_scale)), m_rotation(std::move(other.m_rotation)),
       m_textureIdx(std::move(other.m_textureIdx)), m_textures(std::move(other.m_textures)) {
-    std::print("move assugn statue\n");
     other.m_VAO = 0;
     other.m_VBO = 0;
     other.m_EBO = 0;
 };
 
 Statue& Statue::operator=(Statue&& other) noexcept {
-    std::print("move statue\n");
 
     if (&other == this) return *this;
 
