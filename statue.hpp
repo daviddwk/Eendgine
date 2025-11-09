@@ -13,35 +13,12 @@ class Statue {
     public:
         Statue(std::string modelPath);
         ~Statue();
-        Statue(const Statue&) = delete;
-        Statue& operator=(const Statue&) = delete;
-        Statue(Statue&& other) {
-            m_VAO = other.m_VAO;
-            m_VBO = other.m_VBO;
-            m_EBO = other.m_EBO;
-            m_numIndices = other.m_numIndices;
 
-            m_position = other.m_position;
-            m_scale = other.m_scale;
-            m_rotation = other.m_rotation;
-            m_textureIdx = other.m_textureIdx;
-            m_textures.swap(other.m_textures);
-        }
-        Statue& operator=(Statue&& other) {
-            m_VAO = other.m_VAO;
-            m_VBO = other.m_VBO;
-            m_EBO = other.m_EBO;
-            m_numIndices = other.m_numIndices;
+        Statue(const Statue& other) = delete;
+        Statue& operator=(const Statue& other) = delete;
 
-            m_position = other.m_position;
-            m_scale = other.m_scale;
-            m_rotation = other.m_rotation;
-            m_textureIdx = other.m_textureIdx;
-            m_textures.swap(other.m_textures);
-            return *this;
-        }
-
-        void eraseBuffers();
+        Statue(Statue&& other) noexcept;
+        Statue& operator=(Statue&& other) noexcept;
 
         void setPosition(Point position) { m_position = position; };
         void setScale(Scale scale) { m_scale = scale; };
@@ -49,13 +26,15 @@ class Statue {
             m_rotation = Rotation(glm::radians(x), glm::radians(y), glm::radians(z));
         };
 
-        void setTextureIdx(unsigned int idx) { m_textureIdx = (idx < m_textures.size() ? idx : 0); };
+        void setTextureIdx(unsigned int idx) {
+            m_textureIdx = (idx < m_textures.size() ? idx : 0);
+        };
 
         Point getPosition() { return m_position; };
         Scale getScale() { return m_scale; };
         Rotation getRotation() { return m_rotation; };
 
-        Texture getTexture() { return m_textures[m_textureIdx]; };
+        Texture getTexture() const { return m_textures[m_textureIdx]; };
         unsigned int getTextureIdx() { return m_textureIdx; };
 
         void draw(uint shaderId, Camera3D& camera);

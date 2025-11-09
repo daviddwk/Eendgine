@@ -10,7 +10,8 @@ template <class E> struct entityLabeled {
         E entity;
 };
 
-template <class E> static bool newTextureCompare(entityLabeled<E>& el1, entityLabeled<E>& el2) {
+template <class E>
+static bool newTextureCompare(const entityLabeled<E>& el1, const entityLabeled<E>& el2) {
     return el1.entity.getTexture().id > el2.entity.getTexture().id;
 }
 
@@ -74,13 +75,12 @@ template <class E> class EntityBatch {
             }
             for (size_t idx = 0; idx < m_toEraseIdxs.size(); ++idx) {
                 size_t lastEntityIdx = m_entities.size() - 1;
-                m_entities[lastEntityIdx].entity.eraseBuffers();
                 m_entities.erase(m_entities.begin() + lastEntityIdx);
             }
             m_toEraseIds.clear();
             m_indexMap.clear();
             // sort based on texture
-            std::sort(m_entities.begin(), m_entities.end(), newTextureCompare<E>);
+            std::stable_sort(m_entities.begin(), m_entities.end(), newTextureCompare<E>);
             // fix index map
             for (size_t i = 0; i < m_entities.size(); i++) {
                 m_indexMap[m_entities[i].id] = i;

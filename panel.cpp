@@ -28,10 +28,57 @@ Panel::Panel(std::filesystem::path path)
     setup(texturePaths);
 }
 
-Panel::~Panel() {}
+Panel::~Panel() {
+    glDeleteVertexArrays(1, &m_VAO);
+    glDeleteBuffers(1, &m_VBO);
+    glDeleteBuffers(1, &m_EBO);
+}
+
+Panel::Panel(Panel&& other) noexcept
+    : m_position(std::move(other.m_position)), m_scale(std::move(other.m_scale)),
+      m_rotation(std::move(other.m_rotation)), m_VAO(std::move(other.m_VAO)),
+      m_VBO(std::move(other.m_VBO)), m_EBO(std::move(other.m_EBO)),
+      m_currentTexture(std::move(other.m_currentTexture)), m_textures(std::move(other.m_textures)) {
+    other.m_VAO = 0;
+    other.m_VBO = 0;
+    other.m_EBO = 0;
+};
+
+Panel& Panel::operator=(Panel&& other) noexcept {
+
+    if (&other == this) return *this;
+
+    if (m_VAO != 0) {
+        assert(m_VBO != 0);
+        assert(m_EBO != 0);
+        glDeleteVertexArrays(1, &m_VAO);
+        glDeleteBuffers(1, &m_VBO);
+        glDeleteBuffers(1, &m_EBO);
+    } else {
+        assert(m_VBO == 0);
+        assert(m_EBO == 0);
+    }
+
+    m_position = other.m_position;
+    m_scale = other.m_scale;
+    m_rotation = other.m_rotation;
+    m_VAO = other.m_VAO;
+    m_VBO = other.m_VBO;
+    m_EBO = other.m_EBO;
+    m_currentTexture = other.m_currentTexture;
+    m_textures = other.m_textures;
+
+    other.m_VAO = 0;
+    other.m_VBO = 0;
+    other.m_EBO = 0;
+
+    return *this;
+};
 
 void Panel::setTexture(std::string texture) { m_currentTexture = texture; };
-void Panel::setPosition(Point position) { m_position = Point{position.x, -position.y, position.z}; };
+void Panel::setPosition(Point position) {
+    m_position = Point{position.x, -position.y, position.z};
+};
 void Panel::setScale(Scale2D scale) { m_scale = Scale(scale.x, scale.y, 1.0f); };
 void Panel::setRotation(float rotation) { m_rotation = rotation; };
 
@@ -39,7 +86,7 @@ std::string Panel::getTextureName() { return m_currentTexture; };
 Point Panel::getPosition() { return Point{m_position.x, -m_position.y, m_position.z}; };
 Scale Panel::getScale() { return m_scale; };
 float Panel::getRotation() { return m_rotation; };
-Texture Panel::getTexture() { return m_textures[m_currentTexture]; };
+Texture Panel::getTexture() const { return m_textures.at(m_currentTexture); };
 
 void Panel::cropTexture(Point2D upperLeft, Point2D lowerRight) {
     Vertex verticies[4];
@@ -72,15 +119,6 @@ void Panel::cropTexture(Point2D upperLeft, Point2D lowerRight) {
     glBufferSubData(GL_ARRAY_BUFFER, 0, 4 * sizeof(Vertex), verticies);
 
     //_textures[_currentTexture].height;
-}
-
-void Panel::eraseBuffers() {
-    glDeleteVertexArrays(1, &m_VAO);
-    glDeleteBuffers(1, &m_VBO);
-    glDeleteBuffers(1, &m_EBO);
-    m_VBO = 0;
-    m_EBO = 0;
-    m_VAO = 0;
 }
 
 Panel::MouseStatus Panel::isClicked() {

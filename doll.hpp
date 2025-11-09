@@ -15,39 +15,11 @@ class Doll {
         Doll(std::filesystem::path dollPath);
         ~Doll();
 
-        Doll(const Doll&) = delete;
-        Doll& operator=(const Doll&) = delete;
-        Doll(Doll&& other) {
-            m_animation = other.m_animation;
-            m_VAOs.swap(other.m_VAOs);
-            m_VBOs.swap(other.m_VBOs);
-            m_EBOs.swap(other.m_EBOs);
-            m_numIndices = other.m_numIndices;
+        Doll(const Doll& other) = delete;
+        Doll& operator=(const Doll& other) = delete;
 
-            m_position = other.m_position;
-            m_scale = other.m_scale;
-            m_rotation = other.m_rotation;
-            m_animScale = other.m_animScale;
-            m_textureIdx = other.m_textureIdx;
-            m_textures.swap(other.m_textures);
-        }
-        Doll& operator=(Doll&& other) {
-            m_animation = other.m_animation;
-            m_VAOs.swap(other.m_VAOs);
-            m_VBOs.swap(other.m_VBOs);
-            m_EBOs.swap(other.m_EBOs);
-            m_numIndices = other.m_numIndices;
-
-            m_position = other.m_position;
-            m_scale = other.m_scale;
-            m_rotation = other.m_rotation;
-            m_animScale = other.m_animScale;
-            m_textureIdx = other.m_textureIdx;
-            m_textures.swap(other.m_textures);
-            return *this;
-        }
-
-        void eraseBuffers();
+        Doll(Doll&& other) noexcept;
+        Doll& operator=(Doll&& other) noexcept;
 
         void setAnimation(std::string animation) { m_animation = animation; }
 
@@ -57,14 +29,16 @@ class Doll {
             m_rotation = Rotation(glm::radians(x), glm::radians(y), glm::radians(z));
         };
 
-        void setTextureIdx(unsigned int idx) { m_textureIdx = (idx < m_textures.size() ? idx : 0); };
+        void setTextureIdx(unsigned int idx) {
+            m_textureIdx = (idx < m_textures.size() ? idx : 0);
+        };
 
         std::string getAnimation() { return m_animation; };
         Point getPosition() { return m_position; };
         Scale getScale() { return m_scale; };
         Rotation getRotation() { return m_rotation; };
 
-        Texture getTexture() { return m_textures[m_textureIdx]; };
+        Texture getTexture() const { return m_textures[m_textureIdx]; };
         unsigned int getTextureIdx() { return m_textureIdx; };
         float getAnim() { return m_animScale; };
 

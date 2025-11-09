@@ -1,6 +1,6 @@
 #include "Eendgine/camera.hpp"
-#include "board.hpp"
 #include "Eendgine/texture.hpp"
+#include "board.hpp"
 #include "fatalError.hpp"
 #include "textureCache.hpp"
 #include <GLES3/gl3.h>
@@ -24,16 +24,58 @@ Board::Board(std::filesystem::path path)
     setup(texturePaths, metadataPath);
 }
 
-Board::~Board() {}
-
-void Board::eraseBuffers() {
+Board::~Board() {
     glDeleteVertexArrays(1, &m_VAO);
     glDeleteBuffers(1, &m_VBO);
     glDeleteBuffers(1, &m_EBO);
-    m_VBO = 0;
-    m_EBO = 0;
-    m_VAO = 0;
 }
+
+Board::Board(Board&& other) noexcept
+    : m_position(std::move(other.m_position)), m_size(std::move(other.m_size)),
+      m_rotation(std::move(other.m_rotation)), m_VAO(std::move(other.m_VAO)),
+      m_VBO(std::move(other.m_VBO)), m_EBO(std::move(other.m_EBO)),
+      m_currentStrip(std::move(other.m_currentStrip)),
+      m_currentStripIdx(std::move(other.m_currentStripIdx)),
+      m_flipStrip(std::move(other.m_flipStrip)), m_stripMap(std::move(other.m_stripMap)),
+      m_strips(std::move(other.m_strips)) {
+    other.m_VAO = 0;
+    other.m_VBO = 0;
+    other.m_EBO = 0;
+};
+
+Board& Board::operator=(Board&& other) noexcept {
+
+    if (&other == this) return *this;
+
+    if (m_VAO != 0) {
+        assert(m_VBO != 0);
+        assert(m_EBO != 0);
+        glDeleteVertexArrays(1, &m_VAO);
+        glDeleteBuffers(1, &m_VBO);
+        glDeleteBuffers(1, &m_EBO);
+    } else {
+        assert(m_VBO == 0);
+        assert(m_EBO == 0);
+    }
+
+    m_position = other.m_position;
+    m_size = other.m_size;
+    m_rotation = other.m_rotation;
+    m_VAO = other.m_VAO;
+    m_VBO = other.m_VBO;
+    m_EBO = other.m_EBO;
+    m_currentStrip = other.m_currentStrip;
+    m_currentStripIdx = other.m_currentStripIdx;
+    m_flipStrip = other.m_flipStrip;
+    m_stripMap = other.m_stripMap;
+    m_strips = other.m_strips;
+
+    other.m_VAO = 0;
+    other.m_VBO = 0;
+    other.m_EBO = 0;
+
+    return *this;
+};
 
 void Board::setStrip(std::string strip) {
     assert(m_stripMap.find(strip) != m_stripMap.end());
@@ -69,7 +111,7 @@ Scale Board::getSize() { return m_size; };
 
 float Board::getRotation() { return m_rotation; };
 
-Texture Board::getTexture() { return m_strips[m_stripMap[m_currentStrip]].texture; };
+Texture Board::getTexture() const { return m_strips.at(m_stripMap.at(m_currentStrip)).texture; };
 
 void Board::setup(
     std::vector<std::filesystem::path>& texturePaths, std::filesystem::path& metadataPath) {
@@ -80,8 +122,9 @@ void Board::setup(
 
     // sorting them alphabetically, becasue the order they're iterated on
     // is not specified
-    std::sort(texturePaths.begin(), texturePaths.end(),
-        [](auto a, auto b) { return a.string() < b.string(); });
+    std::sort(texturePaths.begin(), texturePaths.end(), [](auto a, auto b) {
+        return a.string() < b.string();
+    });
     for (const auto& t : texturePaths) {
         if (t.has_stem() == false) {
             fatalError("texture: " + t.string() + "has no stem");

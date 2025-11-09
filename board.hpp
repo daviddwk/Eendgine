@@ -13,7 +13,11 @@ class Board {
         Board(std::filesystem::path path);
         ~Board();
 
-        void eraseBuffers();
+        Board(const Board& other) = delete;
+        Board& operator=(const Board& other) = delete;
+
+        Board(Board&& other) noexcept;
+        Board& operator=(Board&& other) noexcept;
 
         void setStrip(std::string strip);
         void setStripIdx(unsigned int idx);
@@ -31,7 +35,7 @@ class Board {
         Scale getSize();
         float getRotation();
 
-        Texture getTexture();
+        Texture getTexture() const;
 
         std::vector<Texture>::size_type getNumTextures();
         void draw(uint shaderId, Camera3D& camera);

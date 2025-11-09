@@ -13,6 +13,12 @@ class Panel {
         Panel(std::filesystem::path path);
         ~Panel();
 
+        Panel(const Panel& other) = delete;
+        Panel& operator=(const Panel& other) = delete;
+
+        Panel(Panel&& other) noexcept;
+        Panel& operator=(Panel&& other) noexcept;
+
         enum MouseStatus {
             NONE,
             HOVER,
@@ -28,11 +34,10 @@ class Panel {
         Point getPosition();
         Scale getScale();
         float getRotation();
-        Texture getTexture();
+        Texture getTexture() const;
 
         void cropTexture(Point2D upperLeft, Point2D lowerRight);
 
-        void eraseBuffers();
         MouseStatus isClicked();
 
         void draw(uint shaderId, Camera2D& camera);
