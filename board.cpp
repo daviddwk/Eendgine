@@ -1,4 +1,5 @@
 #include "Eendgine/camera.hpp"
+#include "Eendgine/primitive.hpp"
 #include "Eendgine/texture.hpp"
 #include "board.hpp"
 #include "fatalError.hpp"
@@ -11,8 +12,8 @@
 namespace Eendgine {
 
 Board::Board(std::filesystem::path path)
-    : m_position(Point(0.0f)), m_size(Scale(1.0f)), m_rotation(0.0f), m_VAO(0), m_VBO(0), m_EBO(0),
-      m_currentStripIdx(0), m_flipStrip(false) {
+    : m_position(Point(0.0f)), m_size(Scale(1.0f)), m_rotation(0.0f), m_currentStripIdx(0),
+      m_flipStrip(false) {
     std::filesystem::path basePath = std::filesystem::path("resources") / path;
     std::filesystem::path metadataPath = basePath / "metadata.json";
     std::vector<std::filesystem::path> texturePaths;
@@ -23,59 +24,6 @@ Board::Board(std::filesystem::path path)
     }
     setup(texturePaths, metadataPath);
 }
-
-Board::~Board() {
-    glDeleteVertexArrays(1, &m_VAO);
-    glDeleteBuffers(1, &m_VBO);
-    glDeleteBuffers(1, &m_EBO);
-}
-
-Board::Board(Board&& other) noexcept
-    : m_position(std::move(other.m_position)), m_size(std::move(other.m_size)),
-      m_rotation(std::move(other.m_rotation)), m_VAO(std::move(other.m_VAO)),
-      m_VBO(std::move(other.m_VBO)), m_EBO(std::move(other.m_EBO)),
-      m_currentStrip(std::move(other.m_currentStrip)),
-      m_currentStripIdx(std::move(other.m_currentStripIdx)),
-      m_flipStrip(std::move(other.m_flipStrip)), m_stripMap(std::move(other.m_stripMap)),
-      m_strips(std::move(other.m_strips)) {
-    other.m_VAO = 0;
-    other.m_VBO = 0;
-    other.m_EBO = 0;
-};
-
-Board& Board::operator=(Board&& other) noexcept {
-
-    if (&other == this) return *this;
-
-    if (m_VAO != 0) {
-        assert(m_VBO != 0);
-        assert(m_EBO != 0);
-        glDeleteVertexArrays(1, &m_VAO);
-        glDeleteBuffers(1, &m_VBO);
-        glDeleteBuffers(1, &m_EBO);
-    } else {
-        assert(m_VBO == 0);
-        assert(m_EBO == 0);
-    }
-
-    m_position = other.m_position;
-    m_size = other.m_size;
-    m_rotation = other.m_rotation;
-    m_VAO = other.m_VAO;
-    m_VBO = other.m_VBO;
-    m_EBO = other.m_EBO;
-    m_currentStrip = other.m_currentStrip;
-    m_currentStripIdx = other.m_currentStripIdx;
-    m_flipStrip = other.m_flipStrip;
-    m_stripMap = other.m_stripMap;
-    m_strips = other.m_strips;
-
-    other.m_VAO = 0;
-    other.m_VBO = 0;
-    other.m_EBO = 0;
-
-    return *this;
-};
 
 void Board::setStrip(std::string strip) {
     assert(m_stripMap.find(strip) != m_stripMap.end());
@@ -149,49 +97,6 @@ void Board::setup(
             }
         }
     }
-
-    Vertex verticies[4];
-
-    // centered on origin
-    // with width and height of 1
-    verticies[0].position = Point(0.5f, 0.5f, 0.0f);
-    verticies[1].position = Point(0.5f, -0.5f, 0.0f);
-    verticies[2].position = Point(-0.5f, -0.5f, 0.0f);
-    verticies[3].position = Point(-0.5f, 0.5f, 0.0f);
-
-    verticies[0].color = Color(0.0f, 0.0f, 1.0f, 1.0f);
-    verticies[1].color = Color(0.0f, 1.0f, 0.0f, 1.0f);
-    verticies[2].color = Color(1.0f, 0.0f, 0.0f, 1.0f);
-    verticies[3].color = Color(0.0f, 1.0f, 1.0f, 1.0f);
-    //                         w     h
-    verticies[0].uv = Point2D(1.0f, 1.0f);
-    verticies[1].uv = Point2D(1.0f, 0.0f);
-    verticies[2].uv = Point2D(0.0f, 0.0f);
-    verticies[3].uv = Point2D(0.0f, 1.0f);
-
-    unsigned int indices[] = {2, 1, 0, 3, 2, 0};
-
-    glGenVertexArrays(1, &m_VAO);
-    glBindVertexArray(m_VAO);
-
-    glGenBuffers(1, &m_VBO);
-
-    glGenBuffers(1, &m_EBO);
-
-    glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(verticies), verticies, GL_STATIC_DRAW);
-
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 12 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 12 * sizeof(float), (void*)(3 * sizeof(float)));
-    glEnableVertexAttribArray(1);
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 12 * sizeof(float), (void*)(7 * sizeof(float)));
-    glEnableVertexAttribArray(2);
-    glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 12 * sizeof(float), (void*)(9 * sizeof(float)));
-    glEnableVertexAttribArray(3);
 }
 
 std::vector<Texture>::size_type Board::getNumTextures() { return m_strips.size(); }
@@ -227,9 +132,10 @@ void Board::draw(uint shaderId, Camera3D& camera) {
 
     glUniform1ui(flipLoc, m_flipStrip);
 
-    glBindVertexArray(m_VAO);
+    // we bind the quad once per batch in Entities::draw()
+    // glBindVertexArray(Quad::getVao());
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-    glBindVertexArray(0);
+    // glBindVertexArray(0);
 }
 
 } // namespace Eendgine

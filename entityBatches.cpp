@@ -1,9 +1,13 @@
 #include "entityBatches.hpp"
+#include "primitive.hpp"
+#include <GLES3/gl3.h>
 
 namespace Eendgine {
-    
+
 void Entities::construct() {
-    assert(m_statues == nullptr && m_dolls == nullptr && m_boards == nullptr && m_panels == nullptr);
+    Quad::construct();
+    assert(
+        m_statues == nullptr && m_dolls == nullptr && m_boards == nullptr && m_panels == nullptr);
     m_statues = new EntityBatch<Statue>;
     m_dolls = new EntityBatch<Doll>;
     m_boards = new EntityBatch<Board>;
@@ -11,7 +15,9 @@ void Entities::construct() {
 }
 
 void Entities::destruct() {
-    assert(m_statues != nullptr && m_dolls != nullptr && m_boards != nullptr && m_panels != nullptr);
+    Quad::destruct();
+    assert(
+        m_statues != nullptr && m_dolls != nullptr && m_boards != nullptr && m_panels != nullptr);
     delete m_statues;
     delete m_dolls;
     delete m_boards;
@@ -44,7 +50,10 @@ void Entities::draw(Shaders& shaders, Camera2D& hudCamera, Camera3D& sceneCamera
 
     m_statues->draw(shaders.getShader(Shader::STATUE), sceneCamera);
     m_dolls->draw(shaders.getShader(Shader::DOLL), sceneCamera);
+
+    glBindVertexArray(Quad::getVao());
     m_boards->draw(shaders.getShader(Shader::BOARD), sceneCamera);
+    glBindVertexArray(0);
 
     glClear(GL_DEPTH_BUFFER_BIT);
 

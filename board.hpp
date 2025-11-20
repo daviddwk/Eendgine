@@ -2,7 +2,6 @@
 #include "camera.hpp"
 #include "texture.hpp"
 #include "types.hpp"
-#include "vertex.hpp"
 #include <filesystem>
 #include <map>
 #include <vector>
@@ -11,13 +10,13 @@ namespace Eendgine {
 class Board {
     public:
         Board(std::filesystem::path path);
-        ~Board();
+        ~Board() = default;
 
         Board(const Board& other) = delete;
         Board& operator=(const Board& other) = delete;
 
-        Board(Board&& other) noexcept;
-        Board& operator=(Board&& other) noexcept;
+        Board(Board&& other) noexcept = default;
+        Board& operator=(Board&& other) noexcept = default;
 
         void setStrip(std::string strip);
         void setStripIdx(unsigned int idx);
@@ -47,7 +46,6 @@ class Board {
         Point m_position;
         Scale m_size;
         float m_rotation;
-        unsigned int m_VAO, m_VBO, m_EBO;
         std::string m_currentStrip;
         unsigned int m_currentStripIdx;
         bool m_flipStrip;
