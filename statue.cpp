@@ -105,7 +105,7 @@ Statue& Statue::operator=(Statue&& other) noexcept {
     return *this;
 };
 
-void Statue::draw(uint shaderId, Camera3D& camera) {
+void Statue::draw(GLuint shaderId, Camera3D& camera) {
     // using RGB(1,0,1) for transparent
     // parts of the texture using shaders
     TransformationMatrix transform = TransformationMatrix(1.0f);
@@ -115,9 +115,9 @@ void Statue::draw(uint shaderId, Camera3D& camera) {
     transform = glm::rotate(transform, -m_rotation.z, Point(0.0f, 0.0f, 1.0f));
     transform = glm::scale(transform, m_scale);
 
-    unsigned int projectionLoc = glGetUniformLocation(shaderId, "projection");
-    unsigned int viewLoc = glGetUniformLocation(shaderId, "view");
-    unsigned int transformLoc = glGetUniformLocation(shaderId, "transform");
+    GLint projectionLoc = glGetUniformLocation(shaderId, "projection");
+    GLint viewLoc = glGetUniformLocation(shaderId, "view");
+    GLint transformLoc = glGetUniformLocation(shaderId, "transform");
     glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, &camera.getProjectionMat()[0][0]);
     glUniformMatrix4fv(viewLoc, 1, GL_FALSE, &camera.getViewMat()[0][0]);
     glUniformMatrix4fv(transformLoc, 1, GL_FALSE, &transform[0][0]);

@@ -30,19 +30,21 @@ template <class E> class EntityBatch {
         }
 
         void erase(EntityId id) {
-            // postpose erase until right before sort
-            // so that the m_indexMap is always accurate
-            //
-            // check if it's in there here? could do it in sort
-
-            m_toEraseIds.push_back(id);
+            if (auto indexIter = m_indexMap.find(id); indexIter != std::end(m_indexMap)) {
+                m_toEraseIds.push_back(id);
+            }
         }
 
         E* getRef(EntityId id) {
-            if (auto it{m_indexMap.find(id)}; it != std::end(m_indexMap)) {
-                return &m_entities[it->second].entity;
+            if (auto indexIter = m_indexMap.find(id); indexIter != std::end(m_indexMap)) {
+                return &m_entities[indexIter->second].entity;
             }
             return NULL;
+        }
+
+        void shrink() {
+            m_entities.shrink_to_fit();
+            m_toEraseIds.shrink_to_fit();
         }
 
         template <typename C> void draw(ShaderProgram& shader, C& camera) {
@@ -51,22 +53,17 @@ template <class E> class EntityBatch {
             glActiveTexture(GL_TEXTURE0);
             std::string texName = "texture_diffuse";
             glUniform1i(glGetUniformLocation(shader.getProgramID(), texName.c_str()), 0);
-            unsigned int lastTexture = 0;
-            unsigned int thisTexture = 0;
-            for (auto& ewi : EntityBatch<E>::m_entities) {
-                thisTexture = ewi.entity.getTexture().id;
+            GLuint lastTexture = 0;
+            GLuint thisTexture = 0;
+            for (auto& labeledEntity : EntityBatch<E>::m_entities) {
+                thisTexture = labeledEntity.entity.getTexture().id;
                 if (lastTexture != thisTexture) {
                     glBindTexture(GL_TEXTURE_2D, thisTexture);
                 }
                 lastTexture = thisTexture;
-                ewi.entity.draw(shader.getProgramID(), camera);
+                labeledEntity.entity.draw(shader.getProgramID(), camera);
             }
             glBindTexture(GL_TEXTURE_2D, 0);
-        }
-
-        void shrink() {
-            m_entities.shrink_to_fit();
-            m_toEraseIds.shrink_to_fit();
         }
 
     private:

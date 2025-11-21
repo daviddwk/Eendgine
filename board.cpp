@@ -101,7 +101,7 @@ void Board::setup(
 
 std::vector<Texture>::size_type Board::getNumTextures() { return m_strips.size(); }
 
-void Board::draw(uint shaderId, Camera3D& camera) {
+void Board::draw(GLuint shaderId, Camera3D& camera) {
     TransformationMatrix transform = TransformationMatrix(1.0f);
     transform = glm::translate(transform, m_position);
     glm::mat3 rot = glm::inverse(glm::mat3(camera.getViewMat()));
@@ -115,12 +115,12 @@ void Board::draw(uint shaderId, Camera3D& camera) {
     // clang-format on
     transform = glm::scale(transform, m_size);
 
-    unsigned int projectionLoc = glGetUniformLocation(shaderId, "projection");
-    unsigned int viewLoc = glGetUniformLocation(shaderId, "view");
-    unsigned int transformLoc = glGetUniformLocation(shaderId, "transform");
-    unsigned int frameIdxLoc = glGetUniformLocation(shaderId, "frameIdx");
-    unsigned int frameLenLoc = glGetUniformLocation(shaderId, "frameLen");
-    unsigned int flipLoc = glGetUniformLocation(shaderId, "flip");
+    GLint projectionLoc = glGetUniformLocation(shaderId, "projection");
+    GLint viewLoc = glGetUniformLocation(shaderId, "view");
+    GLint transformLoc = glGetUniformLocation(shaderId, "transform");
+    GLint frameIdxLoc = glGetUniformLocation(shaderId, "frameIdx");
+    GLint frameLenLoc = glGetUniformLocation(shaderId, "frameLen");
+    GLint flipLoc = glGetUniformLocation(shaderId, "flip");
 
     glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, &camera.getProjectionMat()[0][0]);
 

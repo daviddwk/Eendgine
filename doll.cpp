@@ -221,7 +221,7 @@ Doll& Doll::operator=(Doll&& other) noexcept {
     return *this;
 };
 
-void Doll::draw(uint shaderId, Camera3D& camera) {
+void Doll::draw(GLuint shaderId, Camera3D& camera) {
     // using RGB(1,0,1) for transparent
     // parts of the texture using shaders
     TransformationMatrix transform = TransformationMatrix(1.0f);
@@ -232,10 +232,10 @@ void Doll::draw(uint shaderId, Camera3D& camera) {
     transform = glm::rotate(transform, -m_rotation.z, glm::vec3(0.0f, 0.0f, 1.0f));
     transform = glm::scale(transform, m_scale);
 
-    unsigned int projectionLoc = glGetUniformLocation(shaderId, "projection");
-    unsigned int viewLoc = glGetUniformLocation(shaderId, "view");
-    unsigned int transformLoc = glGetUniformLocation(shaderId, "transform");
-    unsigned int inpolLoc = glGetUniformLocation(shaderId, "inpol");
+    GLint projectionLoc = glGetUniformLocation(shaderId, "projection");
+    GLint viewLoc = glGetUniformLocation(shaderId, "view");
+    GLint transformLoc = glGetUniformLocation(shaderId, "transform");
+    GLint inpolLoc = glGetUniformLocation(shaderId, "inpol");
     glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, &camera.getProjectionMat()[0][0]);
     glUniformMatrix4fv(viewLoc, 1, GL_FALSE, &camera.getViewMat()[0][0]);
     glUniformMatrix4fv(transformLoc, 1, GL_FALSE, &transform[0][0]);

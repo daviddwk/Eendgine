@@ -40,14 +40,14 @@ class Panel {
 
         MouseStatus isClicked();
 
-        void draw(uint shaderId, Camera2D& camera);
+        void draw(GLuint shaderId, Camera2D& camera);
 
     private:
         void setup(std::vector<std::filesystem::path>& texturePaths);
         Point m_position;
         Scale m_scale;
         float m_rotation;
-        unsigned int m_VAO, m_VBO, m_EBO;
+        GLuint m_VAO, m_VBO, m_EBO;
         std::string m_currentTexture;
         std::map<std::string, Texture> m_textures;
 };

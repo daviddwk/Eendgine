@@ -37,10 +37,10 @@ class Statue {
         Texture getTexture() const { return m_textures[m_textureIdx]; };
         unsigned int getTextureIdx() { return m_textureIdx; };
 
-        void draw(uint shaderId, Camera3D& camera);
+        void draw(GLuint shaderId, Camera3D& camera);
 
     private:
-        unsigned int m_VAO, m_VBO, m_EBO;
+        GLuint m_VAO, m_VBO, m_EBO;
         unsigned int m_numIndices;
         Point m_position;
         Scale m_scale;

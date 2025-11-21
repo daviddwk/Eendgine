@@ -37,7 +37,7 @@ class Board {
         Texture getTexture() const;
 
         std::vector<Texture>::size_type getNumTextures();
-        void draw(uint shaderId, Camera3D& camera);
+        void draw(GLuint shaderId, Camera3D& camera);
 
     private:
         void setup(

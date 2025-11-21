@@ -48,7 +48,7 @@ void ShaderProgram::compileShader(unsigned int shaderId, std::string shaderPath)
     glShaderSource(shaderId, 1, &contentsPtr, nullptr);
     glCompileShader(shaderId);
 
-    int isCompiled;
+    GLint isCompiled;
     glGetShaderiv(shaderId, GL_COMPILE_STATUS, &isCompiled);
     if (isCompiled == GL_FALSE) {
         char infoLog[512];

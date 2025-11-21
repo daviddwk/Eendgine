@@ -48,7 +48,7 @@ class Doll {
 
     private:
         std::string m_animation;
-        std::map<std::string, std::vector<unsigned int>> m_VAOs, m_VBOs, m_EBOs;
+        std::map<std::string, std::vector<GLuint>> m_VAOs, m_VBOs, m_EBOs;
         unsigned int m_numIndices;
 
         Point m_position;

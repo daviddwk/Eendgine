@@ -1,9 +1,10 @@
 #pragma once
+#include <GLES3/gl3.h>
 #include <filesystem>
 
 namespace Eendgine {
 struct Texture {
-        uint id = 0;
+        GLuint id = 0;
         int width = 0;
         int height = 0;
 };

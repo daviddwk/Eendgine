@@ -195,7 +195,7 @@ void Panel::setup(std::vector<std::filesystem::path>& texturePaths) {
     glEnableVertexAttribArray(3);
 }
 
-void Panel::draw(uint shaderId, Camera2D& camera) {
+void Panel::draw(GLuint shaderId, Camera2D& camera) {
     TransformationMatrix trans = camera.getCameraMatrix(); // glm::mat4(1.0f);
     Scale2D cameraDims = camera.getDimensions();
 
@@ -204,7 +204,7 @@ void Panel::draw(uint shaderId, Camera2D& camera) {
     trans = glm::rotate(trans, glm::radians(-m_rotation), Point(0.0f, 0.0f, 1.0f));
     trans = glm::scale(trans, m_scale);
 
-    unsigned int transformLoc = glGetUniformLocation(shaderId, "transform");
+    GLint transformLoc = glGetUniformLocation(shaderId, "transform");
     glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
 
     glBindVertexArray(m_VAO);
