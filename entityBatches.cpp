@@ -24,6 +24,17 @@ void Entities::destruct() {
     delete m_panels;
 }
 
+void Entities::shrink() {
+    assert(m_statues != nullptr);
+    assert(m_dolls != nullptr);
+    assert(m_boards != nullptr);
+    assert(m_panels != nullptr);
+    m_statues->shrink();
+    m_dolls->shrink();
+    m_boards->shrink();
+    m_panels->shrink();
+}
+
 EntityBatch<Statue>& Entities::statues() {
     assert(m_statues != nullptr);
     return *m_statues;

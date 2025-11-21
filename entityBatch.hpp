@@ -64,6 +64,11 @@ template <class E> class EntityBatch {
             glBindTexture(GL_TEXTURE_2D, 0);
         }
 
+        void shrink() {
+            m_entities.shrink_to_fit();
+            m_toEraseIds.shrink_to_fit();
+        }
+
     private:
         using Entities = std::vector<EntityLabeled<E>>;
         using IndexMap = std::unordered_map<EntityId, typename Entities::size_type>;

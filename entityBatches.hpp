@@ -19,6 +19,8 @@ class Entities {
         static void construct();
         static void destruct();
 
+        static void shrink();
+
         static EntityBatch<Statue>& statues();
         static EntityBatch<Doll>& dolls();
         static EntityBatch<Board>& boards();
@@ -29,7 +31,7 @@ class Entities {
     private:
         Entities() = default;
         ~Entities() = default;
-        
+
         inline static EntityBatch<Statue>* m_statues = nullptr;
         inline static EntityBatch<Doll>* m_dolls = nullptr;
         inline static EntityBatch<Board>* m_boards = nullptr;
