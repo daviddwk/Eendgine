@@ -5,29 +5,31 @@
 #include <functional>
 namespace Eendgine {
 
-template <class E> struct entityLabeled {
-        uint64_t id;
+using EntityId = uint64_t;
+
+template <class E> struct EntityLabeled {
+        EntityId id;
         E entity;
 };
 
 template <class E>
-static bool newTextureCompare(const entityLabeled<E>& el1, const entityLabeled<E>& el2) {
+static bool newTextureCompare(const EntityLabeled<E>& el1, const EntityLabeled<E>& el2) {
     return el1.entity.getTexture().id > el2.entity.getTexture().id;
 }
 
 template <class E> class EntityBatch {
     public:
         // assuming that you don't put two of the same in here, but not checking
-        template <typename... Args> uint64_t insert(Args&&... args) {
+        template <typename... Args> EntityId insert(Args&&... args) {
             unsigned int m_entitiesIdx = m_entities.size();
             // check if already in map
             m_indexMap[m_nextId] = m_entitiesIdx;
-            m_entities.push_back(entityLabeled{m_nextId, E(std::forward<Args>(args)...)});
+            m_entities.push_back(EntityLabeled{m_nextId, E(std::forward<Args>(args)...)});
             // just in case these are evaluated out of order
             return m_nextId++;
         }
 
-        void erase(unsigned int id) {
+        void erase(EntityId id) {
             // postpose erase until right before sort
             // so that the m_indexMap is always accurate
             //
@@ -36,9 +38,10 @@ template <class E> class EntityBatch {
             m_toEraseIds.push_back(id);
         }
 
-        E* getRef(uint64_t id) {
-            if (auto it{m_indexMap.find(id)}; it != std::end(m_indexMap))
+        E* getRef(EntityId id) {
+            if (auto it{m_indexMap.find(id)}; it != std::end(m_indexMap)) {
                 return &m_entities[it->second].entity;
+            }
             return NULL;
         }
 
@@ -62,34 +65,35 @@ template <class E> class EntityBatch {
         }
 
     private:
+        using Entities = std::vector<EntityLabeled<E>>;
+        using IndexMap = std::unordered_map<EntityId, typename Entities::size_type>;
+
         void sort() {
             // make to erase idxs from ids
-            std::vector<size_t> m_toEraseIdxs(m_toEraseIds.size());
-            for (size_t idx = 0; idx < m_toEraseIds.size(); ++idx) {
-                m_toEraseIdxs[idx] = m_indexMap[m_toEraseIds[idx]];
+            std::vector<typename IndexMap::size_type> m_toEraseIdxs;
+            m_toEraseIdxs.reserve(m_toEraseIds.size());
+            for (auto toEraseId : m_toEraseIds) {
+                m_toEraseIdxs.push_back(m_indexMap[toEraseId]);
             }
             std::sort(m_toEraseIdxs.begin(), m_toEraseIdxs.end(), std::greater<int>());
             // move all to erase to end of array and erase
-            for (size_t idx = 0; idx < m_toEraseIdxs.size(); ++idx) {
-                iter_swap(m_entities.begin() + m_toEraseIdxs[idx], m_entities.end() - (idx + 1));
-            }
-            for (size_t idx = 0; idx < m_toEraseIdxs.size(); ++idx) {
-                size_t lastEntityIdx = m_entities.size() - 1;
-                m_entities.erase(m_entities.begin() + lastEntityIdx);
+            for (auto toEraseIdx : m_toEraseIdxs) {
+                iter_swap(m_entities.begin() + toEraseIdx, m_entities.end() - 1);
+                m_entities.pop_back();
             }
             m_toEraseIds.clear();
             m_indexMap.clear();
             // sort based on texture
             std::stable_sort(m_entities.begin(), m_entities.end(), newTextureCompare<E>);
             // fix index map
-            for (size_t i = 0; i < m_entities.size(); i++) {
-                m_indexMap[m_entities[i].id] = i;
+            for (typename Entities::size_type idx = 0; idx < m_entities.size(); ++idx) {
+                m_indexMap[m_entities[idx].id] = idx;
             }
         }
         // vector so I can control when it sorts
-        std::vector<entityLabeled<E>> m_entities;
-        std::unordered_map<uint64_t, size_t> m_indexMap;
-        uint64_t m_nextId = 0;
-        std::vector<uint64_t> m_toEraseIds;
+        Entities m_entities;
+        IndexMap m_indexMap;
+        EntityId m_nextId = 0;
+        std::vector<EntityId> m_toEraseIds;
 };
 } // namespace Eendgine
