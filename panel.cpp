@@ -149,7 +149,8 @@ void Panel::setup(std::vector<std::filesystem::path>& texturePaths) {
         }
         m_textures[t.stem()] = Eendgine::TextureCache::getTexture(t);
     }
-    m_currentTexture = m_textures.begin()->first;
+    auto [firstTextureName, firstTexture] = *m_textures.begin();
+    m_currentTexture = firstTextureName;
 
     Vertex verticies[4];
 

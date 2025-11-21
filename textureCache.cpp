@@ -9,6 +9,7 @@ Texture TextureCache::getTexture(std::filesystem::path texturePath) {
         Texture texture = loadTexture(texturePath);
         mapItr = m_textureMap.insert(std::begin(m_textureMap), {texturePath, texture});
     }
-    return mapItr->second;
+    auto [path, texture] = *mapItr;
+    return texture;
 }
 } // namespace Eendgine

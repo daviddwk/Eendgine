@@ -14,8 +14,8 @@ Doll::Doll(std::filesystem::path path)
     : m_numIndices(0), m_position(Point(0.0f)), m_scale(Scale(1.0f)), m_rotation(Rotation(0.0f)),
       m_animScale(0.0f), m_textureIdx(0) {
 
-    std::map<std::string, std::vector<std::vector<InpolVertex>>> vertices;
-    std::map<std::string, std::vector<std::vector<unsigned int>>> indices;
+    std::map<std::string, std::vector<std::vector<InpolVertex>>> animationVertices;
+    std::map<std::string, std::vector<std::vector<unsigned int>>> animationIndices;
     std::filesystem::path dollPath = std::filesystem::path("resources") / path;
     if (!std::filesystem::is_directory(dollPath)) {
         fatalError("Doll directory " + dollPath.string() + " is not a directory");
@@ -70,16 +70,16 @@ Doll::Doll(std::filesystem::path path)
         m_VAOs[animationName].resize(numInpols, 0);
         m_VBOs[animationName].resize(numInpols, 0);
         m_EBOs[animationName].resize(numInpols, 0);
-        vertices[animationName].resize(numInpols);
-        indices[animationName].resize(numInpols);
+        animationVertices[animationName].resize(numInpols);
+        animationIndices[animationName].resize(numInpols);
 
         for (unsigned int i = 0; i < numInpols; i++) {
             // use next model looping back to the first
             loadModel(
                 modelPaths[i],
                 modelPaths[(i + 1) % modelPaths.size()],
-                vertices[animationName][i],
-                indices[animationName][i],
+                animationVertices[animationName][i],
+                animationIndices[animationName][i],
                 m_textures);
 
             glGenVertexArrays(1, &m_VAOs[animationName][i]);
@@ -91,15 +91,15 @@ Doll::Doll(std::filesystem::path path)
             glBindBuffer(GL_ARRAY_BUFFER, m_VBOs[animationName][i]);
             glBufferData(
                 GL_ARRAY_BUFFER,
-                vertices[animationName][i].size() * sizeof(InpolVertex),
-                &vertices[animationName][i][0],
+                animationVertices[animationName][i].size() * sizeof(InpolVertex),
+                &animationVertices[animationName][i][0],
                 GL_STATIC_DRAW);
 
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_EBOs[animationName][i]);
             glBufferData(
                 GL_ELEMENT_ARRAY_BUFFER,
-                indices[animationName][i].size() * sizeof(unsigned int),
-                &indices[animationName][i][0],
+                animationIndices[animationName][i].size() * sizeof(unsigned int),
+                &animationIndices[animationName][i][0],
                 GL_STATIC_DRAW);
 
             glVertexAttribPointer(
@@ -152,8 +152,9 @@ Doll::Doll(std::filesystem::path path)
             glEnableVertexAttribArray(5);
         }
     }
-    m_numIndices = indices.begin()->second[0].size();
-    for (auto& indicesAnimation : indices) {
+    auto [animationName, indicies] = *animationIndices.begin();
+    m_numIndices = indicies[0].size();
+    for (auto& indicesAnimation : animationIndices) {
         for (auto& indicesModel : indicesAnimation.second) {
             if (indicesModel.size() != m_numIndices)
                 fatalError(

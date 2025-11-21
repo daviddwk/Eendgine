@@ -37,7 +37,8 @@ template <class E> class EntityBatch {
 
         E* getRef(EntityId id) {
             if (auto indexIter = m_indexMap.find(id); indexIter != std::end(m_indexMap)) {
-                return &m_entities[indexIter->second].entity;
+                auto [entityId, entityIdx] = *indexIter;
+                return &m_entities[entityIdx].entity;
             }
             return NULL;
         }

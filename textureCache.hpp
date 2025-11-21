@@ -2,7 +2,6 @@
 #include "texture.hpp"
 #include <filesystem>
 #include <map>
-#include <string>
 
 namespace Eendgine {
 class TextureCache {
@@ -10,6 +9,6 @@ class TextureCache {
         static Texture getTexture(std::filesystem::path texturePath);
 
     private:
-        inline static std::map<std::string, Texture> m_textureMap;
+        inline static std::map<std::filesystem::path, Texture> m_textureMap;
 };
 } // namespace Eendgine

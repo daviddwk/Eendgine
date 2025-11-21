@@ -81,7 +81,9 @@ void Board::setup(
         m_strips.push_back((Strip){TextureCache::getTexture(t), 1}); // default to 1
     }
     assert(m_stripMap.size() > 0);
-    m_currentStrip = m_stripMap.begin()->first;
+
+    auto [stripName, stripIdx] = *m_stripMap.begin();
+    m_currentStrip = stripName;
 
     Json::Value rootJson;
     std::ifstream metadata(metadataPath);
