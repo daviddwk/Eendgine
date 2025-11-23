@@ -2,7 +2,8 @@
 
 namespace Eendgine {
 
-Shaders::Shaders(ShaderProgram panelShader, ShaderProgram boardShader, ShaderProgram statueShader,
+Shaders::Shaders(
+    ShaderProgram panelShader, ShaderProgram boardShader, ShaderProgram statueShader,
     ShaderProgram dollShader, ShaderProgram screenShader)
     : m_panelShader(panelShader), m_boardShader(boardShader), m_statueShader(statueShader),
       m_dollShader(dollShader), m_screenShader(screenShader) {}
@@ -10,15 +11,15 @@ Shaders::Shaders(ShaderProgram panelShader, ShaderProgram boardShader, ShaderPro
 ShaderProgram& Shaders::getShader(Shader shader) {
     switch (shader) {
     default:
-    case PANEL:
+    case Shader::panel:
         return m_panelShader;
-    case BOARD:
+    case Shader::board:
         return m_boardShader;
-    case STATUE:
+    case Shader::statue:
         return m_statueShader;
-    case DOLL:
+    case Shader::doll:
         return m_dollShader;
-    case SCREEN:
+    case Shader::screen:
         return m_screenShader;
     }
 }

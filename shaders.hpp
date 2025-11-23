@@ -3,10 +3,11 @@
 #include "shader.hpp"
 
 namespace Eendgine {
-enum Shader { PANEL, BOARD, STATUE, DOLL, SCREEN };
+enum class Shader { panel, board, statue, doll, screen };
 class Shaders {
     public:
-        Shaders(ShaderProgram panelShader, ShaderProgram boardShader, ShaderProgram statueShader,
+        Shaders(
+            ShaderProgram panelShader, ShaderProgram boardShader, ShaderProgram statueShader,
             ShaderProgram dollShader, ShaderProgram screenShader);
         ShaderProgram& getShader(Shader shader);
         void setPixelSize(uint pixelSize);

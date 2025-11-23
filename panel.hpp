@@ -19,10 +19,10 @@ class Panel {
         Panel(Panel&& other) noexcept;
         Panel& operator=(Panel&& other) noexcept;
 
-        enum MouseStatus {
-            NONE,
-            HOVER,
-            CLICK,
+        enum class MouseStatus {
+            none,
+            hover,
+            click,
         };
 
         void setTexture(std::string texture);
