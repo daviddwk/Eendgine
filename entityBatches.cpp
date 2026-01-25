@@ -16,8 +16,10 @@ void Entities::construct() {
 
 void Entities::destruct() {
     Quad::destruct();
-    assert(
-        m_statues != nullptr && m_dolls != nullptr && m_boards != nullptr && m_panels != nullptr);
+    assert(m_statues != nullptr);
+    assert(m_dolls != nullptr);
+    assert(m_boards != nullptr);
+    assert(m_panels != nullptr);
     delete m_statues;
     delete m_dolls;
     delete m_boards;
