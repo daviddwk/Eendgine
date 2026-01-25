@@ -19,6 +19,22 @@ static bool newTextureCompare(const EntityLabeled<E>& el1, const EntityLabeled<E
 
 template <class E> class EntityBatch {
     public:
+        EntityBatch() = default;
+        ~EntityBatch() {
+            sortAndErase();
+            if (!m_entities.empty()) {
+                std::cout << "WARNING: Entity batch being deleted with " << m_indexMap.size()
+                          << " entities" << std::endl;
+            }
+        }
+
+        // would be weird to do, so deleting for now
+        EntityBatch(const EntityBatch& other) = delete;
+        EntityBatch& operator=(const EntityBatch& other) = delete;
+
+        EntityBatch(EntityBatch&& other) = delete;
+        EntityBatch& operator=(EntityBatch&& other) = delete;
+
         // assuming that you don't put two of the same in here, but not checking
         template <typename... Args> EntityId insert(Args&&... args) {
             unsigned int m_entitiesIdx = m_entities.size();
@@ -49,7 +65,7 @@ template <class E> class EntityBatch {
         }
 
         template <typename C> void draw(ShaderProgram& shader, C& camera) {
-            EntityBatch<E>::sort();
+            EntityBatch<E>::sortAndErase();
             shader.use();
             glActiveTexture(GL_TEXTURE0);
             std::string texName = "texture_diffuse";
@@ -71,7 +87,7 @@ template <class E> class EntityBatch {
         using Entities = std::vector<EntityLabeled<E>>;
         using IndexMap = std::unordered_map<EntityId, typename Entities::size_type>;
 
-        void sort() {
+        void sortAndErase() {
             // make to erase idxs from ids
             std::vector<typename IndexMap::size_type> m_toEraseIdxs;
             m_toEraseIdxs.reserve(m_toEraseIds.size());
