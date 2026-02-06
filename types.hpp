@@ -10,7 +10,6 @@ using Scale = glm::vec3;
 using Scale2D = glm::vec2;
 using Point = glm::vec3;
 using Point2D = glm::vec2;
-using Tile = glm::vec2;
 using Vector = glm::vec3;
 using Vector2D = glm::vec2;
 using Rotation = glm::vec3;
