@@ -1,5 +1,6 @@
 #include "entityBatches.hpp"
 #include "primitive.hpp"
+#include "shaders.hpp"
 #include <GLES3/gl3.h>
 
 namespace Eendgine {
@@ -57,19 +58,19 @@ EntityBatch<Panel>& Entities::panels() {
     return *m_panels;
 }
 
-void Entities::draw(Shaders& shaders, Camera2D& hudCamera, Camera3D& sceneCamera) {
+void Entities::draw(Camera2D& hudCamera, Camera3D& sceneCamera) {
     glClearColor(0.1f, 0.2f, 0.3f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    m_statues->draw(shaders.getShader(Shader::statue), sceneCamera);
-    m_dolls->draw(shaders.getShader(Shader::doll), sceneCamera);
+    m_statues->draw(Shaders::get().getShader(Shader::statue), sceneCamera);
+    m_dolls->draw(Shaders::get().getShader(Shader::doll), sceneCamera);
 
     glBindVertexArray(Quad::getVao());
-    m_boards->draw(shaders.getShader(Shader::board), sceneCamera);
+    m_boards->draw(Shaders::get().getShader(Shader::board), sceneCamera);
     glBindVertexArray(0);
 
     glClear(GL_DEPTH_BUFFER_BIT);
 
-    m_panels->draw(shaders.getShader(Shader::panel), hudCamera);
+    m_panels->draw(Shaders::get().getShader(Shader::panel), hudCamera);
 }
 } // namespace Eendgine

@@ -1,12 +1,34 @@
+#include "assert.h"
 #include "shaders.hpp"
 
 namespace Eendgine {
+
+void Shaders::construct(
+    ShaderProgram panelShader, ShaderProgram boardShader, ShaderProgram statueShader,
+    ShaderProgram dollShader, ShaderProgram screenShader) {
+
+    assert(m_instance == nullptr);
+    m_instance = new Shaders(panelShader, boardShader, statueShader, dollShader, screenShader);
+}
+
+void Shaders::destruct() {
+    assert(m_instance != nullptr);
+    delete m_instance;
+    m_instance = nullptr;
+}
+
+Shaders& Shaders::get() {
+    assert(m_instance != nullptr);
+    return *m_instance;
+}
 
 Shaders::Shaders(
     ShaderProgram panelShader, ShaderProgram boardShader, ShaderProgram statueShader,
     ShaderProgram dollShader, ShaderProgram screenShader)
     : m_panelShader(panelShader), m_boardShader(boardShader), m_statueShader(statueShader),
       m_dollShader(dollShader), m_screenShader(screenShader) {}
+
+Shaders::~Shaders() {}
 
 ShaderProgram& Shaders::getShader(Shader shader) {
     switch (shader) {
@@ -23,6 +45,4 @@ ShaderProgram& Shaders::getShader(Shader shader) {
         return m_screenShader;
     }
 }
-
-void Shaders::setPixelSize(uint pixelSize) { m_screenShader.setInt("pixelSize", pixelSize); }
 } // namespace Eendgine

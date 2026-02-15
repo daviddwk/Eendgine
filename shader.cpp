@@ -27,6 +27,8 @@ ShaderProgram::ShaderProgram(std::string vertexShaderPath, std::string fragmentS
     glDeleteShader(m_fragmentShaderID);
 }
 
+// TODO please make destrurtor
+
 void ShaderProgram::compileShader(unsigned int shaderId, std::string shaderPath) {
     std::ifstream shaderFile(shaderPath);
     if (shaderFile.fail()) {

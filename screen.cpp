@@ -1,7 +1,7 @@
 #include <assert.h>
 
 #include "fatalError.hpp"
-#include "shader.hpp"
+#include "shaders.hpp"
 
 #include "screen.hpp"
 
@@ -37,7 +37,11 @@ Screen::Screen(int width, int height) {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glFramebufferTexture2D(
-        GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_textureColorBuffer, 0);
+        GL_FRAMEBUFFER,
+        GL_COLOR_ATTACHMENT0,
+        GL_TEXTURE_2D,
+        m_textureColorBuffer,
+        0);
 
     glGenRenderbuffers(1, &m_RBO);
     glBindRenderbuffer(GL_RENDERBUFFER, m_RBO);
@@ -75,18 +79,24 @@ void Screen::bind() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-void Screen::render(ShaderProgram shader) {
+void Screen::render() {
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glDisable(GL_DEPTH_TEST);
     glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
-    shader.use();
+    Shaders::get().getShader(Shader::screen).use();
     glBindVertexArray(m_VAO);
-    glUniform1i(glGetUniformLocation(shader.getProgramID(), "screenTexture"), 0);
+    glUniform1i(
+        glGetUniformLocation(
+            Shaders::get().getShader(Shader::screen).getProgramID(),
+            "screenTexture"),
+        0);
     glBindTexture(GL_TEXTURE_2D, m_textureColorBuffer);
 
-    unsigned int heightLoc = glGetUniformLocation(shader.getProgramID(), "height");
-    unsigned int widthLoc = glGetUniformLocation(shader.getProgramID(), "width");
+    unsigned int heightLoc =
+        glGetUniformLocation(Shaders::get().getShader(Shader::screen).getProgramID(), "height");
+    unsigned int widthLoc =
+        glGetUniformLocation(Shaders::get().getShader(Shader::screen).getProgramID(), "width");
     glUniform1i(heightLoc, m_height);
     glUniform1i(widthLoc, m_width);
     glDrawArrays(GL_TRIANGLES, 0, 6);

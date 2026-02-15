@@ -5,7 +5,6 @@
 #include "doll.hpp"
 #include "entityBatch.hpp"
 #include "panel.hpp"
-#include "shaders.hpp"
 #include "statue.hpp"
 
 namespace Eendgine {
@@ -26,7 +25,7 @@ class Entities {
         static EntityBatch<Board>& boards();
         static EntityBatch<Panel>& panels();
 
-        static void draw(Shaders& shaders, Camera2D& hudCamera, Camera3D& sceneCamera);
+        static void draw(Camera2D& hudCamera, Camera3D& sceneCamera);
 
     private:
         Entities() = default;

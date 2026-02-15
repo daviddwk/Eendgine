@@ -1,8 +1,6 @@
 #pragma once
-#include "shader.hpp"
 
 #include <SDL2/SDL.h>
-#include <string>
 
 namespace Eendgine {
 
@@ -13,11 +11,17 @@ class Screen {
         static Screen& get();
 
         void bind();
-        void render(ShaderProgram shader);
+        void render();
 
     private:
         Screen(int width, int height);
         ~Screen();
+
+        Screen(const Screen&) = delete;
+        Screen& operator=(const Screen&) = delete;
+
+        Screen(Screen&& other) = delete;
+        Screen& operator=(Screen&& other) = delete;
 
         inline static Screen* _instance = nullptr;
 
