@@ -82,8 +82,8 @@ class Cameras {
         Cameras(Cameras&& other) = delete;
         Cameras& operator=(Cameras&& other) = delete;
 
-        static Camera2D* m_instance2D;
-        static Camera3D* m_instance3D;
+        inline static Camera2D* m_instance2D = nullptr;
+        inline static Camera3D* m_instance3D = nullptr;
 };
 
 } // namespace Eendgine
