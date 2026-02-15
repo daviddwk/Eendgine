@@ -31,6 +31,12 @@ class Entities {
         Entities() = default;
         ~Entities() = default;
 
+        Entities(const Entities&) = delete;
+        Entities& operator=(const Entities&) = delete;
+
+        Entities(Entities&& other) = delete;
+        Entities& operator=(Entities&& other) = delete;
+
         inline static EntityBatch<Statue>* m_statues = nullptr;
         inline static EntityBatch<Doll>* m_dolls = nullptr;
         inline static EntityBatch<Board>* m_boards = nullptr;

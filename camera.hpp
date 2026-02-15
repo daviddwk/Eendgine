@@ -63,4 +63,27 @@ class Camera3D {
         TransformationMatrix m_viewMat;
         TransformationMatrix m_projectionMat;
 };
+
+class Cameras {
+    public:
+        static void construct(const Camera2D& hudCamera, const Camera3D& sceneCamera);
+        static void destruct();
+
+        static Camera2D& getHud();
+        static Camera3D& getScene();
+
+    private:
+        Cameras() = default;
+        ~Cameras() = default;
+
+        Cameras(const Cameras&) = delete;
+        Cameras& operator=(const Cameras&) = delete;
+
+        Cameras(Cameras&& other) = delete;
+        Cameras& operator=(Cameras&& other) = delete;
+
+        static Camera2D* m_instance2D;
+        static Camera3D* m_instance3D;
+};
+
 } // namespace Eendgine
