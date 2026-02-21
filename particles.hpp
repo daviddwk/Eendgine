@@ -2,9 +2,9 @@
 
 #include <chrono>
 #include <cstdint>
+#include <filesystem>
 #include <optional>
 #include <vector>
-#include <filesystem>
 
 #include "entityBatches.hpp"
 #include "types.hpp"
@@ -21,14 +21,13 @@ class Particles {
                 Scale2D scale;
                 unsigned int stripIdx;
         };
-        using Behavior =
-            std::function<std::optional<State>(int32_t, std::chrono::milliseconds)>;
+        using Behavior = std::function<std::optional<State>(int32_t, std::chrono::milliseconds)>;
         class Properties {
             public:
                 Properties(std::filesystem::path boardPath, Behavior behavior)
-                : boardPath(boardPath), behavior(behavior){}
-            std::filesystem::path boardPath;
-            Behavior behavior;  
+                    : boardPath(boardPath), behavior(behavior) {}
+                std::filesystem::path boardPath;
+                Behavior behavior;
         };
         static void construct();
         static void destruct();
@@ -57,7 +56,7 @@ class Particles {
             const Point& origin, const std::vector<Particle>::size_type count,
             const Properties properties);
 
-        void update(const float dt);
+        void update();
 
         Particles();
         ~Particles();
@@ -67,4 +66,4 @@ class Particles {
         inline static Particles* m_instance = nullptr;
 };
 
-}
+} // namespace Eendgine

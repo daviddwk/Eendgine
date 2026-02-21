@@ -55,7 +55,7 @@ void Particles::create(
     }
 }
 
-void Particles::update(const float dt) {
+void Particles::update() {
     for (auto cloudIter = m_clouds.begin(); cloudIter != m_clouds.end();) {
         bool cloudIsAlive = false;
 
@@ -92,4 +92,4 @@ void Particles::update(const float dt) {
     }
 }
 
-}
+} // namespace Eendgine
