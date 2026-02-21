@@ -25,6 +25,7 @@ class Triangle {
         Point p3;
 };
 
+// TODO positon and scale is better I think, that way it can't be backwards
 class Rectangle {
     public:
         Rectangle(Point2D upperLeft, Point2D lowerRight)
