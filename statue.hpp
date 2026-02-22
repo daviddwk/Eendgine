@@ -1,10 +1,14 @@
 #pragma once
+
 #include "camera.hpp"
-#include "texture.hpp"
+
+#include "strip.hpp"
 #include "types.hpp"
+
 #include <assimp/Importer.hpp>
 #include <assimp/postprocess.h>
 #include <assimp/scene.h>
+
 #include <print>
 #include <string>
 #include <vector>

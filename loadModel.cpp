@@ -1,13 +1,14 @@
 #include "fatalError.hpp"
 #include "loadModel.hpp"
-#include "textureCache.hpp"
+#include "texture.hpp"
 #include "types.hpp"
 
 #include <string>
 
 namespace Eendgine {
 
-void loadModel(std::filesystem::path modelPath, std::vector<Vertex>& vertices,
+void loadModel(
+    std::filesystem::path modelPath, std::vector<Vertex>& vertices,
     std::vector<unsigned int>& indices, std::vector<Texture>& textures) {
     Assimp::Importer importer;
     const aiScene* scene =
@@ -27,7 +28,8 @@ void loadModel(std::filesystem::path modelPath, std::vector<Vertex>& vertices,
     processTextures(modelDir, scene, textures);
 }
 
-void loadModel(std::filesystem::path modelPath, std::vector<Vertex>& vertices,
+void loadModel(
+    std::filesystem::path modelPath, std::vector<Vertex>& vertices,
     std::vector<unsigned int>& indices) {
     Assimp::Importer importer;
     const aiScene* scene =
@@ -46,7 +48,8 @@ void loadModel(std::filesystem::path modelPath, std::vector<Vertex>& vertices,
     }
 }
 
-void loadModel(std::filesystem::path modelPath, std::filesystem::path nextModelPath,
+void loadModel(
+    std::filesystem::path modelPath, std::filesystem::path nextModelPath,
     std::vector<InpolVertex>& vertices, std::vector<unsigned int>& indices,
     std::vector<Texture>& textures) {
     Assimp::Importer importer;
@@ -55,18 +58,14 @@ void loadModel(std::filesystem::path modelPath, std::filesystem::path nextModelP
         importer.ReadFile(modelPath, aiProcess_Triangulate | aiProcess_GenNormals);
     const aiScene* nextScene =
         nextImporter.ReadFile(nextModelPath, aiProcess_Triangulate | aiProcess_GenNormals);
-    if (!scene)
-        fatalError("failed to load model: could not load file " + modelPath.string());
-    if (!nextScene)
-        fatalError("failed to load model: could not load file " + modelPath.string());
+    if (!scene) fatalError("failed to load model: could not load file " + modelPath.string());
+    if (!nextScene) fatalError("failed to load model: could not load file " + modelPath.string());
     if (scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE)
         fatalError("failed to load model: scene flags incomplete");
     if (nextScene->mFlags & AI_SCENE_FLAGS_INCOMPLETE)
         fatalError("failed to load model: next scene flags incomplete");
-    if (!scene->mRootNode)
-        fatalError("failed to load model: missing mRootNode");
-    if (!nextScene->mRootNode)
-        fatalError("failed to load model: nextScene no root node");
+    if (!scene->mRootNode) fatalError("failed to load model: missing mRootNode");
+    if (!nextScene->mRootNode) fatalError("failed to load model: nextScene no root node");
 
     // assuming they are in the same directory here
     std::filesystem::path modelDir = modelPath.parent_path();
@@ -113,7 +112,8 @@ void processNode(aiNode* node, const aiScene* scene, std::vector<aiMesh*>& aiMes
     }
 }
 
-void processMesh(aiMesh* mesh, const aiScene* scene, std::vector<Vertex>& vertices,
+void processMesh(
+    aiMesh* mesh, const aiScene* scene, std::vector<Vertex>& vertices,
     std::vector<unsigned int>& indices, unsigned int startIdx) {
     for (unsigned int i = 0; i < mesh->mNumVertices; i++) {
         Vertex vertex;

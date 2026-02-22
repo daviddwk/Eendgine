@@ -1,13 +1,11 @@
-#include "Eendgine/camera.hpp"
-#include "Eendgine/primitive.hpp"
-#include "Eendgine/texture.hpp"
 #include "board.hpp"
-#include "fatalError.hpp"
-#include "textureCache.hpp"
+
+#include "camera.hpp"
+#include "strip.hpp"
+#include "texture.hpp"
+
 #include <GLES3/gl3.h>
-#include <fstream>
 #include <glm/gtc/type_ptr.hpp>
-#include <json/json.h>
 
 namespace Eendgine {
 

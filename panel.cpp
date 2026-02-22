@@ -1,12 +1,10 @@
-#include <print>
-
 #include <GLES3/gl3.h>
 #include <glm/gtc/type_ptr.hpp>
 
 #include "camera.hpp"
 #include "fatalError.hpp"
 #include "inputManager.hpp"
-#include "textureCache.hpp"
+#include "texture.hpp"
 #include "vertex.hpp"
 
 #include "panel.hpp"

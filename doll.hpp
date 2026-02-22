@@ -6,7 +6,7 @@
 #include <vector>
 
 #include "camera.hpp"
-#include "texture.hpp"
+#include "strip.hpp"
 #include "types.hpp"
 
 namespace Eendgine {
