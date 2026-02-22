@@ -5,6 +5,7 @@
 #include <assimp/Importer.hpp>
 #include <assimp/postprocess.h>
 #include <assimp/scene.h>
+#include <print>
 #include <string>
 #include <vector>
 
@@ -26,9 +27,7 @@ class Statue {
             m_rotation = Rotation(glm::radians(x), glm::radians(y), glm::radians(z));
         };
 
-        void setTextureIdx(unsigned int idx) {
-            m_textureIdx = (idx < m_textures.size() ? idx : 0);
-        };
+        void setTextureIdx(unsigned int idx) { m_textureIdx = idx % m_textures.size(); };
 
         Point getPosition() { return m_position; };
         Scale getScale() { return m_scale; };
