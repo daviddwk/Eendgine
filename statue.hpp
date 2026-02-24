@@ -16,7 +16,7 @@
 namespace Eendgine {
 class Statue {
     public:
-        Statue(std::string modelPath);
+        Statue(std::string statuePath);
         ~Statue();
 
         Statue(const Statue& other) = delete;
@@ -31,15 +31,19 @@ class Statue {
             m_rotation = Rotation(glm::radians(x), glm::radians(y), glm::radians(z));
         };
 
-        void setTextureIdx(unsigned int idx) { m_textureIdx = idx % m_textures.size(); };
+        void setStrip(std::string strip) { m_stripHandler.setStrip(strip); };
+        void setStripIdx(unsigned int idx) { m_stripHandler.setStripIdx(idx); };
+        void setStripFlip(bool flip) { m_stripHandler.setStripFlip(flip); };
+        void nextStripIdx() { m_stripHandler.nextStripIdx(); };
 
         Point getPosition() { return m_position; };
         Scale getScale() { return m_scale; };
         Rotation getRotation() { return m_rotation; };
 
-        Texture getTexture() const { return m_textures[m_textureIdx]; };
-        unsigned int getTextureIdx() { return m_textureIdx; };
+        std::vector<Strip>::size_type getStripLen() { return m_stripHandler.getStripLen(); };
+        unsigned int getStripIdx() { return m_stripHandler.getStripIdx(); };
 
+        Texture getTexture() const { return m_stripHandler.getTexture(); };
         void draw(GLuint shaderId, Camera3D& camera);
 
     private:
@@ -49,6 +53,6 @@ class Statue {
         Scale m_scale;
         Rotation m_rotation;
         unsigned int m_textureIdx;
-        std::vector<Texture> m_textures;
+        StripHandler m_stripHandler;
 };
 } // namespace Eendgine

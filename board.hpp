@@ -21,25 +21,24 @@ class Board {
         Board(Board&& other) noexcept = default;
         Board& operator=(Board&& other) noexcept = default;
 
+        void setPosition(Point position);
+        void setScale(Scale2D scale);
+        void setRotation(float r);
+
         void setStrip(std::string strip);
         void setStripIdx(unsigned int idx);
         void nextStripIdx();
         void setStripFlip(bool flip);
 
-        void setPosition(Point position);
-        void setScale(Scale2D scale);
-        void setRotation(float r);
-
-        std::vector<Strip>::size_type getStripLen();
-        unsigned int getStripIdx();
-
         Point getPosition();
         Scale getSize();
         float getRotation();
 
+        std::vector<Strip>::size_type getStripLen();
+        unsigned int getStripIdx();
+
         Texture getTexture() const;
 
-        std::vector<Texture>::size_type getNumTextures();
         void draw(GLuint shaderId, Camera3D& camera);
 
     private:

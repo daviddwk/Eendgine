@@ -7,16 +7,17 @@
 #include <print>
 
 namespace Eendgine {
-Statue::Statue(const std::string path)
+Statue::Statue(const std::string statuePath)
     : m_VAO(0), m_VBO(0), m_EBO(0), m_numIndices(0), m_position(Point(0.0f)), m_scale(Scale(1.0f)),
-      m_rotation(Rotation(0.0f)), m_textureIdx(0) {
+      m_rotation(Rotation(0.0f)), m_textureIdx(0), m_stripHandler(statuePath) {
 
     std::vector<Vertex> vertices;
     std::vector<unsigned int> indices;
     const std::filesystem::path modelPath =
-        std::filesystem::path("resources") / path /
-        (std::filesystem::path(path).filename().string() + ".obj");
-    loadModel(modelPath, vertices, indices, m_textures);
+        std::filesystem::path("resources") / statuePath /
+        (std::filesystem::path(statuePath).filename().string() + ".obj");
+    std::vector<Texture> textures;
+    loadModel(modelPath, vertices, indices, textures);
     m_numIndices = indices.size();
 
     glGenVertexArrays(1, &m_VAO);
@@ -67,7 +68,7 @@ Statue::Statue(Statue&& other) noexcept
     : m_VAO(std::move(other.m_VAO)), m_VBO(std::move(other.m_VBO)), m_EBO(std::move(other.m_EBO)),
       m_numIndices(std::move(other.m_numIndices)), m_position(std::move(other.m_position)),
       m_scale(std::move(other.m_scale)), m_rotation(std::move(other.m_rotation)),
-      m_textureIdx(std::move(other.m_textureIdx)), m_textures(std::move(other.m_textures)) {
+      m_stripHandler(std::move(other.m_stripHandler)) {
     other.m_VAO = 0;
     other.m_VBO = 0;
     other.m_EBO = 0;
@@ -96,7 +97,7 @@ Statue& Statue::operator=(Statue&& other) noexcept {
     m_scale = other.m_scale;
     m_rotation = other.m_rotation;
     m_textureIdx = other.m_textureIdx;
-    m_textures = other.m_textures;
+    m_stripHandler = other.m_stripHandler;
 
     other.m_VAO = 0;
     other.m_VBO = 0;
@@ -118,9 +119,15 @@ void Statue::draw(GLuint shaderId, Camera3D& camera) {
     GLint projectionLoc = glGetUniformLocation(shaderId, "projection");
     GLint viewLoc = glGetUniformLocation(shaderId, "view");
     GLint transformLoc = glGetUniformLocation(shaderId, "transform");
+    GLint frameIdxLoc = glGetUniformLocation(shaderId, "frameIdx");
+    GLint frameLenLoc = glGetUniformLocation(shaderId, "frameLen");
+
     glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, &camera.getProjectionMat()[0][0]);
     glUniformMatrix4fv(viewLoc, 1, GL_FALSE, &camera.getViewMat()[0][0]);
     glUniformMatrix4fv(transformLoc, 1, GL_FALSE, &transform[0][0]);
+
+    glUniform1ui(frameIdxLoc, m_stripHandler.getStripIdx());
+    glUniform1ui(frameLenLoc, m_stripHandler.getStripLen());
 
     glBindVertexArray(m_VAO);
     glDrawElements(GL_TRIANGLES, m_numIndices, GL_UNSIGNED_INT, 0);

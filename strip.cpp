@@ -9,7 +9,7 @@
 
 namespace Eendgine {
 
-StripHandler::StripHandler(std::filesystem::path stripPath) : flipStrip(false) {
+StripHandler::StripHandler(std::filesystem::path stripPath) : currentStripIdx(0), flipStrip(false) {
 
     // stripFolder / metadata.json
     // ...         / {strip1}.png
@@ -58,7 +58,7 @@ StripHandler::StripHandler(std::filesystem::path stripPath) : flipStrip(false) {
 void StripHandler::setStrip(std::string strip) {
     assert(stripMap.find(strip) != stripMap.end());
     currentStrip = strip;
-    currentStripIdx = 0;
+    setStripIdx(currentStripIdx);
 };
 
 void StripHandler::setStripIdx(unsigned int idx) {
