@@ -8,17 +8,21 @@
 #include <json/json.h>
 
 namespace Eendgine {
-StripHandler::StripHandler() : flipStrip(false) {}
 
-StripHandler::StripHandler(
-    std::vector<std::filesystem::path>& texturePaths, std::filesystem::path& metadataPath)
-    : flipStrip(false) {
+StripHandler::StripHandler(std::filesystem::path stripPath) : flipStrip(false) {
 
-    setup(texturePaths, metadataPath);
-}
+    // stripFolder / metadata.json
+    // ...         / {strip1}.png
+    // ...         / {strip2}.png
 
-void StripHandler::setup(
-    std::vector<std::filesystem::path>& texturePaths, std::filesystem::path& metadataPath) {
+    std::filesystem::path basePath = std::filesystem::path("resources") / stripPath;
+    std::filesystem::path metadataPath = basePath / "metadata.json";
+    std::vector<std::filesystem::path> texturePaths;
+    for (const auto& entry : std::filesystem::directory_iterator(basePath)) {
+        if (entry.is_regular_file() && (entry.path().extension() == ".png")) {
+            texturePaths.push_back(entry.path());
+        }
+    }
 
     std::sort(texturePaths.begin(), texturePaths.end(), [](auto a, auto b) {
         return a.string() < b.string();

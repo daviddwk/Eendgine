@@ -12,12 +12,7 @@ struct Strip {
 
 class StripHandler {
     public:
-        StripHandler();
-        StripHandler(
-            std::vector<std::filesystem::path>& texturePaths, std::filesystem::path& metadataPath);
-
-        void setup(
-            std::vector<std::filesystem::path>& texturePaths, std::filesystem::path& metadataPath);
+        StripHandler(std::filesystem::path stripPath);
 
         void setStrip(std::string strip);
         void setStripIdx(unsigned int idx);

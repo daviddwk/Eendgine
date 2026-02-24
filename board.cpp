@@ -9,19 +9,8 @@
 
 namespace Eendgine {
 
-Board::Board(std::filesystem::path path)
-    : m_position(Point(0.0f)), m_size(Scale(1.0f)), m_rotation(0.0f) {
-
-    std::filesystem::path basePath = std::filesystem::path("resources") / path;
-    std::filesystem::path metadataPath = basePath / "metadata.json";
-    std::vector<std::filesystem::path> texturePaths;
-    for (const auto& entry : std::filesystem::directory_iterator(basePath)) {
-        if (entry.is_regular_file() && (entry.path().extension() == ".png")) {
-            texturePaths.push_back(entry.path());
-        }
-    }
-    m_stripHandler = StripHandler(texturePaths, metadataPath);
-}
+Board::Board(std::filesystem::path boardPath)
+    : m_position(Point(0.0f)), m_size(Scale(1.0f)), m_rotation(0.0f), m_stripHandler(boardPath) {}
 
 void Board::setPosition(Point position) { m_position = position; };
 
