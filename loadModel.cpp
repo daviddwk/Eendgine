@@ -25,7 +25,6 @@ void loadModel(
         processMesh(m, scene, vertices, indices, startIdx);
         startIdx += m->mNumVertices;
     }
-    processTextures(modelDir, scene, textures);
 }
 
 void loadModel(
@@ -100,7 +99,6 @@ void loadModel(
         vertices[i].nextNormal = tmpVertices[i].normal;
         vertices[i].nextPosition = tmpVertices[i].position;
     }
-    processTextures(modelDir, scene, textures);
 }
 
 void processNode(aiNode* node, const aiScene* scene, std::vector<aiMesh*>& aiMeshes) {
@@ -136,20 +134,6 @@ void processMesh(
         aiFace face = mesh->mFaces[i];
         for (unsigned int j = 0; j < face.mNumIndices; j++) {
             indices.push_back(face.mIndices[j] + startIdx);
-        }
-    }
-}
-
-void processTextures(
-    std::filesystem::path textureDir, const aiScene* scene, std::vector<Texture>& textures) {
-    for (unsigned int i = 0; i < scene->mNumMaterials; i++) {
-        aiMaterial* material = scene->mMaterials[i];
-        for (unsigned int i = 0; i < material->GetTextureCount(aiTextureType_DIFFUSE); i++) {
-            aiString str;
-            material->GetTexture(aiTextureType_DIFFUSE, i, &str);
-            Texture texture =
-                TextureCache::getTexture(textureDir / (std::filesystem::path)str.C_Str());
-            textures.push_back(texture);
         }
     }
 }

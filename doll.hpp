@@ -25,8 +25,11 @@ class Doll {
 
         void setPosition(Point position) { m_position = position; };
         void setScale(Scale scale) { m_scale = scale; };
-        void setRotation(float x, float y, float z) {
-            m_rotation = Rotation(glm::radians(x), glm::radians(y), glm::radians(z));
+        void setRotation(Rotation rotation) {
+            m_rotation = Rotation(
+                glm::radians(rotation.x),
+                glm::radians(rotation.y),
+                glm::radians(rotation.z));
         };
 
         void setTextureIdx(unsigned int idx) {
