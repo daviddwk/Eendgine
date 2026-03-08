@@ -23,7 +23,7 @@ class Board {
 
         void setPosition(Point position);
         void setScale(Scale2D scale);
-        void setRotation(float r);
+        void setRotation(Angle angle);
 
         void setStrip(std::string strip);
         void setStripIdx(unsigned int idx);
@@ -32,7 +32,7 @@ class Board {
 
         Point getPosition();
         Scale getSize();
-        float getRotation();
+        Angle getRotation();
 
         std::vector<Strip>::size_type getStripLen();
         unsigned int getStripIdx();
@@ -47,7 +47,7 @@ class Board {
 
         Point m_position;
         Scale m_size;
-        float m_rotation;
+        Angle m_rotation;
 
         StripHandler m_stripHandler;
 };

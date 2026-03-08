@@ -16,7 +16,7 @@ void Board::setPosition(Point position) { m_position = position; };
 
 void Board::setScale(Scale2D scale) { m_size = Scale(scale.x, scale.y, 1.0f); };
 
-void Board::setRotation(float r) { m_rotation = r; };
+void Board::setRotation(Angle angle) { m_rotation = angle; };
 
 void Board::setStrip(std::string strip) { m_stripHandler.setStrip(strip); };
 
@@ -30,7 +30,7 @@ Point Board::getPosition() { return m_position; };
 
 Scale Board::getSize() { return m_size; };
 
-float Board::getRotation() { return m_rotation; };
+Angle Board::getRotation() { return m_rotation; };
 
 unsigned int Board::getStripIdx() { return m_stripHandler.getStripIdx(); };
 
@@ -39,15 +39,27 @@ Texture Board::getTexture() const { return m_stripHandler.getTexture(); };
 void Board::draw(GLuint shaderId, Camera3D& camera) {
     TransformationMatrix transform = TransformationMatrix(1.0f);
     transform = glm::translate(transform, m_position);
-    glm::mat3 rot = glm::inverse(glm::mat3(camera.getViewMat()));
-    // there must be a cleaner way to do this
+
+    // rotate to always be facing the camera
+    glm::mat3 facingRotation = glm::inverse(glm::mat3(camera.getViewMat()));
+    // rotate on the normal
+    glm::mat4 flatRotation = glm::rotate(
+        glm::mat4(1.0f),
+        glm::radians(m_rotation.getDegrees()),
+        glm::vec3(0.0f, 0.0f, 1.0f));
+    glm::mat4 totalRotation = flatRotation * glm::mat4(facingRotation);
+
     // clang-format off
     transform = {
-        {rot[0][0],       rot[0][1],       rot[0][2],       transform[0][3]},
-        {rot[1][0],       rot[1][1],       rot[1][2],       transform[1][3]},
-        {rot[2][0],       rot[2][1],       rot[2][2],       transform[2][3]},
-        {transform[3][0], transform[3][1], transform[3][2], transform[3][3]}};
+        {totalRotation[0][0], totalRotation[0][1], totalRotation[0][2], transform[0][3]},
+        {totalRotation[1][0], totalRotation[1][1], totalRotation[1][2], transform[1][3]},
+        {totalRotation[2][0], totalRotation[2][1], totalRotation[2][2], transform[2][3]},
+        {transform[3][0],     transform[3][1],     transform[3][2],     transform[3][3]}};
     // clang-format on
+
+    transform =
+        glm::rotate(transform, glm::radians(-m_rotation.getDegrees()), glm::vec3(0.0f, 0.0f, 1.0f));
+
     transform = glm::scale(transform, m_size);
 
     GLint projectionLoc = glGetUniformLocation(shaderId, "projection");
