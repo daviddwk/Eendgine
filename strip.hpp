@@ -26,6 +26,7 @@ class StripHandler {
         std::vector<Texture>::size_type getNumTextures();
 
     private:
+        std::filesystem::path path;
         std::string currentStrip;
         unsigned int currentStripIdx;
         bool flipStrip;

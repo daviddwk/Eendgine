@@ -41,20 +41,15 @@ void Board::draw(GLuint shaderId, Camera3D& camera) {
     transform = glm::translate(transform, m_position);
 
     // rotate to always be facing the camera
-    glm::mat3 facingRotation = glm::inverse(glm::mat3(camera.getViewMat()));
+    glm::mat3 rotation = glm::inverse(glm::mat3(camera.getViewMat()));
     // rotate on the normal
-    glm::mat4 flatRotation = glm::rotate(
-        glm::mat4(1.0f),
-        glm::radians(m_rotation.getDegrees()),
-        glm::vec3(0.0f, 0.0f, 1.0f));
-    glm::mat4 totalRotation = flatRotation * glm::mat4(facingRotation);
 
     // clang-format off
     transform = {
-        {totalRotation[0][0], totalRotation[0][1], totalRotation[0][2], transform[0][3]},
-        {totalRotation[1][0], totalRotation[1][1], totalRotation[1][2], transform[1][3]},
-        {totalRotation[2][0], totalRotation[2][1], totalRotation[2][2], transform[2][3]},
-        {transform[3][0],     transform[3][1],     transform[3][2],     transform[3][3]}};
+        {rotation[0][0],  rotation[0][1],  rotation[0][2],  transform[0][3]},
+        {rotation[1][0],  rotation[1][1],  rotation[1][2],  transform[1][3]},
+        {rotation[2][0],  rotation[2][1],  rotation[2][2],  transform[2][3]},
+        {transform[3][0], transform[3][1], transform[3][2], transform[3][3]}};
     // clang-format on
 
     transform =

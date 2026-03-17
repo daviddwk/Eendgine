@@ -57,9 +57,13 @@ class Angle {
         };
 
         Angle operator+(const Angle& other) { return Angle(m_degrees + other.m_degrees); }
+        Angle operator+=(const Angle& other) { return Angle(m_degrees + other.m_degrees); }
         Angle operator-(const Angle& other) { return Angle(m_degrees - other.m_degrees); }
+        Angle operator-=(const Angle& other) { return Angle(m_degrees - other.m_degrees); }
         Angle operator*(const float factor) { return Angle(m_degrees * factor); }
+        Angle operator*=(const float factor) { return Angle(m_degrees * factor); }
         Angle operator/(const float divisor) { return Angle(m_degrees / divisor); }
+        Angle operator/=(const float divisor) { return Angle(m_degrees / divisor); }
         bool operator>(const Angle& other) { return m_degrees > other.m_degrees; }
         bool operator>=(const Angle& other) { return m_degrees >= other.m_degrees; }
         bool operator<(const Angle& other) { return m_degrees < other.m_degrees; }
