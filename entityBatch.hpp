@@ -65,14 +65,14 @@ template <class E> class EntityBatch {
         }
 
         template <typename C> void draw(ShaderProgram& shader, C& camera) {
-            EntityBatch<E>::sortAndErase();
+            EntityBatch::sortAndErase();
             shader.use();
             glActiveTexture(GL_TEXTURE0);
             std::string texName = "texture_diffuse";
             glUniform1i(glGetUniformLocation(shader.getProgramID(), texName.c_str()), 0);
             GLuint lastTexture = 0;
             GLuint thisTexture = 0;
-            for (auto& labeledEntity : EntityBatch<E>::m_entities) {
+            for (auto& labeledEntity : EntityBatch::m_entities) {
                 thisTexture = labeledEntity.entity.getTexture().id;
                 if (lastTexture != thisTexture) {
                     glBindTexture(GL_TEXTURE_2D, thisTexture);
