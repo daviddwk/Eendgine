@@ -9,10 +9,10 @@ void Entities::construct() {
     Quad::construct();
     assert(
         m_statues == nullptr && m_dolls == nullptr && m_boards == nullptr && m_panels == nullptr);
-    m_statues = new EntityBatch<Statue>;
-    m_dolls = new EntityBatch<Doll>;
-    m_boards = new EntityBatch<Board>;
-    m_panels = new EntityBatch<Panel>;
+    m_statues = new EntityBatch<Statue, StatueId>;
+    m_dolls = new EntityBatch<Doll, DollId>;
+    m_boards = new EntityBatch<Board, BoardId>;
+    m_panels = new EntityBatch<Panel, PanelId>;
 }
 
 void Entities::destruct() {
@@ -38,22 +38,22 @@ void Entities::shrink() {
     m_panels->shrink();
 }
 
-EntityBatch<Statue>& Entities::statues() {
+EntityBatch<Statue, StatueId>& Entities::statues() {
     assert(m_statues != nullptr);
     return *m_statues;
 }
 
-EntityBatch<Doll>& Entities::dolls() {
+EntityBatch<Doll, DollId>& Entities::dolls() {
     assert(m_dolls != nullptr);
     return *m_dolls;
 }
 
-EntityBatch<Board>& Entities::boards() {
+EntityBatch<Board, BoardId>& Entities::boards() {
     assert(m_boards != nullptr);
     return *m_boards;
 }
 
-EntityBatch<Panel>& Entities::panels() {
+EntityBatch<Panel, PanelId>& Entities::panels() {
     assert(m_panels != nullptr);
     return *m_panels;
 }

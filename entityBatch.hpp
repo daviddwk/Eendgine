@@ -5,10 +5,18 @@
 #include <functional>
 namespace Eendgine {
 
-using EntityId = uint64_t;
+// inherit from for new strong typedef ID types
+class EntityId {
+    public:
+        EntityId(uint64_t value) : m_value(value) {};
+        uint64_t value() { return m_value; };
+
+    private:
+        uint64_t m_value;
+};
 
 template <class E> struct EntityLabeled {
-        EntityId id;
+        uint64_t id;
         E entity;
 };
 
@@ -17,9 +25,9 @@ static bool newTextureCompare(const EntityLabeled<E>& el1, const EntityLabeled<E
     return el1.entity.getTexture().id > el2.entity.getTexture().id;
 }
 
-template <class E> class EntityBatch {
+template <class E, class I> class EntityBatch {
     public:
-        EntityBatch() = default;
+        EntityBatch() : m_nextId(0) {};
         ~EntityBatch() {
             sortAndErase();
             if (!m_entities.empty()) {
@@ -36,23 +44,23 @@ template <class E> class EntityBatch {
         EntityBatch& operator=(EntityBatch&& other) = delete;
 
         // assuming that you don't put two of the same in here, but not checking
-        template <typename... Args> EntityId insert(Args&&... args) {
+        template <typename... Args> I insert(Args&&... args) {
             unsigned int m_entitiesIdx = m_entities.size();
             // check if already in map
             m_indexMap[m_nextId] = m_entitiesIdx;
             m_entities.push_back(EntityLabeled{m_nextId, E(std::forward<Args>(args)...)});
             // just in case these are evaluated out of order
-            return m_nextId++;
+            return I(m_nextId++);
         }
 
-        void erase(EntityId id) {
-            if (auto indexIter = m_indexMap.find(id); indexIter != std::end(m_indexMap)) {
-                m_toEraseIds.push_back(id);
+        void erase(I id) {
+            if (auto indexIter = m_indexMap.find(id.value()); indexIter != std::end(m_indexMap)) {
+                m_toEraseIds.push_back(id.value());
             }
         }
 
-        E* getRef(EntityId id) {
-            if (auto indexIter = m_indexMap.find(id); indexIter != std::end(m_indexMap)) {
+        E* getRef(I id) {
+            if (auto indexIter = m_indexMap.find(id.value()); indexIter != std::end(m_indexMap)) {
                 auto [entityId, entityIdx] = *indexIter;
                 return &m_entities[entityIdx].entity;
             }
@@ -85,7 +93,7 @@ template <class E> class EntityBatch {
 
     private:
         using Entities = std::vector<EntityLabeled<E>>;
-        using IndexMap = std::unordered_map<EntityId, typename Entities::size_type>;
+        using IndexMap = std::unordered_map<uint64_t, typename Entities::size_type>;
 
         void sortAndErase() {
             // make to erase idxs from ids
@@ -112,7 +120,7 @@ template <class E> class EntityBatch {
         // vector so I can control when it sorts
         Entities m_entities;
         IndexMap m_indexMap;
-        EntityId m_nextId = 0;
-        std::vector<EntityId> m_toEraseIds;
+        uint64_t m_nextId;
+        std::vector<uint64_t> m_toEraseIds;
 };
 } // namespace Eendgine

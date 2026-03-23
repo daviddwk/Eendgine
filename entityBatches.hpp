@@ -8,10 +8,10 @@
 #include "statue.hpp"
 
 namespace Eendgine {
-using StatueId = uint64_t;
-using DollId = uint64_t;
-using BoardId = uint64_t;
-using PanelId = uint64_t;
+class StatueId : public EntityId {};
+class DollId : public EntityId {};
+class BoardId : public EntityId {};
+class PanelId : public EntityId {};
 
 class Entities {
     public:
@@ -20,10 +20,10 @@ class Entities {
 
         static void shrink();
 
-        static EntityBatch<Statue>& statues();
-        static EntityBatch<Doll>& dolls();
-        static EntityBatch<Board>& boards();
-        static EntityBatch<Panel>& panels();
+        static EntityBatch<Statue, StatueId>& statues();
+        static EntityBatch<Doll, DollId>& dolls();
+        static EntityBatch<Board, BoardId>& boards();
+        static EntityBatch<Panel, PanelId>& panels();
 
         static void draw(Camera2D& hudCamera, Camera3D& sceneCamera);
 
@@ -37,10 +37,10 @@ class Entities {
         Entities(Entities&& other) = delete;
         Entities& operator=(Entities&& other) = delete;
 
-        inline static EntityBatch<Statue>* m_statues = nullptr;
-        inline static EntityBatch<Doll>* m_dolls = nullptr;
-        inline static EntityBatch<Board>* m_boards = nullptr;
-        inline static EntityBatch<Panel>* m_panels = nullptr;
+        inline static EntityBatch<Statue, StatueId>* m_statues = nullptr;
+        inline static EntityBatch<Doll, DollId>* m_dolls = nullptr;
+        inline static EntityBatch<Board, BoardId>* m_boards = nullptr;
+        inline static EntityBatch<Panel, PanelId>* m_panels = nullptr;
 };
 
 } // namespace Eendgine
