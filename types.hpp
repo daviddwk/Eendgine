@@ -13,7 +13,7 @@ using Point2D = glm::vec2;
 using Vector = glm::vec3;
 using Vector2D = glm::vec2;
 using Rotation = glm::vec3;
-using TransformationMatrix = glm::mat4;
+using TransformationMatrix = glm::mat4; // TODO get rid of this it's not useful
 using Color = glm::vec4;
 
 class Triangle {
