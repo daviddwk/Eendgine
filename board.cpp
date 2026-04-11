@@ -57,10 +57,10 @@ void Board::draw(GLuint shaderId, Camera3D& camera) {
 
     // clang-format off
     transform = {
-        {rotation[0][0],   rotation[0][1],   rotation[0][2],   transform[0][3]},
-        {rotation[1][0],   rotation[1][1],   rotation[1][2],   transform[1][3]},
-        {rotation[2][0],   rotation[2][1],   rotation[2][2],   transform[2][3]},
-        {transform[3][0],  transform[3][1],  transform[3][2],  transform[3][3]}};
+        {rotation[0][0],  rotation[0][1],  rotation[0][2],  transform[0][3]},
+        {rotation[1][0],  rotation[1][1],  rotation[1][2],  transform[1][3]},
+        {rotation[2][0],  rotation[2][1],  rotation[2][2],  transform[2][3]},
+        {transform[3][0], transform[3][1], transform[3][2], transform[3][3]}};
     // clang-format on
 
     transform = glm::scale(transform, m_size);
