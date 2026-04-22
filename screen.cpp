@@ -1,3 +1,4 @@
+#include <GLES3/gl3.h>
 #include <assert.h>
 
 #include "fatalError.hpp"
@@ -53,6 +54,10 @@ Screen::Screen(int width, int height) {
 }
 
 Screen::~Screen() {
+    glDeleteVertexArrays(1, &m_VAO);
+    glDeleteBuffers(1, &m_VBO);
+    glDeleteFramebuffers(1, &m_FB);
+    glDeleteTextures(1, &m_textureColorBuffer);
     // TODO somthing here I'm sure
 }
 
