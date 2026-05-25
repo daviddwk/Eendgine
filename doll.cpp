@@ -10,13 +10,12 @@
 #include <json/json.h>
 
 namespace Eendgine {
-Doll::Doll(std::filesystem::path path)
+Doll::Doll(std::filesystem::path dollPath)
     : m_numIndices(0), m_position(Point(0.0f)), m_scale(Scale(1.0f)), m_rotation(Rotation(0.0f)),
       m_animScale(0.0f), m_textureIdx(0) {
 
     std::map<std::string, std::vector<std::vector<InpolVertex>>> animationVertices;
     std::map<std::string, std::vector<std::vector<unsigned int>>> animationIndices;
-    std::filesystem::path dollPath = std::filesystem::path("resources") / path;
     if (!std::filesystem::is_directory(dollPath)) {
         fatalError("Doll directory " + dollPath.string() + " is not a directory");
     }

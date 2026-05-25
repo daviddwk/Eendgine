@@ -16,7 +16,7 @@
 namespace Eendgine {
 class Statue {
     public:
-        Statue(std::string statuePath);
+        Statue(std::filesystem::path statuePath);
         ~Statue();
 
         Statue(const Statue& other) = delete;

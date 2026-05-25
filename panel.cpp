@@ -12,12 +12,11 @@
 namespace Eendgine {
 
 // can remove the need for two different initializers using templating
-Panel::Panel(std::filesystem::path path)
+Panel::Panel(std::filesystem::path spritePath)
     : m_position(Point(0.0f)), m_scale(Scale(1.0f)), m_rotation(0.0f), m_VAO(0), m_VBO(0), m_EBO(0),
       m_currentTexture("") {
 
     std::vector<std::filesystem::path> texturePaths;
-    std::filesystem::path spritePath = std::filesystem::path("resources") / path;
     for (const auto& entry : std::filesystem::directory_iterator(spritePath)) {
         if (entry.is_regular_file() && (entry.path().extension() == ".png")) {
             texturePaths.push_back(entry.path());

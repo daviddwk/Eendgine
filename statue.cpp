@@ -7,15 +7,14 @@
 #include <print>
 
 namespace Eendgine {
-Statue::Statue(const std::string statuePath)
+Statue::Statue(const std::filesystem::path statuePath)
     : m_VAO(0), m_VBO(0), m_EBO(0), m_numIndices(0), m_position(Point(0.0f)), m_scale(Scale(1.0f)),
       m_rotation(Rotation(0.0f)), m_textureIdx(0), m_stripHandler(statuePath) {
 
     std::vector<Vertex> vertices;
     std::vector<unsigned int> indices;
     const std::filesystem::path modelPath =
-        std::filesystem::path("resources") / statuePath /
-        (std::filesystem::path(statuePath).filename().string() + ".obj");
+        statuePath / (std::filesystem::path(statuePath).filename().string() + ".obj");
     std::vector<Texture> textures;
     loadModel(modelPath, vertices, indices, textures);
     m_numIndices = indices.size();

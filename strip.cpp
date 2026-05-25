@@ -16,10 +16,9 @@ StripHandler::StripHandler(std::filesystem::path stripPath)
     // ...         / {strip1}.png
     // ...         / {strip2}.png
 
-    std::filesystem::path basePath = std::filesystem::path("resources") / stripPath;
-    std::filesystem::path metadataPath = basePath / "metadata.json";
+    std::filesystem::path metadataPath = stripPath / "metadata.json";
     std::vector<std::filesystem::path> texturePaths;
-    for (const auto& entry : std::filesystem::directory_iterator(basePath)) {
+    for (const auto& entry : std::filesystem::directory_iterator(stripPath)) {
         if (entry.is_regular_file() && (entry.path().extension() == ".png")) {
             texturePaths.push_back(entry.path());
         }
