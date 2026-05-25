@@ -1,3 +1,4 @@
+#include <SDL2/SDL_scancode.h>
 #include <cassert>
 
 #include <GLFW/glfw3.h>
@@ -26,9 +27,14 @@ InputManager& InputManager::get() {
 }
 
 void InputManager::processInput() {
-    // const unsigned char *keyState = SDL_GetKeyboardState(nullptr);
 
-    const unsigned char* keyState = SDL_GetKeyboardState(nullptr);
+    InputManager::processMouse();
+    InputManager::processKeyboard();
+    InputManager::processWindow();
+}
+
+void InputManager::processMouse() {
+
     int prevMouseX = m_mouseX;
     int prevMouseY = m_mouseY;
     Uint32 mouseState = SDL_GetMouseState(&m_mouseX, &m_mouseY);
@@ -38,15 +44,10 @@ void InputManager::processInput() {
 
     m_deltaMouseX = prevMouseX - m_mouseX;
     m_deltaMouseY = prevMouseY - m_mouseY;
+}
+void InputManager::processKeyboard() { keyState = SDL_GetKeyboardState(nullptr); }
 
-    m_leftPress = keyState[SDL_SCANCODE_LEFT];
-    m_rightPress = keyState[SDL_SCANCODE_RIGHT];
-    m_upPress = keyState[SDL_SCANCODE_UP];
-    m_downPress = keyState[SDL_SCANCODE_DOWN];
-    m_spacePress = keyState[SDL_SCANCODE_SPACE];
-    m_escapePress = keyState[SDL_SCANCODE_ESCAPE];
-
-    // unsigned int mouseState = SDL_GetRelativeMouseState(&deltaMouseX, &deltaMouseY);
+void InputManager::processWindow() {
 
     SDL_Event event;
     while (SDL_PollEvent(&event)) {
@@ -56,12 +57,9 @@ void InputManager::processInput() {
         }
     }
 }
-bool InputManager::getLeftPress() { return m_leftPress; };
-bool InputManager::getRightPress() { return m_rightPress; };
-bool InputManager::getUpPress() { return m_upPress; };
-bool InputManager::getDownPress() { return m_downPress; };
-bool InputManager::getSpacePress() { return m_spacePress; };
-bool InputManager::getEscapePress() { return m_escapePress; }
+
+bool InputManager::isKeyPressed(SDL_Scancode key) { return keyState[key]; }
+
 bool InputManager::getShouldClose() { return m_shouldClose; };
 bool InputManager::getLeftClick() { return m_leftClick; };
 bool InputManager::getRightClick() { return m_rightClick; };

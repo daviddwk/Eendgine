@@ -1,5 +1,7 @@
 #pragma once
 
+#include <SDL2/SDL_scancode.h>
+
 namespace Eendgine {
 class InputManager {
     public:
@@ -12,14 +14,10 @@ class InputManager {
 
         // static void init();
         void processInput();
+        bool isKeyPressed(SDL_Scancode key);
 
-        bool getLeftPress();
-        bool getRightPress();
-        bool getUpPress();
-        bool getDownPress();
-        bool getSpacePress();
-        bool getEscapePress();
         bool getShouldClose();
+
         bool getLeftClick();
         bool getRightClick();
         bool getMiddleClick();
@@ -36,13 +34,14 @@ class InputManager {
 
         inline static InputManager* _instance = nullptr;
 
-        bool m_leftPress = false;
-        bool m_rightPress = false;
-        bool m_upPress = false;
-        bool m_downPress = false;
-        bool m_spacePress = false;
-        bool m_escapePress = false;
+        const unsigned char* keyState = nullptr;
+
+        void processMouse();
+        void processKeyboard();
+        void processWindow();
+
         bool m_shouldClose = false;
+
         bool m_leftClick = false;
         bool m_rightClick = false;
         bool m_middleClick = false;
