@@ -1,11 +1,12 @@
-#include "Eendgine/camera.hpp"
-#include "Eendgine/vertex.hpp"
 #include "doll.hpp"
+
+#include "camera.hpp"
 #include "fatalError.hpp"
+#include "jsonUtils.hpp"
 #include "loadModel.hpp"
+#include "vertex.hpp"
 #include <GLES3/gl3.h>
 #include <filesystem>
-#include <fstream>
 #include <glm/gtc/matrix_transform.hpp>
 #include <json/json.h>
 
@@ -33,17 +34,9 @@ Doll::Doll(std::filesystem::path dollPath)
 
     for (const auto& animationPath : animationPaths) {
         // metadata
-        Json::Value root;
         std::filesystem::path metadataPath = animationPath / "metadata.json";
-        std::ifstream metadata(metadataPath);
-        if (!metadata.is_open()) {
-            fatalError("could not open: " + metadataPath.string());
-        }
-        try {
-            metadata >> root;
-        } catch (...) {
-            fatalError("improper json: " + metadataPath.string());
-        }
+        Json::Value root = jsonLoadFile(metadataPath);
+
         if (!root["loop"].is<bool>()) {
             fatalError("no loop in: " + metadataPath.string());
         }
