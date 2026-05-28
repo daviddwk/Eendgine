@@ -1,6 +1,9 @@
 #pragma once
 
+#include <SDL2/SDL_keycode.h>
 #include <SDL2/SDL_scancode.h>
+
+#include <array>
 
 namespace Eendgine {
 class InputManager {
@@ -15,6 +18,8 @@ class InputManager {
         // static void init();
         void processInput();
         bool isKeyPressed(SDL_Scancode key);
+        bool onKeyUp(SDL_Scancode key);
+        bool onKeyDown(SDL_Scancode key);
 
         bool getShouldClose();
 
@@ -34,13 +39,15 @@ class InputManager {
 
         inline static InputManager* _instance = nullptr;
 
-        const unsigned char* keyState = nullptr;
-
         void processMouse();
         void processKeyboard();
         void processWindow();
 
         bool m_shouldClose = false;
+
+        std::array<bool, SDL_NUM_SCANCODES> m_keys;
+        std::array<bool, SDL_NUM_SCANCODES> m_onKeyUp;
+        std::array<bool, SDL_NUM_SCANCODES> m_onKeyDown;
 
         bool m_leftClick = false;
         bool m_rightClick = false;

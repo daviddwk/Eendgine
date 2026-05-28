@@ -1,3 +1,4 @@
+#include <SDL2/SDL_keycode.h>
 #include <SDL2/SDL_scancode.h>
 #include <cassert>
 
@@ -5,6 +6,8 @@
 #include <SDL2/SDL_events.h>
 #include <SDL2/SDL_keyboard.h>
 #include <SDL2/SDL_mouse.h>
+
+#include <print>
 
 #include "inputManager.hpp"
 
@@ -45,20 +48,41 @@ void InputManager::processMouse() {
     m_deltaMouseX = prevMouseX - m_mouseX;
     m_deltaMouseY = prevMouseY - m_mouseY;
 }
-void InputManager::processKeyboard() { keyState = SDL_GetKeyboardState(nullptr); }
+void InputManager::processKeyboard() {}
 
 void InputManager::processWindow() {
 
+    std::fill(m_onKeyDown.begin(), m_onKeyDown.end(), false);
+    std::fill(m_onKeyUp.begin(), m_onKeyUp.end(), false);
+
     SDL_Event event;
     while (SDL_PollEvent(&event)) {
+        SDL_Keycode scancode = event.key.keysym.scancode;
         switch (event.type) {
         case SDL_QUIT:
             m_shouldClose = true;
+            break;
+        case SDL_KEYDOWN:
+            if (m_keys[scancode] == false) {
+                m_onKeyDown[scancode] = true;
+            }
+            m_keys[scancode] = true;
+            break;
+        case SDL_KEYUP:
+            if (m_keys[scancode] == true) {
+                m_onKeyUp[scancode] = true;
+            }
+            m_keys[scancode] = false;
+            break;
+        default:
+            break;
         }
     }
 }
 
-bool InputManager::isKeyPressed(SDL_Scancode key) { return keyState[key]; }
+bool InputManager::isKeyPressed(SDL_Scancode key) { return m_keys[key]; }
+bool InputManager::onKeyUp(SDL_Scancode key) { return m_onKeyUp[key]; }
+bool InputManager::onKeyDown(SDL_Scancode key) { return m_onKeyDown[key]; }
 
 bool InputManager::getShouldClose() { return m_shouldClose; };
 bool InputManager::getLeftClick() { return m_leftClick; };
