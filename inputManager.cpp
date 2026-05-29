@@ -30,14 +30,9 @@ InputManager& InputManager::get() {
 }
 
 void InputManager::processInput() {
-
-    InputManager::processMouse();
-    InputManager::processKeyboard();
-    InputManager::processWindow();
-}
-
-void InputManager::processMouse() {
-
+    // mouse TODO make event based also, so we can have on button down and up
+    // the movement however is fine I think but I think there is some
+    // delta stuff built into SDL?
     int prevMouseX = m_mouseX;
     int prevMouseY = m_mouseY;
     Uint32 mouseState = SDL_GetMouseState(&m_mouseX, &m_mouseY);
@@ -47,11 +42,8 @@ void InputManager::processMouse() {
 
     m_deltaMouseX = prevMouseX - m_mouseX;
     m_deltaMouseY = prevMouseY - m_mouseY;
-}
-void InputManager::processKeyboard() {}
 
-void InputManager::processWindow() {
-
+    // everything else, mostly keyboard
     std::fill(m_onKeyDown.begin(), m_onKeyDown.end(), false);
     std::fill(m_onKeyUp.begin(), m_onKeyUp.end(), false);
 

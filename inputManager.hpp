@@ -39,10 +39,6 @@ class InputManager {
 
         inline static InputManager* _instance = nullptr;
 
-        void processMouse();
-        void processKeyboard();
-        void processWindow();
-
         bool m_shouldClose = false;
 
         std::array<bool, SDL_NUM_SCANCODES> m_keys;
