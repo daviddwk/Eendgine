@@ -121,7 +121,7 @@ void Panel::cropTexture(Point2D upperLeft, Point2D lowerRight) {
 Panel::MouseStatus Panel::isClicked() {
     int mouseX = InputManager::get().getMouseX();
     int mouseY = InputManager::get().getMouseY();
-    bool click = InputManager::get().getLeftClick();
+    bool click = InputManager::get().isLeftClicked();
 
     bool inXBounds = mouseX >= m_position.x && mouseX <= (m_position.x + m_scale.x);
     bool inYBounds = mouseY >= -m_position.y && mouseY <= (-m_position.y + m_scale.y);

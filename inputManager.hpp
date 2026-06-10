@@ -4,6 +4,7 @@
 #include <SDL2/SDL_scancode.h>
 
 #include <array>
+#include <cstdint>
 
 namespace Eendgine {
 class InputManager {
@@ -23,9 +24,16 @@ class InputManager {
 
         bool getShouldClose();
 
-        bool getLeftClick();
-        bool getRightClick();
-        bool getMiddleClick();
+        bool isLeftClicked();
+        bool onLeftDown();
+        bool onLeftUp();
+        bool isRightClicked();
+        bool onRightDown();
+        bool onRightUp();
+        bool isMiddleClicked();
+        bool onMiddleDown();
+        bool onMiddleUp();
+
         int getMouseX();
         int getMouseY();
         int getDeltaMouseX();
@@ -44,6 +52,10 @@ class InputManager {
         std::array<bool, SDL_NUM_SCANCODES> m_keys;
         std::array<bool, SDL_NUM_SCANCODES> m_onKeyUp;
         std::array<bool, SDL_NUM_SCANCODES> m_onKeyDown;
+
+        std::array<bool, UINT8_MAX> m_buttons;
+        std::array<bool, UINT8_MAX> m_onButtonUp;
+        std::array<bool, UINT8_MAX> m_onButtonDown;
 
         bool m_leftClick = false;
         bool m_rightClick = false;
