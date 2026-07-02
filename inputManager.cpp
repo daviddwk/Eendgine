@@ -30,58 +30,58 @@ InputManager& InputManager::get() {
 }
 
 void InputManager::processInput() {
-    // mouse TODO make event based also, so we can have on button down and up
-    // the movement however is fine I think but I think there is some
-    // delta stuff built into SDL?
-    int prevMouseX = m_mouseX;
-    int prevMouseY = m_mouseY;
-    Uint32 mouseState = SDL_GetMouseState(&m_mouseX, &m_mouseY);
-    m_leftClick = (bool)(mouseState & SDL_BUTTON(SDL_BUTTON_LEFT));
-    m_rightClick = (bool)(mouseState & SDL_BUTTON(SDL_BUTTON_RIGHT));
-    m_middleClick = (bool)(mouseState & SDL_BUTTON(SDL_BUTTON_MIDDLE));
 
-    m_deltaMouseX = prevMouseX - m_mouseX;
-    m_deltaMouseY = prevMouseY - m_mouseY;
+    // mouse movement
+    {
+        int prevMouseX = m_mouseX;
+        int prevMouseY = m_mouseY;
+        Uint32 mouseState = SDL_GetMouseState(&m_mouseX, &m_mouseY);
+        m_deltaMouseX = prevMouseX - m_mouseX;
+        m_deltaMouseY = prevMouseY - m_mouseY;
+    }
 
-    std::fill(m_onKeyDown.begin(), m_onKeyDown.end(), false);
-    std::fill(m_onKeyUp.begin(), m_onKeyUp.end(), false);
-    std::fill(m_onButtonDown.begin(), m_onButtonDown.end(), false);
-    std::fill(m_onButtonUp.begin(), m_onButtonUp.end(), false);
+    // buttons
+    {
+        std::fill(m_onKeyDown.begin(), m_onKeyDown.end(), false);
+        std::fill(m_onKeyUp.begin(), m_onKeyUp.end(), false);
+        std::fill(m_onButtonDown.begin(), m_onButtonDown.end(), false);
+        std::fill(m_onButtonUp.begin(), m_onButtonUp.end(), false);
 
-    SDL_Event event;
-    while (SDL_PollEvent(&event)) {
-        SDL_Keycode keycode = event.key.keysym.scancode;
-        Uint8 mouseCode = event.button.button;
-        switch (event.type) {
-        case SDL_QUIT:
-            m_shouldClose = true;
-            break;
-        case SDL_KEYDOWN:
-            if (m_keys[keycode] == false) {
-                m_onKeyDown[keycode] = true;
+        SDL_Event event;
+        while (SDL_PollEvent(&event)) {
+            SDL_Keycode keycode = event.key.keysym.scancode;
+            Uint8 mouseCode = event.button.button;
+            switch (event.type) {
+            case SDL_QUIT:
+                m_shouldClose = true;
+                break;
+            case SDL_KEYDOWN:
+                if (m_keys[keycode] == false) {
+                    m_onKeyDown[keycode] = true;
+                }
+                m_keys[keycode] = true;
+                break;
+            case SDL_KEYUP:
+                if (m_keys[keycode] == true) {
+                    m_onKeyUp[keycode] = true;
+                }
+                m_keys[keycode] = false;
+                break;
+            case SDL_MOUSEBUTTONDOWN:
+                if (m_buttons[mouseCode] == false) {
+                    m_onButtonDown[mouseCode] = true;
+                }
+                m_buttons[mouseCode] = true;
+                break;
+            case SDL_MOUSEBUTTONUP:
+                if (m_buttons[mouseCode] == true) {
+                    m_onButtonUp[mouseCode] = true;
+                }
+                m_buttons[mouseCode] = false;
+                break;
+            default:
+                break;
             }
-            m_keys[keycode] = true;
-            break;
-        case SDL_KEYUP:
-            if (m_keys[keycode] == true) {
-                m_onKeyUp[keycode] = true;
-            }
-            m_keys[keycode] = false;
-            break;
-        case SDL_MOUSEBUTTONDOWN:
-            if (m_buttons[mouseCode] == false) {
-                m_onButtonDown[mouseCode] = true;
-            }
-            m_buttons[mouseCode] = true;
-            break;
-        case SDL_MOUSEBUTTONUP:
-            if (m_buttons[mouseCode] == true) {
-                m_onButtonUp[mouseCode] = true;
-            }
-            m_buttons[mouseCode] = false;
-            break;
-        default:
-            break;
         }
     }
 }
