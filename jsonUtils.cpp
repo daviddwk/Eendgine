@@ -53,6 +53,13 @@ float jsonFloat(const Json::Value json, const std::string key, const std::filesy
     return json[key].asFloat();
 }
 
+int jsonInt(const Json::Value json, const std::string key, const std::filesystem::path path) {
+    if (!json[key].isNumeric()) {
+        fatalError("\"" + key + "\" not a string: " + path.string());
+    }
+    return json[key].asInt();
+}
+
 std::string
 jsonString(const Json::Value json, const std::string key, const std::filesystem::path path) {
     if (!json[key].isString()) {
