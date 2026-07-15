@@ -15,11 +15,13 @@ class Board {
         Board(std::filesystem::path path);
         ~Board() = default;
 
-        Board(const Board& other) = delete;
+        Board(const Board& other) = default;
         Board& operator=(const Board& other) = delete;
 
         Board(Board&& other) noexcept = default;
         Board& operator=(Board&& other) noexcept = default;
+
+        Board clone();
 
         void setPosition(Point position);
         void setScale(Scale2D scale);

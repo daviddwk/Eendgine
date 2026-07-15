@@ -19,7 +19,7 @@ class Statue {
         Statue(std::filesystem::path statuePath);
         ~Statue();
 
-        Statue(const Statue& other) = delete;
+        Statue(const Statue& other) noexcept;
         Statue& operator=(const Statue& other) = delete;
 
         Statue(Statue&& other) noexcept;

@@ -13,7 +13,7 @@ class Panel {
         Panel(std::filesystem::path path);
         ~Panel();
 
-        Panel(const Panel& other) = delete;
+        Panel(const Panel& other) noexcept;
         Panel& operator=(const Panel& other) = delete;
 
         Panel(Panel&& other) noexcept;
@@ -43,7 +43,8 @@ class Panel {
         void draw(GLuint shaderId, Camera2D& camera);
 
     private:
-        void setup(std::vector<std::filesystem::path>& texturePaths);
+        void populateTextures(std::vector<std::filesystem::path>& texturePaths);
+        void setup();
         Point m_position;
         Scale m_scale;
         float m_rotation;
