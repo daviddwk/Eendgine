@@ -63,6 +63,8 @@ Statue::~Statue() {
     glDeleteBuffers(1, &m_EBO);
 }
 
+Statue::Statue(const Statue& other) {}
+
 Statue::Statue(Statue&& other) noexcept
     : m_VAO(std::move(other.m_VAO)), m_VBO(std::move(other.m_VBO)), m_EBO(std::move(other.m_EBO)),
       m_numIndices(std::move(other.m_numIndices)), m_position(std::move(other.m_position)),

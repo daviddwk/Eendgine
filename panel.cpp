@@ -22,13 +22,21 @@ Panel::Panel(std::filesystem::path spritePath)
             texturePaths.push_back(entry.path());
         }
     }
-    setup(texturePaths);
+    populateTextures(texturePaths);
+    setup();
 }
 
 Panel::~Panel() {
     glDeleteVertexArrays(1, &m_VAO);
     glDeleteBuffers(1, &m_VBO);
     glDeleteBuffers(1, &m_EBO);
+}
+
+Panel::Panel(const Panel& other) noexcept
+    : m_position(other.m_position), m_scale(other.m_scale), m_rotation(other.m_rotation),
+      m_VAO(other.m_VAO), m_VBO(other.m_VBO), m_EBO(other.m_EBO),
+      m_currentTexture(other.m_currentTexture), m_textures(other.m_textures) {
+    Panel::setup();
 }
 
 Panel::Panel(Panel&& other) noexcept
@@ -134,18 +142,21 @@ Panel::MouseStatus Panel::isClicked() {
     return MouseStatus::none;
 }
 
-void Panel::setup(std::vector<std::filesystem::path>& texturePaths) {
-
-    m_position = Point(0.0f);
-    m_scale = Scale(1.0f);
-    m_rotation = 0;
-
+void Panel::populateTextures(std::vector<std::filesystem::path>& texturePaths) {
     for (const auto& t : texturePaths) {
         if (t.has_stem() == false) {
             fatalError("texture: " + t.string() + "has no stem");
         }
         m_textures[t.stem()] = Eendgine::TextureCache::getTexture(t);
     }
+}
+
+void Panel::setup() {
+
+    m_position = Point(0.0f);
+    m_scale = Scale(1.0f);
+    m_rotation = 0;
+
     auto [firstTextureName, firstTexture] = *m_textures.begin();
     m_currentTexture = firstTextureName;
 
@@ -209,4 +220,5 @@ void Panel::draw(GLuint shaderId, Camera2D& camera) {
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);
 }
+
 } // namespace Eendgine

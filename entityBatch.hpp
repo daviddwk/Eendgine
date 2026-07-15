@@ -45,11 +45,24 @@ template <class E, class I> class EntityBatch {
 
         // assuming that you don't put two of the same in here, but not checking
         template <typename... Args> I insert(Args&&... args) {
-            unsigned int m_entitiesIdx = m_entities.size();
+            unsigned int entityIdx = m_entities.size();
             // check if already in map
-            m_indexMap[m_nextId] = m_entitiesIdx;
+            m_indexMap[m_nextId] = entityIdx;
             m_entities.push_back(EntityLabeled{m_nextId, E(std::forward<Args>(args)...)});
             // just in case these are evaluated out of order
+            return I(m_nextId++);
+        }
+
+        I clone(I id) {
+            unsigned int entityIdx = m_entities.size();
+            m_indexMap[m_nextId] = entityIdx;
+
+            if (auto indexIter = m_indexMap.find(id.value()); indexIter != std::end(m_indexMap)) {
+                auto [entityId, entityIdx] = *indexIter;
+                E entity = m_entities[entityIdx].entity;
+                m_entities.push_back(entity); // TODO clone
+            }
+
             return I(m_nextId++);
         }
 
