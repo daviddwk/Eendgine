@@ -15,7 +15,7 @@ class Doll {
         Doll(std::filesystem::path dollPath);
         ~Doll();
 
-        Doll(const Doll& other) = delete;
+        Doll(const Doll& other) noexcept;
         Doll& operator=(const Doll& other) = delete;
 
         Doll(Doll&& other) noexcept;
@@ -50,6 +50,8 @@ class Doll {
         void setAnim(float scale) { m_animScale = scale - (int)scale; };
 
     private:
+        void setup(const std::filesystem::path& dollPath);
+
         std::string m_animation;
         std::map<std::string, std::vector<GLuint>> m_VAOs, m_VBOs, m_EBOs;
         unsigned int m_numIndices;
@@ -60,5 +62,7 @@ class Doll {
         float m_animScale;
         unsigned int m_textureIdx;
         std::vector<Texture> m_textures;
+
+        std::filesystem::path m_dollPath;
 };
 } // namespace Eendgine
