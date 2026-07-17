@@ -15,7 +15,7 @@ class Board {
         Board(std::filesystem::path path);
         ~Board() = default;
 
-        Board(const Board& other) = default;
+        Board(const Board& other) noexcept = default;
         Board& operator=(const Board& other) = delete;
 
         Board(Board&& other) noexcept = default;

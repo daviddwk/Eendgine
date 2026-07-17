@@ -50,6 +50,8 @@ class Statue {
         void draw(GLuint shaderId, Camera3D& camera);
 
     private:
+        void setup(const std::filesystem::path& statuePath);
+
         GLuint m_VAO, m_VBO, m_EBO;
         unsigned int m_numIndices;
         Point m_position;
@@ -57,5 +59,6 @@ class Statue {
         Rotation m_rotation;
         unsigned int m_textureIdx;
         StripHandler m_stripHandler;
+        std::filesystem::path m_statuePath;
 };
 } // namespace Eendgine
