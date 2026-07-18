@@ -59,6 +59,8 @@ class Statue {
         Rotation m_rotation;
         unsigned int m_textureIdx;
         StripHandler m_stripHandler;
+
+        // for copying
         std::filesystem::path m_statuePath;
 };
 } // namespace Eendgine

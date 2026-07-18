@@ -174,10 +174,10 @@ Doll::~Doll() {
 }
 
 Doll::Doll(const Doll& other) noexcept
-    : m_numIndices(0), m_position(Point(0.0f)), m_scale(Scale(1.0f)), m_rotation(Rotation(0.0f)),
-      m_animScale(0.0f), m_textureIdx(0), m_dollPath(other.m_dollPath) {
+    : m_animation(other.m_animation), m_numIndices(0), m_position(other.m_position),
+      m_scale(other.m_scale), m_rotation(other.m_rotation), m_animScale(other.m_animScale),
+      m_textureIdx(other.m_textureIdx), m_dollPath(other.m_dollPath) {
     Doll::setup(other.m_dollPath);
-    // TODO set here the position and everything we do want to carry over
 }
 
 Doll::Doll(Doll&& other) noexcept
