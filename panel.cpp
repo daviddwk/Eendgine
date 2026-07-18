@@ -153,10 +153,6 @@ void Panel::populateTextures(std::vector<std::filesystem::path>& texturePaths) {
 
 void Panel::setup() {
 
-    m_position = Point(0.0f);
-    m_scale = Scale(1.0f);
-    m_rotation = 0;
-
     auto [firstTextureName, firstTexture] = *m_textures.begin();
     m_currentTexture = firstTextureName;
 
