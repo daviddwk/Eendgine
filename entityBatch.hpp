@@ -48,7 +48,7 @@ template <class E, class I> class EntityBatch {
             unsigned int entityIdx = m_entities.size();
             // check if already in map
             m_indexMap[m_nextId] = entityIdx;
-            m_entities.push_back(EntityLabeled{m_nextId, E(std::forward<Args>(args)...)});
+            m_entities.emplace_back(EntityLabeled{m_nextId, E(std::forward<Args>(args)...)});
             // just in case these are evaluated out of order
             return I(m_nextId++);
         }
@@ -59,8 +59,8 @@ template <class E, class I> class EntityBatch {
 
             if (auto indexIter = m_indexMap.find(id.value()); indexIter != std::end(m_indexMap)) {
                 auto [entityId, entityIdx] = *indexIter;
-                E entity = m_entities[entityIdx].entity;
-                m_entities.push_back(entity); // TODO clone
+                m_entities.emplace_back(
+                    EntityLabeled{m_nextId, m_entities[entityIdx].entity}); // TODO clone
             }
 
             return I(m_nextId++);
@@ -68,7 +68,7 @@ template <class E, class I> class EntityBatch {
 
         void erase(I id) {
             if (auto indexIter = m_indexMap.find(id.value()); indexIter != std::end(m_indexMap)) {
-                m_toEraseIds.push_back(id.value());
+                m_toEraseIds.emplace_back(id.value());
             }
         }
 
@@ -113,7 +113,7 @@ template <class E, class I> class EntityBatch {
             std::vector<typename IndexMap::size_type> m_toEraseIdxs;
             m_toEraseIdxs.reserve(m_toEraseIds.size());
             for (auto toEraseId : m_toEraseIds) {
-                m_toEraseIdxs.push_back(m_indexMap[toEraseId]);
+                m_toEraseIdxs.emplace_back(m_indexMap[toEraseId]);
             }
             std::sort(m_toEraseIdxs.begin(), m_toEraseIdxs.end(), std::greater<int>());
             // move all to erase to end of array and erase
