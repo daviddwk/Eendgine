@@ -186,7 +186,7 @@ Doll::Doll(Doll&& other) noexcept
       m_numIndices(std::move(other.m_numIndices)), m_position(std::move(other.m_position)),
       m_scale(std::move(other.m_scale)), m_rotation(std::move(other.m_rotation)),
       m_animScale(std::move(other.m_animScale)), m_textureIdx(std::move(other.m_textureIdx)),
-      m_textures(std::move(other.m_textures)) {
+      m_textures(std::move(other.m_textures)), m_dollPath(std::move(other.m_dollPath)) {
     other.m_VAOs.clear();
     other.m_VBOs.clear();
     other.m_EBOs.clear();
@@ -217,6 +217,7 @@ Doll& Doll::operator=(Doll&& other) noexcept {
     m_animScale = other.m_animScale;
     m_textureIdx = other.m_textureIdx;
     m_textures = other.m_textures;
+    m_dollPath = other.m_dollPath;
 
     other.m_VAOs.clear();
     other.m_VBOs.clear();

@@ -73,14 +73,14 @@ Statue::Statue(const Statue& other) noexcept
     : m_VAO(0), m_VBO(0), m_EBO(0), m_numIndices(0), m_position(other.m_position),
       m_scale(other.m_scale), m_rotation(other.m_rotation), m_textureIdx(other.m_textureIdx),
       m_statuePath(other.m_statuePath), m_stripHandler(other.m_stripHandler) {
-    Statue::setup(m_statuePath);
+    Statue::setup(other.m_statuePath);
 }
 
 Statue::Statue(Statue&& other) noexcept
     : m_VAO(std::move(other.m_VAO)), m_VBO(std::move(other.m_VBO)), m_EBO(std::move(other.m_EBO)),
       m_numIndices(std::move(other.m_numIndices)), m_position(std::move(other.m_position)),
       m_scale(std::move(other.m_scale)), m_rotation(std::move(other.m_rotation)),
-      m_stripHandler(std::move(other.m_stripHandler)) {
+      m_stripHandler(std::move(other.m_stripHandler)), m_statuePath(std::move(other.m_statuePath)) {
     other.m_VAO = 0;
     other.m_VBO = 0;
     other.m_EBO = 0;
@@ -110,6 +110,7 @@ Statue& Statue::operator=(Statue&& other) noexcept {
     m_rotation = other.m_rotation;
     m_textureIdx = other.m_textureIdx;
     m_stripHandler = other.m_stripHandler;
+    m_statuePath = other.m_statuePath;
 
     other.m_VAO = 0;
     other.m_VBO = 0;
