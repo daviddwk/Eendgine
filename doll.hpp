@@ -63,6 +63,7 @@ class Doll {
         unsigned int m_textureIdx;
         std::vector<Texture> m_textures;
 
+        // for copying
         std::filesystem::path m_dollPath;
 };
 } // namespace Eendgine

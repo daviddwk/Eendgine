@@ -70,11 +70,10 @@ Statue::~Statue() {
 }
 
 Statue::Statue(const Statue& other) noexcept
-    : m_VAO(0), m_VBO(0), m_EBO(0), m_numIndices(0), m_position(Point(0.0f)), m_scale(Scale(1.0f)),
-      m_rotation(Rotation(0.0f)), m_textureIdx(0), m_stripHandler(other.m_statuePath),
-      m_statuePath(other.m_statuePath) {
+    : m_VAO(0), m_VBO(0), m_EBO(0), m_numIndices(0), m_position(other.m_position),
+      m_scale(other.m_scale), m_rotation(other.m_rotation), m_textureIdx(other.m_textureIdx),
+      m_statuePath(other.m_statuePath), m_stripHandler(other.m_stripHandler) {
     Statue::setup(m_statuePath);
-    // TODO bring over position and other stuff here
 }
 
 Statue::Statue(Statue&& other) noexcept
