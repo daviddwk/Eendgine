@@ -2,6 +2,9 @@
 #include <cmath>
 #include <glm/glm.hpp>
 
+#define GLM_ENABLE_EXPERIMENTAL
+#include <glm/gtx/rotate_vector.hpp>
+
 namespace Eendgine {
 
 constexpr float INV_SQRT_TWO = 0.7071f;
@@ -48,6 +51,7 @@ class Angle {
         Angle(float degrees) { setDegrees(degrees); };
 
         float getDegrees() { return m_degrees; };
+        float getRadians() { return glm::radians(m_degrees); }
         void setDegrees(float degrees) {
             float tmpDegrees = fmod(degrees, 360.0f);
             if (tmpDegrees < 0) {
